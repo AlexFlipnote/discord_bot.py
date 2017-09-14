@@ -13,7 +13,7 @@ from discord.ext import commands
     Originally By Rapptz. Modified and Adapted By Joshwoo70. Further Tweaks thanks to AlexFlipnote
 """
 
-userairia = 1
+userairia = 0
 longvids = False
 volume = 0.5
 skipsreq = 3
