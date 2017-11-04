@@ -1,7 +1,10 @@
 import discord
+import json
 
 from discord.ext.commands import errors
-from assets import helper
+
+with open("config.json") as f:
+    data = json.load(f)
 
 
 class Events:
@@ -24,7 +27,7 @@ class Events:
     async def status_change(self):
         await self.bot.wait_until_ready()
         while True:
-            await self.bot.change_presence(game=discord.Game(type=0, name=helper.loadgame()))
+            await self.bot.change_presence(game=discord.Game(type=0, name=data["playing"]))
 
     async def on_ready(self):
         print(f'Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}')
