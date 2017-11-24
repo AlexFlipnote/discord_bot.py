@@ -1,15 +1,8 @@
 import time
 import subprocess
-import io
-import textwrap
-import traceback
-import contextlib
-import inspect
-import discord
 
 from assets import repo
 from discord.ext import commands
-from contextlib import redirect_stdout
 
 
 class Admin:
@@ -87,58 +80,6 @@ class Admin:
         text_parsed = list(filter(None, text.split(" ")))
         output = subprocess.check_output(text_parsed).decode()
         await ctx.send(f"```fix\n{output}\n```")
-
-    # Eval code from: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/admin.py
-    @commands.command(hidden=True, name='eval')
-    @commands.check(repo.is_owner)
-    async def _eval(self, ctx, *, body: str):
-        """Evaluates a code"""
-
-        env = {
-            "message": ctx.message,
-            "author": ctx.message.author,
-            "channel": ctx.channel,
-            "guild": ctx.guild,
-            "ctx": ctx,
-            "self": self,
-            "bot": self.bot,
-            "inspect": inspect,
-            "discord": discord,
-            "contextlib": contextlib
-        }
-
-        env.update(globals())
-
-        body = self.cleanup_code(body)
-        stdout = io.StringIO()
-
-        to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
-
-        try:
-            exec(to_compile, env)
-        except Exception as e:
-            return await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
-
-        func = env['func']
-        try:
-            with redirect_stdout(stdout):
-                ret = await func()
-        except Exception as e:
-            value = stdout.getvalue()
-            await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
-        else:
-            value = stdout.getvalue()
-            try:
-                await ctx.message.add_reaction('\u2705')
-            except:
-                pass
-
-            if ret is None:
-                if value:
-                    await ctx.send(f'```py\n{value}\n```')
-            else:
-                self._last_result = ret
-                await ctx.send(f'```py\n{value}{ret}\n```')
 
 
 def setup(bot):

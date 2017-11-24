@@ -1,6 +1,7 @@
 # Custom
 config.json
 pm2.json
+cogs/eval.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
