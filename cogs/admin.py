@@ -3,6 +3,9 @@ import subprocess
 import io
 import textwrap
 import traceback
+import contextlib
+import inspect
+import discord
 
 from assets import repo
 from discord.ext import commands
