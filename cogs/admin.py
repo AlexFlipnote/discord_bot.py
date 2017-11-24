@@ -92,13 +92,16 @@ class Admin:
         """Evaluates a code"""
 
         env = {
-            'bot': self.bot,
-            'ctx': ctx,
-            'channel': ctx.channel,
-            'author': ctx.author,
-            'guild': ctx.guild,
-            'message': ctx.message,
-            '_': self._last_result
+            "message": ctx.message,
+            "author": ctx.message.author,
+            "channel": ctx.channel,
+            "guild": ctx.guild,
+            "ctx": ctx,
+            "self": self,
+            "bot": self.bot,
+            "inspect": inspect,
+            "discord": discord,
+            "contextlib": contextlib
         }
 
         env.update(globals())
