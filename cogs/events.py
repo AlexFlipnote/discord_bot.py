@@ -24,13 +24,9 @@ class Events:
         elif isinstance(err, errors.CommandNotFound):
             pass
 
-    async def status_change(self):
-        await self.bot.wait_until_ready()
-        while True:
-            await self.bot.change_presence(game=discord.Game(type=0, name=data["playing"]))
-
     async def on_ready(self):
         print(f'Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}')
+        await self.bot.change_presence(game=discord.Game(type=0, name=data["playing"]), status=discord.Status.online)
 
 
 def setup(bot):

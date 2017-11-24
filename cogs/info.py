@@ -15,12 +15,10 @@ class Information:
     @commands.command()
     async def ping(self, ctx):
         """ Pong! """
-        mesg = "pong"
         before = time.monotonic()
-        pong = await ctx.send(mesg)
-        after = time.monotonic()
-        ping = (after - before) * 1000
-        await pong.edit(content=f"{mesg}   |   {int(ping)}ms")
+        message = await ctx.send("Pong")
+        ping = (time.monotonic() - before) * 1000
+        await message.edit(content=f"Pong   |   {int(ping)}ms")
 
     @commands.command(aliases=['joinme', 'join', 'botinvite'])
     async def invite(self, ctx):

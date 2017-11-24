@@ -1,26 +1,70 @@
 import discord
+import asyncio
 
 from discord.ext import commands
-from assets import http
+from assets import lists
 
 
-class Music:
+class Radio:
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
 
-    @commands.command()
+    @commands.group()
+    @commands.guild_only()
     async def radio(self, ctx):
-        """ Play some lovely hardstyle music from a radio! """
+        """ 24/7 radio for your server! """
         if ctx.invoked_subcommand is None:
-            if ctx.author.voice is None:
-                return await ctx.send("Join a voice channel first")
-            if ctx.voice_client is not None:
-                return await ctx.send(f"I'm already playing in **{ctx.author.voice.channel.name}**")
+            _help = await ctx.bot.formatter.format_help_for(ctx, ctx.command)
 
-            vc = await ctx.author.voice.channel.connect(reconnect=True)
-            vc.play(discord.FFmpegPCMAudio(source='http://20403.live.streamtheworld.com/WEB11_MP3_SC'))
-            await ctx.send(f"Ready to play hardstyle in **{ctx.author.voice.channel.name}**")
+            for page in _help:
+                await ctx.send(page)
+
+    async def radio_switch(self, ctx, target, stream):
+        if ctx.author.voice is None:
+            return await ctx.send("Join a voice channel first")
+
+        if ctx.voice_client is not None:
+            if ctx.voice_client.channel.id is not ctx.author.voice.channel.id:
+                return await ctx.send("You can only switch streams if you're in my voicechannel ;-;")
+            vc = ctx.voice_client
+        else:
+            try:
+                vc = await ctx.author.voice.channel.connect(reconnect=True)
+            except asyncio.TimeoutError:
+                return await ctx.send("I couldn't establish a connection to your channel in time ;-;")
+
+        status = {ctx.guild.id: target}
+        self.players.update(status)  # Sets playing source
+
+        if vc.is_playing():
+            vc.stop()
+
+        vc.play(discord.FFmpegPCMAudio(source=stream))
+
+    @radio.command(name="hardstyle", aliases=["hs"])
+    async def play_hardstyle(self, ctx):
+        """ Let's party with hardstyle! """
+        await self.radio_switch(ctx, 'hardstyle', 'http://20403.live.streamtheworld.com/WEB11_MP3_SC')
+        await ctx.send(f"Ready to play hardstyle in **{ctx.voice_client.channel.name}**")
+
+    @radio.command(name="p5")
+    async def play_p5(self, ctx):
+        """ Music from Norwegian radio """
+        await self.radio_switch(ctx, 'p5', 'http://stream.p4.no/p5oslo_mp3_mq?Nettplayer_Oslo.P5.no')
+        await ctx.send(f"Ready to play radio P5 in **{ctx.voice_client.channel.name}**")
+
+    @radio.command(name="listen.moe", aliases=["lm"])
+    async def play_listenmoe(self, ctx):
+        """ Weeb music within Japanese/KPop stuff """
+        await self.radio_switch(ctx, 'listenmoe', 'https://listen.moe/stream')
+        await ctx.send(f"Ready to play listen.moe in **{ctx.voice_client.channel.name}**")
+
+    @radio.command(name="kcrw")
+    async def play_kcrw(self, ctx):
+        """ Music from KCRW Radio """
+        await self.radio_switch(ctx, 'kcrw', 'https://kcrw.streamguys1.com/kcrw_192k_mp3_e24_internet_radio')
+        await ctx.send(f"Ready to play kcrw in **{ctx.voice_client.channel.name}**")
 
     @commands.command(aliases=["np", "name", "song"])
     async def playing(self, ctx):
@@ -28,32 +72,43 @@ class Music:
         if ctx.voice_client is None:
             return await ctx.send("I'm not connected to a voicechannel ;-;")
 
-        req, r = await http.get('https://live.slam.nl/slam-hardstyle/metadata/hardstyle_livewall', as_json=True)
+        if ctx.guild.id not in self.players:
+            return await ctx.send("I couldn't determine what radio is playing ;-;")
 
-        if r is None:
-            return await ctx.send("The API returned nothing... :(")
-
-        embed = discord.Embed(colour=0x2ecc71, description=f"**Live from <https://live.slam.nl>**\n\n**{r['nowTitle']}** by {r['nowArtist']}")
-        embed.set_thumbnail(url=r['nowImage'])
-
-        try:
-            await ctx.send(embed=embed)
-        except discord.Forbidden:
-            await ctx.send("I found something, but have no access to post it... [ Embed permissions ]")
+        if self.players[ctx.guild.id] == "hardstyle":
+            return await lists.hardstyle(ctx)
+        if self.players[ctx.guild.id] == "listenmoe":
+            return await lists.listenmoe(ctx)
+        if self.players[ctx.guild.id] == "p5":
+            return await lists.p5(ctx)
+        if self.players[ctx.guild.id] == "kcrw":
+            return await lists.kcrw(ctx)
+        else:
+            await ctx.send("Somehow, I didn't find out what radio is playing...")
 
     @commands.command(aliases=["stop", "leave"])
-    async def disconnect(self, ctx):
-        """ Stops the hardstyle radio """
+    async def disconnect(self, ctx, *, command: str = None):
+        """ Stops the radio """
         if ctx.voice_client is None:
             return await ctx.send("I'm not playing...")
+
+        if command == "force":
+            if ctx.author.id == ctx.guild.owner.id:
+                await ctx.voice_client.disconnect()
+                return await ctx.send(f"🍻 Successfully force killed the music")
+            else:
+                return await ctx.send(f"📜 Only **{ctx.guild.owner}** can use this command, sorry")
+
         if ctx.author.voice is None:
             return await ctx.send("You're not even in a voice channel...")
+
         if ctx.voice_client.channel.id is not ctx.author.voice.channel.id:
             return await ctx.send("Why are you trying to disconnect me from a different channel?")
 
+        channel_name = ctx.voice_client.channel.name
         await ctx.voice_client.disconnect()
-        await ctx.send(f"Disconnected From **{ctx.author.voice.channel.name}**")
+        await ctx.send(f"Disconnected From **{channel_name}**")
 
 
 def setup(bot):
-    bot.add_cog(Music(bot))
+    bot.add_cog(Radio(bot))
