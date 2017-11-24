@@ -25,6 +25,11 @@ class Information:
         """ Invite me to your server """
         await ctx.send(f"**{ctx.author.name}**, use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id)}>")
 
+    @commands.command()
+    async def source(self, ctx):
+        """ Invite me to your server """
+        await ctx.send(f"**{ctx.bot.user}** is powered by this source code:\nhttps://github.com/AlexFlipnote/discord_bot.py")
+
     @commands.command(aliases=['supportserver', 'feedbackserver'])
     async def botserver(self, ctx):
         """ Get an invite to our support server! """
@@ -33,7 +38,7 @@ class Information:
 
         await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
 
-    @commands.command(aliases=['info', 'stats', 'xela'])
+    @commands.command(aliases=['info', 'stats'])
     async def about(self, ctx):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
