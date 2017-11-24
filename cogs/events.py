@@ -7,12 +7,25 @@ with open("config.json") as f:
     data = json.load(f)
 
 
+async def send_cmd_help(ctx):
+    if ctx.invoked_subcommand:
+        _help = await ctx.bot.formatter.format_help_for(ctx, ctx.invoked_subcommand)
+    else:
+        _help = await ctx.bot.formatter.format_help_for(ctx, ctx.command)
+
+    for page in _help:
+        await ctx.send(page)
+
+
 class Events:
     def __init__(self, bot):
         self.bot = bot
 
     async def on_command_error(self, ctx, err):
-        if isinstance(err, errors.CommandInvokeError):
+        if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
+            await send_cmd_help(ctx)
+
+        elif isinstance(err, errors.CommandInvokeError):
             await ctx.send(f"There was an error processing the command ;-;\n```diff\n- {err.original}\n```")
 
         elif isinstance(err, errors.CheckFailure):
