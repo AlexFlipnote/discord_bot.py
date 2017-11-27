@@ -10,15 +10,6 @@ class Admin:
         self.bot = bot
         self._last_result = None
 
-    def cleanup_code(self, content):
-        """Automatically removes code blocks from the code."""
-        # remove ```py\n```
-        if content.startswith('```') and content.endswith('```'):
-            return '\n'.join(content.split('\n')[1:-1])
-
-        # remove `foo`
-        return content.strip('` \n')
-
     @commands.command()
     async def amiadmin(self, ctx):
         """ Are you admin? """

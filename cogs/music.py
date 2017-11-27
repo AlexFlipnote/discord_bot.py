@@ -41,30 +41,27 @@ class Radio:
             vc.stop()
 
         vc.play(discord.FFmpegPCMAudio(source=stream))
+        await ctx.send(f"Ready to play {target} in **{ctx.voice_client.channel.name}**")
 
     @radio.command(name="hardstyle", aliases=["hs"])
     async def play_hardstyle(self, ctx):
         """ Let's party with hardstyle! """
         await self.radio_switch(ctx, 'hardstyle', 'http://20403.live.streamtheworld.com/WEB11_MP3_SC')
-        await ctx.send(f"Ready to play hardstyle in **{ctx.voice_client.channel.name}**")
 
     @radio.command(name="p5")
     async def play_p5(self, ctx):
         """ Music from Norwegian radio """
-        await self.radio_switch(ctx, 'p5', 'http://stream.p4.no/p5oslo_mp3_mq?Nettplayer_Oslo.P5.no')
-        await ctx.send(f"Ready to play radio P5 in **{ctx.voice_client.channel.name}**")
+        await self.radio_switch(ctx, 'P5', 'http://stream.p4.no/p5oslo_mp3_mq?Nettplayer_Oslo.P5.no')
 
     @radio.command(name="listen.moe", aliases=["lm"])
     async def play_listenmoe(self, ctx):
         """ Weeb music within Japanese/KPop stuff """
         await self.radio_switch(ctx, 'listenmoe', 'https://listen.moe/stream')
-        await ctx.send(f"Ready to play listen.moe in **{ctx.voice_client.channel.name}**")
 
     @radio.command(name="kcrw")
     async def play_kcrw(self, ctx):
         """ Music from KCRW Radio """
         await self.radio_switch(ctx, 'kcrw', 'https://kcrw.streamguys1.com/kcrw_192k_mp3_e24_internet_radio')
-        await ctx.send(f"Ready to play kcrw in **{ctx.voice_client.channel.name}**")
 
     @commands.command(aliases=["np", "name", "song"])
     async def playing(self, ctx):
@@ -79,7 +76,7 @@ class Radio:
             return await lists.hardstyle(ctx)
         if self.players[ctx.guild.id] == "listenmoe":
             return await lists.listenmoe(ctx)
-        if self.players[ctx.guild.id] == "p5":
+        if self.players[ctx.guild.id] == "P5":
             return await lists.p5(ctx)
         if self.players[ctx.guild.id] == "kcrw":
             return await lists.kcrw(ctx)
