@@ -5,7 +5,8 @@ Made by **AlexFlipnote#0021**
 Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
 ## Requirements
-- Python 3.6.x - https://www.python.org/downloads/
+- Python 3.6+ - https://www.python.org/downloads/
+- Git - https://git-scm.com/download/
 
 ## How to setup
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
@@ -13,7 +14,9 @@ Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
 2. Rename the file **config.json.example** and fill in the required spots, such as token, prefix and game
 
-3. To install what you need, do **pip install -r requirements.txt**<br>(If that doesn't work, do **python -m pip install -r requirements.txt**)
+3. To install what you need, do **pip install -r requirements.txt**<br>
+(If that doesn't work, do **python -m pip install -r requirements.txt**)<br>
+`Note to 3: Use pip install with Administrator/Sudo`
 
 4. Start the bot by typing in CMD/Terminal **python index.py**
 
