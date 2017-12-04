@@ -7,6 +7,7 @@ Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 ## Requirements
 - Python 3.6+ - https://www.python.org/downloads/
 - Git - https://git-scm.com/download/
+- FFmpeg - https://www.ffmpeg.org/download.html
 
 ## How to setup
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
