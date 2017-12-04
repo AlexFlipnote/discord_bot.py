@@ -15,17 +15,20 @@ class Information:
     @commands.command()
     async def ping(self, ctx):
         """ Pong! """
-        mesg = "pong"
         before = time.monotonic()
-        pong = await ctx.send(mesg)
-        after = time.monotonic()
-        ping = (after - before) * 1000
-        await pong.edit(content=f"{mesg}   |   {int(ping)}ms")
+        message = await ctx.send("Pong")
+        ping = (time.monotonic() - before) * 1000
+        await message.edit(content=f"Pong   |   {int(ping)}ms")
 
     @commands.command(aliases=['joinme', 'join', 'botinvite'])
     async def invite(self, ctx):
         """ Invite me to your server """
         await ctx.send(f"**{ctx.author.name}**, use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id)}>")
+
+    @commands.command()
+    async def source(self, ctx):
+        """ Invite me to your server """
+        await ctx.send(f"**{ctx.bot.user}** is powered by this source code:\nhttps://github.com/AlexFlipnote/discord_bot.py")
 
     @commands.command(aliases=['supportserver', 'feedbackserver'])
     async def botserver(self, ctx):
@@ -35,7 +38,7 @@ class Information:
 
         await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
 
-    @commands.command(aliases=['info', 'stats', 'xela'])
+    @commands.command(aliases=['info', 'stats'])
     async def about(self, ctx):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
