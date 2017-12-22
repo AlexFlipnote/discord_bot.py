@@ -58,6 +58,11 @@ class Radio:
         """ Weeb music within Japanese/KPop stuff """
         await self.radio_switch(ctx, 'listenmoe', 'https://listen.moe/stream')
 
+    @radio.command(name="los40")
+    async def play_los40(self, ctx):
+        """ Music from Los 40 Radio """
+        await self.radio_switch(ctx, 'los40', 'http://19113.live.streamtheworld.com/LOS40_SC')
+
     @radio.command(name="kcrw")
     async def play_kcrw(self, ctx):
         """ Music from KCRW Radio """
@@ -78,6 +83,8 @@ class Radio:
             return await lists.listenmoe(ctx)
         if self.players[ctx.guild.id] == "P5":
             return await lists.p5(ctx)
+        if self.players[ctx.guild.id] == "los40":
+            return await lists.los40(ctx)
         if self.players[ctx.guild.id] == "kcrw":
             return await lists.kcrw(ctx)
         else:

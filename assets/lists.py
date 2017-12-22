@@ -31,6 +31,17 @@ async def listenmoe(ctx):
     return await ctx.send(embed=embed)
 
 
+async def los40(ctx):
+    get, req = await http.get('https://api.radio.net/info/v2/search/nowplaying?_=1513772392174&apikey=e8e10939b65da5e2c00301830d8ae12eecb24238&numberoftitles=12&station=10732', as_json=True)
+
+    if req is None:
+        return await ctx.send("I think the API broke...")
+
+    embed = discord.Embed(colour=0xC29FAF, description=f"**Live from [Los40](http://www.emisora.org.es/)**\n\n**{req[0]['streamTitle']}**")
+    embed.set_thumbnail(url='http://static.radio.net/images/broadcasts/4c/ce/10732/1/c175.png')
+    return await ctx.send(embed=embed)
+
+
 async def p5(ctx):
     get, req = await http.get('http://oslo.p5.no/backend/onairinformation.ashx?channel=8&items=1', as_json=True)
     if req is None:
