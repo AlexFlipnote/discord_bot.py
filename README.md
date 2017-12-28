@@ -4,12 +4,27 @@ Made by **AlexFlipnote#0021**
 
 Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
+## Bots that uses it
+- [KawaiiBot](https://kawaiibot.xyz)
+- [xelA](https://alexflipnote.xyz)
+
 ## Requirements
 - Python 3.6+ - https://www.python.org/downloads/
-- Git - https://git-scm.com/download/
-- FFmpeg - https://www.ffmpeg.org/download.html
+- git - https://git-scm.com/download/
+- ffmpeg - https://www.ffmpeg.org/download.html
 
 ## How to setup
+```
+[Optional]
+If you use Windows, I would recommend using chocolatey (https://chocolatey.org/install) to install
+ffmpeg, python and git, as it's both easier and promising to work.
+
+Commang usage:
+choco install PACKAGE
+
+Replace PACKAGE with what you want to install, also remember to use Command Prompt as Admin.
+```
+
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
 ![Image_Example1](https://i.alexflipnote.xyz/0c8788.png)
 
