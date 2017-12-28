@@ -1,7 +1,7 @@
 import discord
 from io import BytesIO
 
-from assets import default
+from utils import default
 from discord.ext import commands
 
 

@@ -3,7 +3,7 @@ import os
 
 from discord.ext.commands import HelpFormatter
 from data import Bot
-from assets import permissions
+from utils import permissions
 
 description = """
 A simple starter bot code

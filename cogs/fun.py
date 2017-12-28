@@ -3,7 +3,7 @@ import discord
 
 from io import BytesIO
 from discord.ext import commands
-from assets import lists, permissions, http
+from utils import lists, permissions, http
 
 
 class Fun_Commands:

@@ -1,6 +1,6 @@
 import discord
 
-from assets import repo
+from utils import repo
 from discord.ext import commands
 
 

@@ -13,6 +13,10 @@ Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 - git - https://git-scm.com/download/
 - ffmpeg - https://www.ffmpeg.org/download.html
 
+## Optional tools
+- PM2 (Keeps the bot alive)
+  - Requires NodeJS - https://nodejs.org/en/download/
+
 ## How to setup
 ```
 [Optional]

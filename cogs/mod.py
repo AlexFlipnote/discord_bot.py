@@ -3,7 +3,7 @@ import re
 
 from io import BytesIO
 from discord.ext import commands
-from assets import permissions, default
+from utils import permissions, default
 
 
 # Source: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/mod.py

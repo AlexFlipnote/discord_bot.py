@@ -1,6 +1,6 @@
 import discord
 
-from assets import http
+from utils import http
 
 ballresponse = [
   'Yes', 'No', 'Take a wild guess...', 'Very doubtful',

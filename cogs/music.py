@@ -2,7 +2,7 @@ import discord
 import asyncio
 
 from discord.ext import commands
-from assets import lists
+from utils import lists
 
 
 class Radio:

@@ -4,7 +4,7 @@ import psutil
 import os
 
 from discord.ext import commands
-from assets import repo
+from utils import repo
 
 
 class Information:
