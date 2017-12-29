@@ -61,7 +61,7 @@ class Radio:
     @radio.command(name="los40")
     async def play_los40(self, ctx):
         """ Music from Los 40 Radio """
-        await self.radio_switch(ctx, 'los40', 'http://19113.live.streamtheworld.com/LOS40_SC')
+        await self.radio_switch(ctx, 'los40', 'http://20043.live.streamtheworld.com/LOS40_SC')
 
     @radio.command(name="kcrw")
     async def play_kcrw(self, ctx):
