@@ -2,7 +2,7 @@
 A simple discord bot that helps you get started within discord.py<br>
 Made by **AlexFlipnote#0021**
 
-Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
+Do you need more help? Visit my server here: https://discord.gg/DUJXYJJ
 
 ## Bots that uses it
 - [KawaiiBot](https://kawaiibot.xyz)
