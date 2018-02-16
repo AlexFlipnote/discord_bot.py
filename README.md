@@ -1,8 +1,8 @@
 # DiscordBot
 A simple discord bot that helps you get started within discord.py<br>
-Made by **AlexFlipnote#0021**
+Made by **AlexFlipnote#0001**
 
-Do you need more help? Visit my server here: https://discord.gg/DUJXYJJ
+Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
 ## Bots that uses it
 - [KawaiiBot](https://kawaiibot.xyz)
@@ -11,10 +11,10 @@ Do you need more help? Visit my server here: https://discord.gg/DUJXYJJ
 ## Requirements
 - Python 3.6+ - https://www.python.org/downloads/
 - git - https://git-scm.com/download/
-- ffmpeg - https://www.ffmpeg.org/download.html
 
 ## Optional tools
-- PM2 (Keeps the bot alive)
+- ffmpeg - https://www.ffmpeg.org/download.html (Running music)
+- PM2 - NodeJS Module (Keeps the bot alive)
   - Requires NodeJS - https://nodejs.org/en/download/
 
 ## How to setup
