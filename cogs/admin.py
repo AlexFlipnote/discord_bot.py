@@ -16,7 +16,8 @@ class Admin:
         if ctx.author.id in repo.owners:
             return await ctx.send(f"Yes **{ctx.author.name}** you are admin! ✅")
 
-        # Please do not remove this part :( #
+        # Please do not remove this part.
+        # I would love to be credited as the original creator of the source code.
         if ctx.author.id == 86477779717066752:
             return await ctx.send(f"Well kinda **{ctx.author.name}**.. you still own the source code")
 
