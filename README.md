@@ -4,16 +4,11 @@ Made by **AlexFlipnote#0001**
 
 Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
-## Bots that uses it
-- [KawaiiBot](https://kawaiibot.xyz)
-- [xelA](https://alexflipnote.xyz)
-
 ## Requirements
 - Python 3.6+ - https://www.python.org/downloads/
 - git - https://git-scm.com/download/
 
 ## Optional tools
-- ffmpeg - https://www.ffmpeg.org/download.html (Running music)
 - PM2 - NodeJS Module (Keeps the bot alive)
   - Requires NodeJS - https://nodejs.org/en/download/
 
@@ -24,9 +19,9 @@ If you use Windows, I would recommend using chocolatey (https://chocolatey.org/i
 ffmpeg, python and git, as it's both easier and promising to work.
 
 Commang usage:
-choco install PACKAGE
+choco install <package>
 
-Replace PACKAGE with what you want to install, also remember to use Command Prompt as Admin.
+Replace <package> with what you want to install, also remember to use Command Prompt as Admin.
 ```
 
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
