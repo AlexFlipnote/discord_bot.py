@@ -18,7 +18,7 @@ Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 If you use Windows, I would recommend using chocolatey (https://chocolatey.org/install) to install
 ffmpeg, python and git, as it's both easier and promising to work.
 
-Commang usage:
+Chocolatey command usage:
 choco install <package>
 
 Replace <package> with what you want to install, also remember to use Command Prompt as Admin.
