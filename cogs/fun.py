@@ -20,7 +20,7 @@ class Fun_Commands:
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
         """ Posts a random cat """
-        req, cat = await http.get('http://random.cat/meow', as_json=True)
+        req, cat = await http.get('http://aws.random.cat/meow', as_json=True)
 
         if cat is None:
             return await ctx.send("Couldn't find any cute cats ;-;")
