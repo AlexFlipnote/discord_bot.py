@@ -1,5 +1,6 @@
 import random
 import discord
+import json
 
 from io import BytesIO
 from discord.ext import commands
@@ -20,23 +21,23 @@ class Fun_Commands:
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
         """ Posts a random cat """
-        req, cat = await http.get('http://aws.random.cat/meow', as_json=True)
+        try:
+            r = await http.get('http://aws.random.cat/meow', res_method="json", no_cache=True)
+        except json.JSONDecodeError:
+            await ctx.send("Couldn't find anything from the API")
 
-        if cat is None:
-            return await ctx.send("Couldn't find any cute cats ;-;")
-
-        await ctx.send(cat['file'])
+        await ctx.send(r['file'])
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def dog(self, ctx):
         """ Posts a random dog """
-        req, dog = await http.get('https://random.dog/woof.json', as_json=True)
+        try:
+            r = await http.get('https://random.dog/woof.json', res_method="json", no_cache=True)
+        except json.JSONDecodeError:
+            await ctx.send("Couldn't find anything from the API")
 
-        if dog is None:
-            return await ctx.send("Couldn't find any cute dogs ;-;")
-
-        await ctx.send(dog['url'])
+        await ctx.send(r['url'])
 
     @commands.command(aliases=['flip', 'coin'])
     async def coinflip(self, ctx):
@@ -51,7 +52,7 @@ class Fun_Commands:
         if not permissions.can_embed(ctx):
             return await ctx.send("I cannot send embeds here ;-;")
 
-        req, url = await http.get(f'http://api.urbandictionary.com/v0/define?term={search}', as_json=True)
+        url = await http.get(f'http://api.urbandictionary.com/v0/define?term={search}', res_method="json")
 
         if url is None:
             return await ctx.send("I think the API broke...")
@@ -102,7 +103,7 @@ class Fun_Commands:
         if not permissions.can_upload(ctx):
             return await ctx.send("I cannot send images here ;-;")
 
-        bio = BytesIO(await http.get("https://i.alexflipnote.xyz/500ce4.gif"))
+        bio = BytesIO(await http.get("https://i.alexflipnote.xyz/500ce4.gif", res_method="read"))
         await ctx.send(file=discord.File(bio, filename="noticeme.gif"))
 
     @commands.command(aliases=['slots', 'bet'])
