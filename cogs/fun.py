@@ -22,11 +22,12 @@ class Fun_Commands:
     async def cat(self, ctx):
         """ Posts a random cat """
         try:
-            r = await http.get('http://aws.random.cat/meow', res_method="json", no_cache=True)
+            r = await http.get('http://aws.random.cat/meow', no_cache=True)
+            result = json.loads(r)
         except json.JSONDecodeError:
             await ctx.send("Couldn't find anything from the API")
 
-        await ctx.send(r['file'])
+        await ctx.send(result['file'])
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
