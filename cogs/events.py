@@ -1,10 +1,7 @@
 import discord
-import json
 
 from discord.ext.commands import errors
-
-with open("config.json") as f:
-    data = json.load(f)
+from utils import default
 
 
 async def send_cmd_help(ctx):
@@ -20,6 +17,7 @@ async def send_cmd_help(ctx):
 class Events:
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.get("config.json")
 
     async def on_command_error(self, ctx, err):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
@@ -39,7 +37,7 @@ class Events:
 
     async def on_ready(self):
         print(f'Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}')
-        await self.bot.change_presence(activity=discord.Game(type=0, name=data["playing"]), status=discord.Status.online)
+        await self.bot.change_presence(activity=discord.Game(type=0, name=self.config.playing), status=discord.Status.online)
 
 
 def setup(bot):

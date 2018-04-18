@@ -39,6 +39,7 @@ class ActionReason(commands.Converter):
 class Moderator:
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.get("config.json")
 
     @commands.command()
     @commands.guild_only()
@@ -178,10 +179,10 @@ class Moderator:
         await ctx.send(content=f"Found **{len(result)}** on your search for **{search}**",
                        file=discord.File(data, filename=default.timetext(f'DiscriminatorSearch')))
 
-    @commands.group(aliases=['prune'])
+    @commands.group()
     @commands.guild_only()
     @permissions.has_permissions(manage_messages=True)
-    async def remove(self, ctx):
+    async def prune(self, ctx):
         """ Removes messages from the current server. """
 
         if ctx.invoked_subcommand is None:
@@ -211,32 +212,32 @@ class Moderator:
         if message is True:
             await ctx.send(f'🚮 Successfully removed {deleted} message{"" if deleted == 1 else "s"}.')
 
-    @remove.command()
+    @prune.command()
     async def embeds(self, ctx, search=100):
         """Removes messages that have embeds in them."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds))
 
-    @remove.command()
+    @prune.command()
     async def files(self, ctx, search=100):
         """Removes messages that have attachments in them."""
         await self.do_removal(ctx, search, lambda e: len(e.attachments))
 
-    @remove.command()
+    @prune.command()
     async def images(self, ctx, search=100):
         """Removes messages that have embeds or attachments."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds) or len(e.attachments))
 
-    @remove.command(name='all')
+    @prune.command(name='all')
     async def _remove_all(self, ctx, search=100):
         """Removes all messages."""
         await self.do_removal(ctx, search, lambda e: True)
 
-    @remove.command()
+    @prune.command()
     async def user(self, ctx, member: discord.Member, search=100):
         """Removes all messages by the member."""
         await self.do_removal(ctx, search, lambda e: e.author == member)
 
-    @remove.command()
+    @prune.command()
     async def contains(self, ctx, *, substr: str):
         """Removes all messages containing a substring.
         The substring must be at least 3 characters long.
@@ -246,7 +247,7 @@ class Moderator:
         else:
             await self.do_removal(ctx, 100, lambda e: substr in e.content)
 
-    @remove.command(name='bots')
+    @prune.command(name='bots')
     async def _bots(self, ctx, prefix=None, search=100):
         """Removes a bot user's messages and messages with their optional prefix."""
 
@@ -255,7 +256,7 @@ class Moderator:
 
         await self.do_removal(ctx, search, predicate)
 
-    @remove.command(name='users')
+    @prune.command(name='users')
     async def _users(self, ctx, prefix=None, search=100):
         """Removes only user messages. """
 
@@ -264,7 +265,7 @@ class Moderator:
 
         await self.do_removal(ctx, search, predicate)
 
-    @remove.command(name='emoji')
+    @prune.command(name='emoji')
     async def _emoji(self, ctx, search=100):
         """Removes all messages containing custom emoji."""
         custom_emoji = re.compile(r'<:(\w+):(\d+)>')
@@ -274,7 +275,7 @@ class Moderator:
 
         await self.do_removal(ctx, search, predicate)
 
-    @remove.command(name='reactions')
+    @prune.command(name='reactions')
     async def _reactions(self, ctx, search=100):
         """Removes all reactions from messages that have them."""
 

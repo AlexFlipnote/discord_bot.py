@@ -4,12 +4,13 @@ import psutil
 import os
 
 from discord.ext import commands
-from utils import repo
+from utils import repo, default
 
 
 class Information:
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.get("config.json")
         self.process = psutil.Process(os.getpid())
 
     @commands.command()
@@ -38,14 +39,14 @@ class Information:
 
         await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
 
-    @commands.command(aliases=['info', 'stats'])
+    @commands.command(aliases=['info', 'stats', 'status'])
     async def about(self, ctx):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
 
-        embed = discord.Embed(colour=0xC29FAF)
+        embed = discord.Embed(colour=ctx.me.top_role.colour)
         embed.set_thumbnail(url=ctx.bot.user.avatar_url)
-        embed.add_field(name="Developer", value="AlexFlipnote", inline=True)
+        embed.add_field(name="Developer", value="AlexFlipnote#0001", inline=True)
         embed.add_field(name="Library", value="discord.py", inline=True)
         embed.add_field(name="Servers", value=len(ctx.bot.guilds), inline=True)
         embed.add_field(name="RAM", value=f"{ramUsage:.2f} MB", inline=True)

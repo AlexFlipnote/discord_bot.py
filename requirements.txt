@@ -1,4 +1,3 @@
 git+https://github.com/Rapptz/discord.py@rewrite
 psutil
-youtube_dl
 asyncio

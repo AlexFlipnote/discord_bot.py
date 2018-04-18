@@ -1,10 +1,10 @@
-import json
 import os
 
 from discord.ext.commands import HelpFormatter
 from data import Bot
-from utils import permissions
+from utils import permissions, default
 
+config = default.get("config.json")
 description = """
 A simple starter bot code
 Made by AlexFlipnote
@@ -19,18 +19,13 @@ class HelpFormat(HelpFormatter):
         return await super().format_help_for(context, command_or_bot)
 
 
-with open("config.json") as f:
-    data = json.load(f)
-    token = data["token"]
-    prefix = data["prefix"]
-
 print("Logging in...")
 help_attrs = dict(hidden=True)
-bot = Bot(command_prefix=prefix, prefix=prefix, pm_help=True, help_attrs=help_attrs, formatter=HelpFormat())
+bot = Bot(command_prefix=config.prefix, prefix=config.prefix, pm_help=True, help_attrs=help_attrs, formatter=HelpFormat())
 
 for file in os.listdir("cogs"):
     if file.endswith(".py"):
         name = file[:-3]
         bot.load_extension(f"cogs.{name}")
 
-bot.run(token)
+bot.run(config.token)

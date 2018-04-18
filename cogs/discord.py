@@ -8,6 +8,7 @@ from discord.ext import commands
 class Discord_Info:
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.get("config.json")
 
     @commands.command()
     async def avatar(self, ctx, user: discord.Member = None):

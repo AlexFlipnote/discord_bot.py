@@ -1,13 +1,14 @@
 import time
 import subprocess
 
-from utils import repo
+from utils import repo, default
 from discord.ext import commands
 
 
 class Admin:
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.get("config.json")
         self._last_result = None
 
     @commands.command()

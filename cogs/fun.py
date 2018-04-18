@@ -4,12 +4,13 @@ import json
 
 from io import BytesIO
 from discord.ext import commands
-from utils import lists, permissions, http
+from utils import lists, permissions, http, default
 
 
 class Fun_Commands:
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.get("config.json")
 
     @commands.command(aliases=['8ball'])
     async def eightball(self, ctx, *, question: commands.clean_content):
@@ -17,27 +18,31 @@ class Fun_Commands:
         answer = random.choice(lists.ballresponse)
         await ctx.send(f"🎱 **Question:** {question}\n**Answer:** {answer}")
 
+    async def randomimageapi(self, ctx, url, endpoint):
+        try:
+            r = await http.get(url, res_method="json", no_cache=True)
+        except json.JSONDecodeError:
+            return await ctx.send("Couldn't find anything from the API")
+
+        await ctx.send(r[endpoint])
+
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
         """ Posts a random cat """
-        try:
-            r = await http.get('https://nekos.life/api/v2/img/meow', res_method="json", no_cache=True)
-        except json.JSONDecodeError:
-            return await ctx.send("Couldn't find anything from the API")
-
-        await ctx.send(r['url'])
+        await self.randomimageapi(ctx, 'https://nekos.life/api/v2/img/meow', 'url')
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def dog(self, ctx):
         """ Posts a random dog """
-        try:
-            r = await http.get('https://random.dog/woof.json', res_method="json", no_cache=True)
-        except json.JSONDecodeError:
-            await ctx.send("Couldn't find anything from the API")
+        await self.randomimageapi(ctx, 'https://random.dog/woof.json', 'url')
 
-        await ctx.send(r['url'])
+    @commands.command()
+    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+    async def duck(self, ctx):
+        """ Posts a random duck """
+        await self.randomimageapi(ctx, 'https://random-d.uk/api/v1/random', 'url')
 
     @commands.command(aliases=['flip', 'coin'])
     async def coinflip(self, ctx):
