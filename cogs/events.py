@@ -1,4 +1,5 @@
 import discord
+import traceback
 
 from discord.ext.commands import errors
 from utils import default
@@ -24,7 +25,13 @@ class Events:
             await send_cmd_help(ctx)
 
         elif isinstance(err, errors.CommandInvokeError):
-            await ctx.send(f"There was an error processing the command ;-;\n```diff\n- {err.original}\n```")
+            err = err.original
+
+            _traceback = traceback.format_tb(err.__traceback__)
+            _traceback = ''.join(_traceback)
+            error = ('```py\n{2}{0}: {3}\n```').format(type(err).__name__, ctx.message.content, _traceback, err)
+
+            await ctx.send(f"There was an error processing the command ;-;\n{error}")
 
         elif isinstance(err, errors.CheckFailure):
             pass
