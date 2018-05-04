@@ -133,7 +133,8 @@ class Fun_Commands:
     @commands.command(aliases=['howhot','hot'])
     async def hot(self,ctx,person : discord.Member):
         """ Returns a random percent for how hot is a discord user """
-        percent = random.randrange(0,100)
+        random.seed(person.id)
+        percent = random.range(0,90)
         await ctx.send(person.mention + "is "+percent+"% hot")
         
 
