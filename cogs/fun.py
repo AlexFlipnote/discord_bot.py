@@ -129,6 +129,14 @@ class Fun_Commands:
 
         result = f"**{ctx.author.name}** rolled the slots...\n**[ {a} {b} {c} ]**\n{message}"
         await ctx.send(result)
+        
+    @commands.command(aliases=['howhot','hot'])
+    async def hot(self,ctx,person : discord.Member):
+        """ Returns a random percent for how hot is a discord user """
+        random.seed(person.id)
+        percent = random.range(0,90)
+        await ctx.send(person.mention + "is "+percent+"% hot")
+        
 
 
 def setup(bot):
