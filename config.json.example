@@ -1,7 +1,9 @@
 {
   "token": "",
+  "owners": [86477779717066752],
+  "join_message": "I have joined \o/",
   "prefix": [
-    ""
+    "!"
   ],
-  "playing": ""
+  "playing": "games!"
 }

@@ -42,6 +42,14 @@ class Events:
         elif isinstance(err, errors.CommandNotFound):
             pass
 
+    async def on_guild_join(self, guild):
+        try:
+            to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
+        except IndexError:
+            pass
+        else:
+            await to_send.send(self.config.join_message)
+
     async def on_ready(self):
         print(f'Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}')
         await self.bot.change_presence(activity=discord.Game(type=0, name=self.config.playing), status=discord.Status.online)
