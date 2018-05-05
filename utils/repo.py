@@ -2,7 +2,7 @@ owners = [
     86477779717066752      # AlexFlipnote
 ]
 
-version = "v1.2.3"
+version = "v1.2.4"
 invite = "https://discord.gg/DpxkY3x"
 
 

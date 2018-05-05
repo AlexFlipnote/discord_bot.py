@@ -1,13 +1,3 @@
-"""
-Copyright (C) Martmists and Alexflipnote - All Rights Reserved
-Unauthorized copying of this file, via any medium is strictly prohibited
-Proprietary and confidential
-Written by Martmists <legal@martmists.com> and
-           Alexflipnote <alexander@samuels1.no>, June 2017
-
-Licensed to xelA/discord_bot.py
-"""
-
 from functools import wraps
 
 
