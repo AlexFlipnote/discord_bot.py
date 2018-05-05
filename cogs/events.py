@@ -1,6 +1,9 @@
 import discord
 import traceback
+import psutil
+import os
 
+from datetime import datetime
 from discord.ext.commands import errors
 from utils import default
 
@@ -19,6 +22,7 @@ class Events:
     def __init__(self, bot):
         self.bot = bot
         self.config = default.get("config.json")
+        self.process = psutil.Process(os.getpid())
 
     async def on_command_error(self, ctx, err):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
@@ -51,6 +55,9 @@ class Events:
             await to_send.send(self.config.join_message)
 
     async def on_ready(self):
+        if not hasattr(self.bot, 'uptime'):
+            self.bot.uptime = datetime.utcnow()
+
         print(f'Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}')
         await self.bot.change_presence(activity=discord.Game(type=0, name=self.config.playing), status=discord.Status.online)
 
