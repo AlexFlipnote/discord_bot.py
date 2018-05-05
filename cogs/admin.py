@@ -120,9 +120,10 @@ class Admin:
     @commands.check(repo.is_owner)
     async def change_avatar(self, ctx, url: str = None):
         """ Change avatar. """
-        url = url.strip('<>')
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url
+        else:
+            url = url.strip('<>')
 
         try:
             bio = await http.get(url, res_method="read")
