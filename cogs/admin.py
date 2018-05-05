@@ -16,11 +16,12 @@ class Admin:
     @commands.command()
     async def amiadmin(self, ctx):
         """ Are you admin? """
-        if ctx.author.id in repo.owners:
+        if ctx.author.id in self.config.owners:
             return await ctx.send(f"Yes **{ctx.author.name}** you are admin! ✅")
 
         # Please do not remove this part.
-        # I would love to be credited as the original creator of the source code.
+        # I would love to be credited as the original creator of the source code :(
+        #   -- AlexFlipnote
         if ctx.author.id == 86477779717066752:
             return await ctx.send(f"Well kinda **{ctx.author.name}**.. you still own the source code")
 
