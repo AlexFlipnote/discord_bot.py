@@ -102,6 +102,23 @@ class Fun_Commands:
 
         await ctx.send(f"I'd rate {thing} a **{numbers}.{decimals} / 100**")
 
+    @commands.command(aliases=['howhot', 'hot'])
+    async def hotcalc(self, ctx, user: discord.Member):
+        """ Returns a random percent for how hot is a discord user """
+        random.seed(user.id)
+        r = random.randint(1, 100)
+        hot = r / 1.17
+
+        emoji = "💔"
+        if hot > 25:
+            emoji = "❤"
+        if hot > 50:
+            emoji = "💖"
+        if hot > 75:
+            emoji = "💞"
+
+        await ctx.send(f"**{user.name}** is **{hot:.2f}%** hot {emoji}")
+
     @commands.command(aliases=['noticemesenpai'])
     async def noticeme(self, ctx):
         """ Notice me senpai! owo """
@@ -129,14 +146,6 @@ class Fun_Commands:
 
         result = f"**{ctx.author.name}** rolled the slots...\n**[ {a} {b} {c} ]**\n{message}"
         await ctx.send(result)
-        
-    @commands.command(aliases=['howhot','hot'])
-    async def hot(self,ctx,person : discord.Member):
-        """ Returns a random percent for how hot is a discord user """
-        random.seed(person.id)
-        percent = random.range(0,90)
-        await ctx.send(person.mention + "is "+percent+"% hot")
-        
 
 
 def setup(bot):
