@@ -45,7 +45,7 @@ class Discord_Info:
         embed.description = f'**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at)}'
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.group()
     @commands.guild_only()
     async def server(self, ctx):
         """ Check info about current server """
@@ -62,6 +62,12 @@ class Discord_Info:
             embed.add_field(name="Region", value=ctx.guild.region, inline=True)
             embed.add_field(name="Created", value=default.date(ctx.guild.created_at), inline=True)
             await ctx.send(content=f"ℹ information about **{ctx.guild.name}**", embed=embed)
+
+    @server.command(name="avatar", aliases=["icon"])
+    @commands.guild_only()
+    async def server_avatar(self, ctx):
+        """ Get the current server icon """
+        await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon_url_as(size=1024)}")
 
     @commands.command()
     async def user(self, ctx, user: discord.Member = None):
