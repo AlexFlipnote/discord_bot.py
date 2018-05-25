@@ -11,15 +11,13 @@ class Discord_Info:
         self.config = default.get("config.json")
 
     @commands.command()
+    @commands.guild_only()
     async def avatar(self, ctx, user: discord.Member = None):
         """ Get the avatar of you or someone else """
         if user is None:
             user = ctx.author
 
-        embed = discord.Embed(colour=0xC29FAF)
-        embed.description = f"Avatar to **{user.name}**\nClick [here]({user.avatar_url}) to get image"
-        embed.set_thumbnail(url=user.avatar_url)
-        await ctx.send(embed=embed)
+        await ctx.send(f"Avatar to **{user.name}**\n{user.avatar_url_as(size=1024)}")
 
     @commands.command()
     @commands.guild_only()
@@ -40,7 +38,7 @@ class Discord_Info:
         if user is None:
             user = ctx.author
 
-        embed = discord.Embed()
+        embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar_url)
         embed.description = f'**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at)}'
         await ctx.send(embed=embed)
@@ -70,25 +68,25 @@ class Discord_Info:
         await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon_url_as(size=1024)}")
 
     @commands.command()
+    @commands.guild_only()
     async def user(self, ctx, user: discord.Member = None):
         """ Get user information """
         if user is None:
             user = ctx.author
 
-        embed = discord.Embed()
+        embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar_url)
 
         embed.add_field(name="Full name", value=user, inline=True)
-
-        if hasattr(user, "nick"):
-            embed.add_field(name="Nickname", value=user.nick, inline=True)
-        else:
-            embed.add_field(name="Nickname", value="None", inline=True)
-
+        embed.add_field(name="Nickname", value=user.nick if hasattr(user, "nick") else "None", inline=True)
         embed.add_field(name="Account created", value=default.date(user.created_at), inline=True)
+        embed.add_field(name="Joined this server", value=default.date(user.joined_at), inline=True)
 
-        if hasattr(user, "joined_at"):
-            embed.add_field(name="Joined this server", value=default.date(user.joined_at), inline=True)
+        embed.add_field(
+            name="Roles",
+            value=', '.join([f"<@&{x.id}>" for x in user.roles if x is not ctx.guild.default_role]) if len(user.roles) > 1 else 'None',
+            inline=False
+        )
 
         await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)
 
