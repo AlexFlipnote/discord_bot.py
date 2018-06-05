@@ -1,6 +1,7 @@
 import random
 import discord
 import json
+import secrets
 
 from io import BytesIO
 from discord.ext import commands
@@ -92,15 +93,22 @@ class Fun_Commands:
         await ctx.send(f"🔁 {t_rev}")
 
     @commands.command()
+    async def password(self, ctx):
+        """ Generates a random password string for you """
+        if hasattr(ctx, 'guild') and ctx.guild is not None:
+            await ctx.send(f"Sending you a private message with your random generated password **{ctx.author.name}**")
+        await ctx.author.send(f"🎁 **Here is your password:**\n{secrets.token_urlsafe(18)}")
+
+    @commands.command()
     async def rate(self, ctx, *, thing: commands.clean_content):
         """ Rates what you desire """
-        numbers = random.randint(0, 100)
-        decimals = random.randint(0, 9)
+        num = random.randint(0, 100)
+        deci = random.randint(0, 9)
 
-        if numbers == 100:
-            decimals = 0
+        if num == 100:
+            deci = 0
 
-        await ctx.send(f"I'd rate {thing} a **{numbers}.{decimals} / 100**")
+        await ctx.send(f"I'd rate {thing} a **{num}.{deci} / 100**")
 
     @commands.command(aliases=['howhot', 'hot'])
     async def hotcalc(self, ctx, user: discord.Member = None):
@@ -140,15 +148,14 @@ class Fun_Commands:
         b = random.choice(emojis)
         c = random.choice(emojis)
 
-        if (a == b == c):
-            message = 'and won! 🎉'
-        elif (a == b) or (a == c) or (b == c):
-            message = 'and almost won (2/3)'
-        else:
-            message = 'and lost...'
+        slotmachine = f"**[ {a} {b} {c} ]\n{ctx.author.name}**,"
 
-        result = f"**{ctx.author.name}** rolled the slots...\n**[ {a} {b} {c} ]**\n{message}"
-        await ctx.send(result)
+        if (a == b == c):
+            await ctx.send(f"{slotmachine} All matching, you won! 🎉")
+        elif (a == b) or (a == c) or (b == c):
+            await ctx.send(f"{slotmachine} 2 in a row, you won! 🎉")
+        else:
+            await ctx.send(f"{slotmachine} No match, you lost 😢")
 
 
 def setup(bot):
