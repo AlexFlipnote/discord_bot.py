@@ -154,7 +154,7 @@ class Moderator:
 
     @find.command(name="playing")
     async def find_playing(self, ctx, *, search: str):
-        result = [f"{i} | {i.game.name}\r\n" for i in ctx.guild.members if (i.game is not None) and (search.lower() in i.game.name.lower())]
+        result = [f"{i} | {i.activity.name}\r\n" for i in ctx.guild.members if (i.activity is not None) and (search.lower() in i.activity.name.lower()) and (not i.bot)]
         if len(result) == 0:
             return await ctx.send("Your search result was empty...")
         data = BytesIO(''.join(result).encode('utf-8'))
