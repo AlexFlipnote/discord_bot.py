@@ -5,7 +5,7 @@ Made by **AlexFlipnote#0001**
 Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
 ## Requirements
-- Python 3.6+ - https://www.python.org/downloads/
+- Python 3.7 - https://www.python.org/downloads/
 - git - https://git-scm.com/download/
 
 ## Optional tools
