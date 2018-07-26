@@ -9,6 +9,11 @@ Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 - git - https://git-scm.com/download/
 
 ## Optional tools
+- Flake8 - Python Module (Keeps your code clean)
+  - If you're using python 3.7, install by doing
+  ```
+  pip install -e git+https://gitlab.com/pycqa/flake8#egg=flake8
+  ```
 - PM2 - NodeJS Module (Keeps the bot alive)
   - Requires NodeJS - https://nodejs.org/en/download/
 
