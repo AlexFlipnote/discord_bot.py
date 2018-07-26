@@ -45,7 +45,7 @@ class Encryption:
         """ Decode in base32 """
         try:
             await self.encryptout(ctx, "base32 -> Text", base64.b32decode(input.encode('UTF-8')))
-        except Exception as e:
+        except Exception:
             await ctx.send("Invalid base32...")
 
     @encode.command(name="base64", aliases=["b64"])
@@ -60,7 +60,7 @@ class Encryption:
         """ Decode in base64 """
         try:
             await self.encryptout(ctx, "base64 -> Text", base64.urlsafe_b64decode(input.encode('UTF-8')))
-        except Exception as e:
+        except Exception:
             await ctx.send("Invalid base64...")
 
     @encode.command(name="rot13", aliases=["r13"])
@@ -75,7 +75,7 @@ class Encryption:
         """ Decode in rot13 """
         try:
             await self.encryptout(ctx, "rot13 -> Text", codecs.decode(input, 'rot_13'))
-        except Exception as e:
+        except Exception:
             await ctx.send("Invalid rot13...")
 
     @encode.command(name="hex")
@@ -91,7 +91,7 @@ class Encryption:
         """ Decode in hex """
         try:
             await self.encryptout(ctx, "hex -> Text", binascii.unhexlify(input.encode('UTF-8')))
-        except Exception as e:
+        except Exception:
             await ctx.send("Invalid hex...")
 
     @encode.command(name="base85", aliases=["b85"])
@@ -107,7 +107,7 @@ class Encryption:
         """ Decode in base85 """
         try:
             await self.encryptout(ctx, "base85 -> Text", base64.b85decode(input.encode('UTF-8')))
-        except Exception as e:
+        except Exception:
             await ctx.send("Invalid base85...")
 
     @encode.command(name="ascii85", aliases=["a85"])
@@ -123,7 +123,7 @@ class Encryption:
         """ Decode in ASCII85 """
         try:
             await self.encryptout(ctx, "ASCII85 -> Text", base64.a85decode(input.encode('UTF-8')))
-        except Exception as e:
+        except Exception:
             await ctx.send("Invalid ASCII85...")
 
 

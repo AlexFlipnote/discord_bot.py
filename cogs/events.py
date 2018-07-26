@@ -54,6 +54,12 @@ class Events:
         else:
             await to_send.send(self.config.join_message)
 
+    async def on_command(self, ctx):
+        try:
+            print(f"{ctx.guild.name} > {ctx.author} > {ctx.message.content}")
+        except AttributeError:
+            print(f"Private message > {ctx.author} > {ctx.message.content}")
+
     async def on_ready(self):
         if not hasattr(self.bot, 'uptime'):
             self.bot.uptime = datetime.utcnow()

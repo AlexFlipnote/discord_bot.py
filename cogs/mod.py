@@ -203,7 +203,7 @@ class Moderator:
 
         try:
             deleted = await ctx.channel.purge(limit=limit, before=before, after=after, check=predicate)
-        except discord.Forbidden as e:
+        except discord.Forbidden:
             return await ctx.send('I do not have permissions to delete messages.')
         except discord.HTTPException as e:
             return await ctx.send(f'Error: {e} (try a smaller search?)')
