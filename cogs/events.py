@@ -56,9 +56,9 @@ class Events:
 
     async def on_command(self, ctx):
         try:
-            print(f"{ctx.guild.name} > {ctx.author} > {ctx.message.content}")
+            print(f"{ctx.guild.name} > {ctx.author} > {ctx.message.clean_content}")
         except AttributeError:
-            print(f"Private message > {ctx.author} > {ctx.message.content}")
+            print(f"Private message > {ctx.author} > {ctx.message.clean_content}")
 
     async def on_ready(self):
         if not hasattr(self.bot, 'uptime'):
