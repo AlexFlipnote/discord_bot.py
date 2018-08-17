@@ -52,6 +52,7 @@ class Fun_Commands:
         await ctx.send(f"**{ctx.author.name}** flipped a coin and got **{random.choice(coinsides)}**!")
 
     @commands.command()
+    @commands.check(permissions.is_nsfw)
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
     async def urban(self, ctx, *, search: str):
         """ Find the 'best' definition to your words """
