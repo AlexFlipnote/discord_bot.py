@@ -49,7 +49,7 @@ class Information:
         embed.set_thumbnail(url=ctx.bot.user.avatar_url)
         embed.add_field(name="Last boot", value=default.timeago(datetime.now() - self.bot.uptime), inline=True)
         embed.add_field(
-            name=f"Developer{'s' if len(self.config.owners) == 1 else ''}",
+            name=f"Developer{'' if len(self.config.owners) == 1 else 's'}",
             value=', '.join([str(self.bot.get_user(x)) for x in self.config.owners]),
             inline=True)
         embed.add_field(name="Library", value="discord.py", inline=True)
