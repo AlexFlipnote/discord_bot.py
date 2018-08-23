@@ -22,7 +22,7 @@ class Admin:
             return await ctx.send(f"Yes **{ctx.author.name}** you are admin! ✅")
 
         # Please do not remove this part.
-        # I would love to be credited as the original creator of the source code :(
+        # I would love to be credited as the original creator of the source code.
         #   -- AlexFlipnote
         if ctx.author.id == 86477779717066752:
             return await ctx.send(f"Well kinda **{ctx.author.name}**.. you still own the source code")

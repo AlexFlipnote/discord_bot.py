@@ -1,5 +1,6 @@
 import time
 import json
+import timeago as timesince
 
 from collections import namedtuple
 
@@ -18,7 +19,13 @@ def timetext(name):
     return f"{name}_{int(time.time())}.txt"
 
 
-def date(target):
+def timeago(target):
+    return timesince.format(target)
+
+
+def date(target, clock=True):
+    if clock is False:
+        return target.strftime("%d %B %Y")
     return target.strftime("%d %B %Y, %H:%M")
 
 
