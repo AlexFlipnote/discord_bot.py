@@ -37,8 +37,7 @@ class Admin:
             self.bot.unload_extension(f"cogs.{name}")
             self.bot.load_extension(f"cogs.{name}")
         except Exception as e:
-            await ctx.send(f"```\n{e}```")
-            return
+            return await ctx.send(f"```\n{e}```")
         await ctx.send(f"Reloaded extension **{name}.py**")
 
     @commands.command()
@@ -56,8 +55,7 @@ class Admin:
         try:
             self.bot.load_extension(f"cogs.{name}")
         except Exception as e:
-            await ctx.send(f"```diff\n- {e}```")
-            return
+            return await ctx.send(f"```diff\n- {e}```")
         await ctx.send(f"Loaded extension **{name}.py**")
 
     @commands.command()
@@ -67,8 +65,7 @@ class Admin:
         try:
             self.bot.unload_extension(f"cogs.{name}")
         except Exception as e:
-            await ctx.send(f"```diff\n- {e}```")
-            return
+            return await ctx.send(f"```diff\n- {e}```")
         await ctx.send(f"Unloaded extension **{name}.py**")
 
     @commands.group()
