@@ -111,7 +111,7 @@ class Fun_Commands:
         await ctx.send(f"I'd rate {thing} a **{num}.{deci} / 100**")
 
     @commands.command(aliases=['howhot', 'hot'])
-    async def hotcalc(self, ctx, user: discord.Member = None):
+    async def hotcalc(self, ctx, *, user: discord.Member = None):
         """ Returns a random percent for how hot is a discord user """
         if user is None:
             user = ctx.author

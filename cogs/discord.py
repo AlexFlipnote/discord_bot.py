@@ -1,6 +1,6 @@
 import discord
-from io import BytesIO
 
+from io import BytesIO
 from utils import default
 from discord.ext import commands
 
@@ -12,7 +12,7 @@ class Discord_Info:
 
     @commands.command()
     @commands.guild_only()
-    async def avatar(self, ctx, user: discord.Member = None):
+    async def avatar(self, ctx, *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
         if user is None:
             user = ctx.author
@@ -33,7 +33,7 @@ class Discord_Info:
 
     @commands.command()
     @commands.guild_only()
-    async def joinedat(self, ctx, user: discord.Member = None):
+    async def joinedat(self, ctx, *, user: discord.Member = None):
         """ Check when a user joined the current server """
         if user is None:
             user = ctx.author
@@ -69,7 +69,7 @@ class Discord_Info:
 
     @commands.command()
     @commands.guild_only()
-    async def user(self, ctx, user: discord.Member = None):
+    async def user(self, ctx, *, user: discord.Member = None):
         """ Get user information """
         if user is None:
             user = ctx.author
