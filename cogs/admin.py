@@ -123,7 +123,7 @@ class Admin:
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url
         else:
-            url = url.strip('<>')
+            url = url.strip('<>') if url else None
 
         try:
             bio = await http.get(url, res_method="read")
@@ -135,6 +135,8 @@ class Admin:
             await ctx.send("This URL does not contain a useable image")
         except discord.HTTPException as err:
             await ctx.send(err)
+        except TypeError:
+            await ctx.send("You need to either provide an image URL or upload one with the command")
 
     @commands.command(aliases=['exec'])
     @commands.check(repo.is_owner)
