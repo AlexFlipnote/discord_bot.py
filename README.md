@@ -43,7 +43,7 @@ Replace <package> with what you want to install, also remember to use Command Pr
 5. You're done, enjoy your bot!
 
 # FAQ
-Q: I don't see my bot on my server!!<br>
+Q: I don't see my bot on my server!<br>
 A: Invite it by using this URL: https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot<br>
 Remember to replace **CLIENT_ID** with your bot client ID
 
