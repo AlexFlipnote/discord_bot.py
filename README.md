@@ -1,4 +1,4 @@
-# DiscordBot
+# discord_bot.py
 A simple discord bot that helps you get started within discord.py<br>
 Made by **AlexFlipnote#0001**
 
