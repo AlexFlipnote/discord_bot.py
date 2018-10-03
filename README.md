@@ -5,7 +5,7 @@ Made by **AlexFlipnote#0001**
 Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
 ## Requirements
-- Python 3.7 - https://www.python.org/downloads/
+- Python 3.6 and up - https://www.python.org/downloads/
 - git - https://git-scm.com/download/
 
 ## Optional tools
@@ -36,7 +36,7 @@ Replace <package> with what you want to install, also remember to use Command Pr
 
 3. To install what you need, do **pip install -r requirements.txt**<br>
 (If that doesn't work, do **python -m pip install -r requirements.txt**)<br>
-`Note to 3: Use pip install with Administrator/Sudo`
+`Note to 3: Use pip install with Administrator/sudo`
 
 4. Start the bot by typing in CMD/Terminal **python index.py**
 
