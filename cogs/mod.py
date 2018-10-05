@@ -125,7 +125,7 @@ class Moderator:
     @commands.guild_only()
     @permissions.has_permissions(manage_roles=True)
     async def unmute(self, ctx, member: discord.Member, *, reason: str = None):
-        """ Mutes a user from the current server. """
+        """ Unmutes a user from the current server. """
         message = []
         for role in ctx.guild.roles:
             if role.name == "Muted":
