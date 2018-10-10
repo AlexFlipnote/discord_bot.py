@@ -94,7 +94,7 @@ class Moderator:
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
     async def unban(self, ctx, member: MemberID, *, reason: str = None):
-        """ Bans a user from the current server. """
+        """ Unbans a user from the current server. """
         try:
             await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
             await ctx.send(default.actionmessage("unbanned"))
