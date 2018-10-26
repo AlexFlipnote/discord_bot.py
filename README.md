@@ -30,7 +30,7 @@ Replace <package> with what you want to install, also remember to use Command Pr
 ```
 
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
-![Image_Example1](https://cdn.bowser65.tk/s/LiVHXbhX.png)
+![Image_Example1](http://coffee-is.in-your.life/0cb95a7c82.png)
 
 2. Rename the file **config.json.example** and fill in the required spots, such as token, prefix and game
 
