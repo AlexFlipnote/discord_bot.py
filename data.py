@@ -1,6 +1,7 @@
 from utils import permissions
 from discord.ext.commands import AutoShardedBot
 
+
 class Bot(AutoShardedBot):
     def __init__(self, *args, prefix=None, **kwargs):
         super().__init__(*args, **kwargs)
