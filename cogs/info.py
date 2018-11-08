@@ -44,6 +44,7 @@ class Information:
     async def about(self, ctx):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
+        avgmembers = round(len(self.bot.users) / len(self.bot.guilds))
 
         embed = discord.Embed(colour=ctx.me.top_role.colour)
         embed.set_thumbnail(url=ctx.bot.user.avatar_url)
@@ -53,8 +54,8 @@ class Information:
             value=', '.join([str(self.bot.get_user(x)) for x in self.config.owners]),
             inline=True)
         embed.add_field(name="Library", value="discord.py", inline=True)
+        embed.add_field(name="Servers", value=f"{len(ctx.bot.guilds)} ( avg: {avgmembers}users/server )", inline=True)
         embed.add_field(name="Commands loaded", value=len([x.name for x in self.bot.commands]), inline=True)
-        embed.add_field(name="Servers", value=len(ctx.bot.guilds), inline=True)
         embed.add_field(name="RAM", value=f"{ramUsage:.2f} MB", inline=True)
 
         await ctx.send(content=f"ℹ About **{ctx.bot.user}** | **{repo.version}**", embed=embed)
