@@ -54,7 +54,7 @@ class Information:
             value=', '.join([str(self.bot.get_user(x)) for x in self.config.owners]),
             inline=True)
         embed.add_field(name="Library", value="discord.py", inline=True)
-        embed.add_field(name="Servers", value=f"{len(ctx.bot.guilds)} ( avg: {avgmembers}users/server )", inline=True)
+        embed.add_field(name="Servers", value=f"{len(ctx.bot.guilds)} ( avg: {avgmembers} users/server )", inline=True)
         embed.add_field(name="Commands loaded", value=len([x.name for x in self.bot.commands]), inline=True)
         embed.add_field(name="RAM", value=f"{ramUsage:.2f} MB", inline=True)
 
