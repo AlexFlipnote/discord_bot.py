@@ -47,6 +47,9 @@ class Events:
             pass
 
     async def on_guild_join(self, guild):
+        if not self.config.join_message:
+            return
+
         try:
             to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
         except IndexError:
