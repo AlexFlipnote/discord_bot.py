@@ -17,12 +17,6 @@ class MemberID(commands.Converter):
             except ValueError:
                 raise commands.BadArgument(f"{argument} is not a valid member or member ID.") from None
         else:
-            can_execute = ctx.author.id == ctx.bot.owner_id or \
-                          ctx.author == ctx.guild.owner or \
-                          ctx.author.top_role > m.top_role
-
-            if not can_execute:
-                raise commands.BadArgument('You cannot do this action on this user due to role hierarchy.')
             return m.id
 
 
