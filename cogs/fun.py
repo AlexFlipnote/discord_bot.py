@@ -99,11 +99,14 @@ class Fun_Commands:
         await ctx.send(f"🔁 {t_rev}")
 
     @commands.command()
-    async def password(self, ctx):
+    async def password(self, ctx, length: int = 18):
         """ Generates a random password string for you """
+        if length not in range(1, 1971):
+            return await ctx.send("I only accept any numbers between 1-1970")
         if hasattr(ctx, 'guild') and ctx.guild is not None:
             await ctx.send(f"Sending you a private message with your random generated password **{ctx.author.name}**")
-        await ctx.author.send(f"🎁 **Here is your password:**\n{secrets.token_urlsafe(18)}")
+        password = secrets.token_urlsafe(length)
+        await ctx.author.send(f"🎁 **Here is your password:**\n{password[:length]}")
 
     @commands.command()
     async def rate(self, ctx, *, thing: commands.clean_content):
