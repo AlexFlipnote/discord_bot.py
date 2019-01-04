@@ -18,27 +18,16 @@ Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
   - Requires NodeJS - https://nodejs.org/en/download/
 
 ## How to setup
-```
-[Optional]
-If you use Windows, I would recommend using chocolatey (https://chocolatey.org/install) to install
-ffmpeg, python and git, as it's both easier and promising to work.
-
-Chocolatey command usage:
-choco install <package>
-
-Replace <package> with what you want to install, also remember to use Command Prompt as Admin.
-```
-
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
-![Image_Example1](http://coffee-is.in-your.life/0cb95a7c82.png)
+![Image_Example1](https://i.alexflipnote.xyz/f9668b.png)
 
-2. Rename the file **config.json.example** and fill in the required spots, such as token, prefix and game
+2. Rename the file **config.json.example** to **config.json**, then fill in the required spots, such as token, prefix and game
 
 3. To install what you need, do **pip install -r requirements.txt**<br>
 (If that doesn't work, do **python -m pip install -r requirements.txt**)<br>
-`Note to 3: Use pip install with Administrator/sudo`
+`NOTE: Use pip install with Administrator/sudo`
 
-4. Start the bot by typing in CMD/Terminal **python index.py**
+4. Start the bot by having the cmd/terminal inside the bot folder and type **python index.py**
 
 5. You're done, enjoy your bot!
 
