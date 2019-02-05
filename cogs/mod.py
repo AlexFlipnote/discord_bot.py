@@ -1,7 +1,6 @@
 import discord
 import re
 
-from io import BytesIO
 from discord.ext import commands
 from utils import permissions, default
 
@@ -161,7 +160,10 @@ class Moderator:
         )
 
     @find.command(name="discriminator", aliases=["discrim"])
-    async def find_discriminator(self, ctx, *, search: int):
+    async def find_discriminator(self, ctx, *, search: str):
+        if not len(search) is 4 or not re.compile("^[0-9]*$").search(search):
+            return await ctx.send("You must provide exactly 4 digits")
+
         loop = [f"{i} ({i.id})" for i in ctx.guild.members if search == i.discriminator]
         await default.prettyResults(
             ctx, "discriminator", f"Found **{len(loop)}** on your search for **{search}**", loop

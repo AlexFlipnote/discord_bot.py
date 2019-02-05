@@ -47,7 +47,7 @@ def actionmessage(case, mass=False):
     return f"✅ Successfully {output}"
 
 
-async def prettyResults(ctx, timetext: str = "Results", resultmsg: str = "Here's the results:", loop=None):
+async def prettyResults(ctx, filename: str = "Results", resultmsg: str = "Here's the results:", loop=None):
     if not loop:
         return await ctx.send("The result was empty...")
 
@@ -59,5 +59,5 @@ async def prettyResults(ctx, timetext: str = "Results", resultmsg: str = "Here's
     data = BytesIO(pretty.encode('utf-8'))
     await ctx.send(
         content=resultmsg,
-        file=discord.File(data, filename=timetext(timetext.title()))
+        file=discord.File(data, filename=timetext(filename.title()))
     )
