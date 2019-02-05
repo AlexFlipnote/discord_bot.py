@@ -147,7 +147,7 @@ class Moderator:
 
     @find.command(name="playing")
     async def find_playing(self, ctx, *, search: str):
-        loop = [f"{i} | {i.activity.name} ({i.id})" for i in ctx.guild.members if (i.activity is not None) and (search.lower() in i.activity.name.lower()) and (not i.bot)]
+        loop = [f"{i} | {i.activity.name} ({i.id})" for i in ctx.guild.members if i.activity if (search.lower() in i.activity.name.lower()) and (not i.bot)]
         await default.prettyResults(
             ctx, "playing", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
@@ -155,6 +155,13 @@ class Moderator:
     @find.command(name="username", aliases=["name"])
     async def find_name(self, ctx, *, search: str):
         loop = [f"{i} ({i.id})" for i in ctx.guild.members if search.lower() in i.name.lower() and not i.bot]
+        await default.prettyResults(
+            ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
+        )
+
+    @find.command(name="nickname", aliases=["nick"])
+    async def find_nickname(self, ctx, *, search: str):
+        loop = [f"{i.nick} | {i} ({i.id})" for i in ctx.guild.members if i.nick if (search.lower() in i.nick.lower()) and not i.bot]
         await default.prettyResults(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
