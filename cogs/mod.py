@@ -148,30 +148,24 @@ class Moderator:
 
     @find.command(name="playing")
     async def find_playing(self, ctx, *, search: str):
-        result = [f"{i} | {i.activity.name}\r\n" for i in ctx.guild.members if (i.activity is not None) and (search.lower() in i.activity.name.lower()) and (not i.bot)]
-        if len(result) == 0:
-            return await ctx.send("Your search result was empty...")
-        data = BytesIO(''.join(result).encode('utf-8'))
-        await ctx.send(content=f"Found **{len(result)}** on your search for **{search}**",
-                       file=discord.File(data, filename=default.timetext(f'PlayingSearch')))
+        loop = [f"{i} | {i.activity.name} ({i.id})" for i in ctx.guild.members if (i.activity is not None) and (search.lower() in i.activity.name.lower()) and (not i.bot)]
+        await default.prettyResults(
+            ctx, "playing", f"Found **{len(loop)}** on your search for **{search}**", loop
+        )
 
     @find.command(name="username", aliases=["name"])
     async def find_name(self, ctx, *, search: str):
-        result = [f"{i}\r\n" for i in ctx.guild.members if (search.lower() in i.name.lower())]
-        if len(result) == 0:
-            return await ctx.send("Your search result was empty...")
-        data = BytesIO(''.join(result).encode('utf-8'))
-        await ctx.send(content=f"Found **{len(result)}** on your search for **{search}**",
-                       file=discord.File(data, filename=default.timetext(f'NameSearch')))
+        loop = [f"{i} ({i.id})" for i in ctx.guild.members if search.lower() in i.name.lower() and not i.bot]
+        await default.prettyResults(
+            ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
+        )
 
     @find.command(name="discriminator", aliases=["discrim"])
-    async def find_discriminator(self, ctx, *, search: str):
-        result = [f"{i}\r\n" for i in ctx.guild.members if (search in i.discriminator)]
-        if len(result) == 0:
-            return await ctx.send("Your search result was empty...")
-        data = BytesIO(''.join(result).encode('utf-8'))
-        await ctx.send(content=f"Found **{len(result)}** on your search for **{search}**",
-                       file=discord.File(data, filename=default.timetext(f'DiscriminatorSearch')))
+    async def find_discriminator(self, ctx, *, search: int):
+        loop = [f"{i} ({i.id})" for i in ctx.guild.members if search == i.discriminator]
+        await default.prettyResults(
+            ctx, "discriminator", f"Found **{len(loop)}** on your search for **{search}**", loop
+        )
 
     @commands.group()
     @commands.guild_only()

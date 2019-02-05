@@ -1,8 +1,10 @@
 import time
 import json
+import discord
 import timeago as timesince
 
 from collections import namedtuple
+from io import BytesIO
 
 
 def get(file):
@@ -43,3 +45,19 @@ def actionmessage(case, mass=False):
         output = f"**{case}** the IDs/Users"
 
     return f"✅ Successfully {output}"
+
+
+async def prettyResults(ctx, timetext: str = "Results", resultmsg: str = "Here's the results:", loop=None):
+    if not loop:
+        return await ctx.send("The result was empty...")
+
+    pretty = "\r\n".join([f"[{str(num).zfill(2)}] {data}" for num, data in enumerate(loop, start=1)])
+
+    if len(loop) < 15:
+        return await ctx.send(f"{resultmsg}```ini\n{pretty}```")
+
+    data = BytesIO(pretty.encode('utf-8'))
+    await ctx.send(
+        content=resultmsg,
+        file=discord.File(data, filename=timetext(timetext.title()))
+    )
