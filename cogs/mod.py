@@ -220,6 +220,11 @@ class Moderator:
         await self.do_removal(ctx, search, lambda e: len(e.attachments))
 
     @prune.command()
+    async def mentions(self, ctx, search=100):
+        """Removes messages that have mentions in them."""
+        await self.do_removal(ctx, search, lambda e: len(e.mentions) or len(e.role_mentions))
+
+    @prune.command()
     async def images(self, ctx, search=100):
         """Removes messages that have embeds or attachments."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds) or len(e.attachments))
@@ -245,11 +250,13 @@ class Moderator:
             await self.do_removal(ctx, 100, lambda e: substr in e.content)
 
     @prune.command(name='bots')
-    async def _bots(self, ctx, prefix=None, search=100):
+    async def _bots(self, ctx, search=100, prefix=None):
         """Removes a bot user's messages and messages with their optional prefix."""
 
+        getprefix = prefix if prefix else self.config.prefix[0]
+
         def predicate(m):
-            return m.author.bot or (prefix and m.content.startswith(prefix))
+            return m.author.bot or getprefix
 
         await self.do_removal(ctx, search, predicate)
 
@@ -262,10 +269,10 @@ class Moderator:
 
         await self.do_removal(ctx, search, predicate)
 
-    @prune.command(name='emoji')
-    async def _emoji(self, ctx, search=100):
+    @prune.command(name='emojis')
+    async def _emojis(self, ctx, search=100):
         """Removes all messages containing custom emoji."""
-        custom_emoji = re.compile(r'<:(\w+):(\d+)>')
+        custom_emoji = re.compile(r'<(?:a)?:(\w+):(\d+)>')
 
         def predicate(m):
             return custom_emoji.search(m.content)
