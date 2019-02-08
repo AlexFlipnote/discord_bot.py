@@ -253,10 +253,10 @@ class Moderator:
     async def _bots(self, ctx, search=100, prefix=None):
         """Removes a bot user's messages and messages with their optional prefix."""
 
-        getprefix = prefix if prefix else self.config.prefix[0]
+        getprefix = prefix if prefix else self.config.prefix
 
         def predicate(m):
-            return m.author.bot or getprefix
+            return (m.webhook_id is None and m.author.bot) or m.content.startswith(tuple(getprefix))
 
         await self.do_removal(ctx, search, predicate)
 
