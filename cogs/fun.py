@@ -61,34 +61,24 @@ class Fun_Commands:
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
     async def urban(self, ctx, *, search: str):
         """ Find the 'best' definition to your words """
-        if not permissions.can_embed(ctx):
-            return await ctx.send("I cannot send embeds here ;-;")
+        async with ctx.channel.typing():
+            url = await http.get(f'https://api.urbandictionary.com/v0/define?term={search}', res_method="json")
 
-        url = await http.get(f'http://api.urbandictionary.com/v0/define?term={search}', res_method="json")
+            if url is None:
+                return await ctx.send("I think the API broke...")
 
-        if url is None:
-            return await ctx.send("I think the API broke...")
+            if not len(url['list']):
+                return await ctx.send("Couldn't find your search in the dictionary...")
 
-        count = len(url['list'])
-        if count == 0:
-            return await ctx.send("Couldn't find your search in the dictionary...")
-        result = url['list'][random.randint(0, count - 1)]
+            result = sorted(url['list'], reverse=True, key=lambda g: int(g["thumbs_up"]))[0]
 
-        definition = result['definition']
-        if len(definition) >= 1000:
-                definition = definition[:1000]
-                definition = definition.rsplit(' ', 1)[0]
-                definition += '...'
+            definition = result['definition']
+            if len(definition) >= 1000:
+                    definition = definition[:1000]
+                    definition = definition.rsplit(' ', 1)[0]
+                    definition += '...'
 
-        embed = discord.Embed(colour=0xC29FAF, description=f"**{result['word']}**\n*by: {result['author']}*")
-        embed.add_field(name='Definition', value=definition, inline=False)
-        embed.add_field(name='Example', value=result['example'], inline=False)
-        embed.set_footer(text=f"👍 {result['thumbs_up']} | 👎 {result['thumbs_down']}")
-
-        try:
-            await ctx.send(embed=embed)
-        except discord.Forbidden:
-            await ctx.send("I found something, but have no access to post it... [Embed permissions]")
+            await ctx.send(f"📚 Definitions for **{result['word']}**```fix\n{definition}```")
 
     @commands.command()
     async def reverse(self, ctx, *, text: str):
