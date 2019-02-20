@@ -39,7 +39,5 @@ Remember to replace **CLIENT_ID** with your bot client ID
 Q: There aren't that many commands here...<br>
 A: Yes, I will only provide a few commands to get you started, maybe adding more later.
 
-Q: How can i add my own commands?<br>
-A: Well.. first of all you have to know the language **Python**.<br>
-After that you can edit a **.py** file from the **cogs** folder.<br>
-Edit in example Atom Editor, it's a great editor that can be installed from here: https://atom.io
+Q: I did everything but my bot is still not working/online?!
+A: Read **Step 4** again.
