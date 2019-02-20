@@ -41,5 +41,5 @@ A: Yes, I will only provide a few commands to get you started, maybe adding more
 
 Q: How do i add my own commands?<br>
 A: Well.. first of all you have to know the language **Python**.<br>
-After that you can edit a **.py** file from the **cogs** folder to add your own.<br>
+After that you can edit a **.py** file from the **cogs** folder.<br>
 Edit in example Atom Editor, it's a great editor that can be installed from here: https://atom.io
