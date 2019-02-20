@@ -39,5 +39,5 @@ Remember to replace **CLIENT_ID** with your bot client ID
 Q: There aren't that many commands here...<br>
 A: Yes, I will only provide a few commands to get you started, maybe adding more later.
 
-Q: I did everything but my bot is still not working/online?!
+Q: I did everything but my bot is still not working/online?!<br>
 A: Read **Step 4** again.
