@@ -41,7 +41,7 @@ class Events:
             pass
 
         elif isinstance(err, errors.CommandOnCooldown):
-            await ctx.send(f"This command is on cooldown... try again in {err.retry_after:.0f} seconds.")
+            await ctx.send(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
 
         elif isinstance(err, errors.CommandNotFound):
             pass
