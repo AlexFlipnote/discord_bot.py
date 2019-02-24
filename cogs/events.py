@@ -4,6 +4,7 @@ import psutil
 import os
 
 from datetime import datetime
+from discord.ext import commands
 from discord.ext.commands import errors
 from utils import default
 
@@ -18,12 +19,13 @@ async def send_cmd_help(ctx):
         await ctx.send(page)
 
 
-class Events:
+class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = default.get("config.json")
         self.process = psutil.Process(os.getpid())
 
+    @commands.Cog.listener()
     async def on_command_error(self, ctx, err):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
             await send_cmd_help(ctx)
@@ -46,6 +48,7 @@ class Events:
         elif isinstance(err, errors.CommandNotFound):
             pass
 
+    @commands.Cog.listener()
     async def on_guild_join(self, guild):
         if not self.config.join_message:
             return
@@ -57,12 +60,14 @@ class Events:
         else:
             await to_send.send(self.config.join_message)
 
+    @commands.Cog.listener()
     async def on_command(self, ctx):
         try:
             print(f"{ctx.guild.name} > {ctx.author} > {ctx.message.clean_content}")
         except AttributeError:
             print(f"Private message > {ctx.author} > {ctx.message.clean_content}")
 
+    @commands.Cog.listener()
     async def on_ready(self):
         if not hasattr(self.bot, 'uptime'):
             self.bot.uptime = datetime.utcnow()

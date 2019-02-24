@@ -5,7 +5,7 @@ import codecs
 from discord.ext import commands
 
 
-class Encryption:
+class Encryption(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

@@ -29,7 +29,7 @@ class ActionReason(commands.Converter):
         return ret
 
 
-class Moderator:
+class Moderator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = default.get("config.json")

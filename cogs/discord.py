@@ -5,7 +5,7 @@ from utils import default
 from discord.ext import commands
 
 
-class Discord_Info:
+class Discord_Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = default.get("config.json")

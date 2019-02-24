@@ -8,7 +8,7 @@ from discord.ext import commands
 from utils import lists, permissions, http, default
 
 
-class Fun_Commands:
+class Fun_Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = default.get("config.json")
