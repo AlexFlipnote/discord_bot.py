@@ -43,7 +43,7 @@ class Fun_Commands(commands.Cog):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def birb(self, ctx):
         """ Posts a random birb """
-        await self.randomimageapi(ctx, 'https://api.alexflipnote.xyz/birb', 'file')
+        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/birb', 'file')
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
