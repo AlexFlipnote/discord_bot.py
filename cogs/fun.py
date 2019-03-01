@@ -138,7 +138,7 @@ class Fun_Commands(commands.Cog):
         if not permissions.can_upload(ctx):
             return await ctx.send("I cannot send images here ;-;")
 
-        bio = BytesIO(await http.get("https://i.alexflipnote.xyz/500ce4.gif", res_method="read"))
+        bio = BytesIO(await http.get("https://i.alexflipnote.dev/500ce4.gif", res_method="read"))
         await ctx.send(file=discord.File(bio, filename="noticeme.gif"))
 
     @commands.command(aliases=['slots', 'bet'])

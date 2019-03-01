@@ -19,7 +19,7 @@ Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
 
 ## How to setup
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
-![Image_Example1](https://i.alexflipnote.xyz/f9668b.png)
+![Image_Example1](https://i.alexflipnote.dev/f9668b.png)
 
 2. Rename the file **config.json.example** to **config.json**, then fill in the required spots, such as token, prefix and game
 
