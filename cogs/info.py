@@ -46,7 +46,11 @@ class Information(commands.Cog):
         ramUsage = self.process.memory_full_info().rss / 1024**2
         avgmembers = round(len(self.bot.users) / len(self.bot.guilds))
 
-        embed = discord.Embed(colour=ctx.me.top_role.colour)
+        embedColour = discord.Embed.Empty
+        if hasattr(ctx, 'guild') and ctx.guild is not None:
+            embedColour = ctx.me.top_role.colour
+
+        embed = discord.Embed(colour=embedColour)
         embed.set_thumbnail(url=ctx.bot.user.avatar_url)
         embed.add_field(name="Last boot", value=default.timeago(datetime.now() - self.bot.uptime), inline=True)
         embed.add_field(
