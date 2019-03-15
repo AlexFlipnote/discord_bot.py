@@ -1,6 +1,7 @@
 import os
+import discord
 
-from discord.ext.commands import HelpFormatter
+from discord.ext.commands import DefaultHelpCommand
 from data import Bot
 from utils import permissions, default
 
@@ -11,17 +12,31 @@ Made by AlexFlipnote
 """
 
 
-class HelpFormat(HelpFormatter):
-    async def format_help_for(self, context, command_or_bot):
-        if permissions.can_react(context):
-            await context.message.add_reaction(chr(0x2709))
+class HelpFormat(DefaultHelpCommand):
+    async def get_destination(self, local=False):
+        try:
+            if permissions.can_react(self.context):
+                await self.context.message.add_reaction(chr(0x2709))
+        except discord.Forbidden:
+            pass
 
-        return await super().format_help_for(context, command_or_bot)
+        if local:
+            return self.context.channel
+        else:
+            return self.context.author
+
+    async def send_pages(self):
+        destination = await self.get_destination()
+        try:
+            for page in self.paginator.pages:
+                await destination.send(page)
+        except discord.Forbidden:
+            destination = await self.get_destination(local=True)
+            await destination.send("Couldn't send help to you due to blocked DMs...")
 
 
 print("Logging in...")
-help_attrs = dict(hidden=True)
-bot = Bot(command_prefix=config.prefix, prefix=config.prefix, pm_help=True, help_attrs=help_attrs, formatter=HelpFormat())
+bot = Bot(command_prefix=config.prefix, prefix=config.prefix, command_attrs=dict(hidden=True), help_command=HelpFormat())
 
 for file in os.listdir("cogs"):
     if file.endswith(".py"):
