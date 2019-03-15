@@ -10,13 +10,11 @@ from utils import default
 
 
 async def send_cmd_help(ctx):
+    help_cmd = ctx.bot.get_command('help')
     if ctx.invoked_subcommand:
-        _help = await ctx.bot.formatter.format_help_for(ctx, ctx.invoked_subcommand)
+        await ctx.invoke(help_cmd, command=str(ctx.invoked_subcommand))
     else:
-        _help = await ctx.bot.formatter.format_help_for(ctx, ctx.command)
-
-    for page in _help:
-        await ctx.send(page)
+        await ctx.invoke(help_cmd, command=str(ctx.command))
 
 
 class Events(commands.Cog):
