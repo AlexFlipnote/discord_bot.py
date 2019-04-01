@@ -36,7 +36,7 @@ class HelpFormat(DefaultHelpCommand):
             pass
 
         try:
-            destination = self.get_destination()
+            destination = self.get_destination(no_pm=no_pm)
             for page in self.paginator.pages:
                 await destination.send(page)
         except discord.Forbidden:
