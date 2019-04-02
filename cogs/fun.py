@@ -74,9 +74,9 @@ class Fun_Commands(commands.Cog):
 
             definition = result['definition']
             if len(definition) >= 1000:
-                    definition = definition[:1000]
-                    definition = definition.rsplit(' ', 1)[0]
-                    definition += '...'
+                definition = definition[:1000]
+                definition = definition.rsplit(' ', 1)[0]
+                definition += '...'
 
             await ctx.send(f"📚 Definitions for **{result['word']}**```fix\n{definition}```")
 
