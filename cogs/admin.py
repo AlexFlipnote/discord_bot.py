@@ -72,10 +72,8 @@ class Admin(commands.Cog):
     @commands.check(repo.is_owner)
     async def change(self, ctx):
         if ctx.invoked_subcommand is None:
-            _help = await ctx.bot.formatter.format_help_for(ctx, ctx.command)
-
-            for page in _help:
-                await ctx.send(page)
+            help_cmd = self.bot.get_command('help')
+            await ctx.invoke(help_cmd, command=str(ctx.command))
 
     @change.command(name="playing")
     @commands.check(repo.is_owner)
