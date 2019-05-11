@@ -1,4 +1,4 @@
-git+https://github.com/Rapptz/discord.py@rewrite
+discord.py
 psutil
 asyncio
 timeago
