@@ -13,15 +13,13 @@ class Encryption(commands.Cog):
     async def encode(self, ctx):
         """ All encode methods """
         if ctx.invoked_subcommand is None:
-            help_cmd = self.bot.get_command('help')
-            await ctx.invoke(help_cmd, command=str(ctx.command))
+            await ctx.send_help(str(ctx.command))
 
     @commands.group()
     async def decode(self, ctx):
         """ All decode methods """
         if ctx.invoked_subcommand is None:
-            help_cmd = self.bot.get_command('help')
-            await ctx.invoke(help_cmd, command=str(ctx.command))
+            await ctx.send_help(str(ctx.command))
 
     async def encryptout(self, ctx, convert, input):
         if len(input) > 1900:

@@ -140,8 +140,7 @@ class Moderator(commands.Cog):
     async def find(self, ctx):
         """ Finds a user within your search term """
         if ctx.invoked_subcommand is None:
-            help_cmd = self.bot.get_command('help')
-            await ctx.invoke(help_cmd, command=str(ctx.command))
+            await ctx.send_help(str(ctx.command))
 
     @find.command(name="playing")
     async def find_playing(self, ctx, *, search: str):
@@ -180,8 +179,7 @@ class Moderator(commands.Cog):
     async def prune(self, ctx):
         """ Removes messages from the current server. """
         if ctx.invoked_subcommand is None:
-            help_cmd = self.bot.get_command('help')
-            await ctx.invoke(help_cmd, command=str(ctx.command))
+            await ctx.send_help(str(ctx.command))
 
     async def do_removal(self, ctx, limit, predicate, *, before=None, after=None, message=True):
         if limit > 2000:

@@ -10,11 +10,10 @@ from utils import default
 
 
 async def send_cmd_help(ctx):
-    help_cmd = ctx.bot.get_command('help')
     if ctx.invoked_subcommand:
-        await ctx.invoke(help_cmd, command=str(ctx.invoked_subcommand))
+        await ctx.send_help(str(ctx.invoked_subcommand))
     else:
-        await ctx.invoke(help_cmd, command=str(ctx.command))
+        await ctx.send_help(str(ctx.command))
 
 
 class Events(commands.Cog):

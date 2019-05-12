@@ -72,8 +72,7 @@ class Admin(commands.Cog):
     @commands.check(repo.is_owner)
     async def change(self, ctx):
         if ctx.invoked_subcommand is None:
-            help_cmd = self.bot.get_command('help')
-            await ctx.invoke(help_cmd, command=str(ctx.command))
+            await ctx.send_help(str(ctx.command))
 
     @change.command(name="playing")
     @commands.check(repo.is_owner)
