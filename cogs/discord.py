@@ -67,7 +67,7 @@ class Discord_Info(commands.Cog):
     async def server_avatar(self, ctx):
         """ Get the current server icon """
         if ctx.guild.icon:
-            await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon_url_as(size=1024)}")
+            return await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon_url_as(size=1024)}")
         await ctx.send("This server does not have a avatar ;-;")
 
     @commands.command()
