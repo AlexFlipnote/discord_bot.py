@@ -52,8 +52,7 @@ class Discord_Info(commands.Cog):
 
             embed = discord.Embed()
             if ctx.guild.icon:
-                sem.set_thumbnail(url=ctx.guild.icon_url)                                  
-            embed.set_thumbnail(url=ctx.guild.icon_url)
+                embed.set_thumbnail(url=ctx.guild.icon_url)                                  
             embed.add_field(name="Server Name", value=ctx.guild.name, inline=True)
             embed.add_field(name="Server ID", value=ctx.guild.id, inline=True)
             embed.add_field(name="Members", value=ctx.guild.member_count, inline=True)
