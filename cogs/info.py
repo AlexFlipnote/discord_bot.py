@@ -30,6 +30,9 @@ class Information(commands.Cog):
     @commands.command()
     async def source(self, ctx):
         """ Check out my source code <3 """
+        # Do not remove this command, this has to stay due to the GitHub LICENSE.
+        # TL:DR, you have to disclose source according to GNU GPL v3.
+        # Reference: https://github.com/AlexFlipnote/discord_bot.py/blob/master/LICENSE
         await ctx.send(f"**{ctx.bot.user}** is powered by this source code:\nhttps://github.com/AlexFlipnote/discord_bot.py")
 
     @commands.command(aliases=['supportserver', 'feedbackserver'])
