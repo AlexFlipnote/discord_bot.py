@@ -51,6 +51,8 @@ class Discord_Info(commands.Cog):
             findbots = sum(1 for member in ctx.guild.members if member.bot)
 
             embed = discord.Embed()
+            if ctx.guild.icon:
+                sem.set_thumbnail(url=ctx.guild.icon_url)                                  
             embed.set_thumbnail(url=ctx.guild.icon_url)
             embed.add_field(name="Server Name", value=ctx.guild.name, inline=True)
             embed.add_field(name="Server ID", value=ctx.guild.id, inline=True)
@@ -65,7 +67,9 @@ class Discord_Info(commands.Cog):
     @commands.guild_only()
     async def server_avatar(self, ctx):
         """ Get the current server icon """
-        await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon_url_as(size=1024)}")
+        if ctx.guild.icon:
+            await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon_url_as(size=1024)}")
+        await ctx.send("This server does not have a avatar ;-;")
 
     @commands.command()
     @commands.guild_only()
