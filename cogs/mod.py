@@ -165,7 +165,7 @@ class Moderator(commands.Cog):
 
     @find.command(name="discriminator", aliases=["discrim"])
     async def find_discriminator(self, ctx, *, search: str):
-        if not len(search) != 4 or not re.compile("^[0-9]*$").search(search):
+        if not len(search) == 4 or not re.compile("^[0-9]*$").search(search):
             return await ctx.send("You must provide exactly 4 digits")
 
         loop = [f"{i} ({i.id})" for i in ctx.guild.members if search == i.discriminator]
