@@ -1,11 +1,13 @@
 {
   "token": "",
+  "join_message": "I has joined to do stuff 🌟",
   "owners": [
     86477779717066752
   ],
-  "join_message": "I has joined to do stuff 🌟",
   "prefix": [
     "!"
   ],
-  "playing": "games!"
+  "playing": "games!",
+  "playing_type": "playing|watching|listening",
+  "status_type": "online|idle|dnd"
 }

@@ -6,10 +6,6 @@ from data import Bot
 from utils import permissions, default
 
 config = default.get("config.json")
-description = """
-A simple starter bot code
-Made by AlexFlipnote
-"""
 
 
 class HelpFormat(DefaultHelpCommand):

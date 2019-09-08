@@ -18,7 +18,7 @@ All you need to know about the library is defined inside here, even code that I 
   ```
   pip install -e git+https://gitlab.com/pycqa/flake8#egg=flake8
   ```
-- PM2 - NodeJS Module (Keeps the bot alive)
+- PM2 - NodeJS Module (Keeps the bot alive with pm2.json file)
   - Requires NodeJS - https://nodejs.org/en/download/
 
 ## How to setup
