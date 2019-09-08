@@ -1,4 +1,7 @@
-![Banner](https://i.alexflipnote.dev/MiFAeTE.png)<br>
+<p align="center">
+  <img alt="discord_bot.py" src="https://i.alexflipnote.dev/MiFAeTE.png" width="750px">
+</p>
+
 Do you need more help? Visit my server here: **https://discord.gg/DpxkY3x**
 
 ## Requirements
