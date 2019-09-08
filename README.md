@@ -1,8 +1,5 @@
-# discord_bot.py
-A simple discord bot that helps you get started within discord.py<br>
-Made by **AlexFlipnote#0001**
-
-Do you need more help? Visit my server here: https://discord.gg/DpxkY3x
+![Banner](https://i.alexflipnote.dev/MiFAeTE.png)<br>
+Do you need more help? Visit my server here: **https://discord.gg/DpxkY3x**
 
 ## Requirements
 - Python 3.6 and up - https://www.python.org/downloads/
@@ -42,3 +39,6 @@ Remember to replace **CLIENT_ID** with your bot client ID
 
 Q: There aren't that many commands here...<br>
 A: Yes, I will only provide a few commands to get you started, maybe adding more later.
+
+Q: Why the beer with the discord logo?<br>
+A: Because the framework is made so simple that even a drunk guy can set it up.
