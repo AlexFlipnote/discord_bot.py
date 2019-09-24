@@ -55,7 +55,7 @@ class Discord_Info(commands.Cog):
             if ctx.guild.icon:
                 embed.set_thumbnail(url=ctx.guild.icon_url)
             if ctx.guild.banner:
-                embed.set_image(url=ctx.guild.banner_url)
+                embed.set_image(url=ctx.guild.banner_url_as(format="png"))
 
             embed.add_field(name="Server Name", value=ctx.guild.name, inline=True)
             embed.add_field(name="Server ID", value=ctx.guild.id, inline=True)
