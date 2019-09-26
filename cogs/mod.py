@@ -1,5 +1,6 @@
 import discord
 import re
+import asyncio
 
 from discord.ext import commands
 from utils import permissions, default
@@ -133,6 +134,42 @@ class Moderator(commands.Cog):
             await ctx.send(default.actionmessage("unmuted"))
         except Exception as e:
             await ctx.send(e)
+
+    @commands.command(aliases=["ar"])
+    @commands.guild_only()
+    @permissions.has_permissions(manage_roles=True)
+    async def announcerole(self, ctx, *, role: discord.Role):
+        """ Makes a role mentionable and removes it whenever you mention the role """
+        if role == ctx.guild.default_role:
+            return await ctx.send("To prevent abuse, I won't allow mentionable role for everyone/here role.")
+
+        if ctx.author.top_role.position <= role.position:
+            return await ctx.send("It seems like the role you attempt to mention is over your permissions, therefor I won't allow you.")
+
+        if ctx.me.top_role.position <= role.position:
+            return await ctx.send("This role is above my permissions, I can't make it mentionable ;-;")
+
+        await role.edit(mentionable=True, reason=f"[ {ctx.author} ] announcerole command")
+        msg = await ctx.send(f"**{role.name}** is now mentionable, if you don't mention it within 30 seconds, I will revert the changes.")
+
+        while True:
+            def role_checker(m):
+                if (role.mention in m.content):
+                    return True
+                return False
+
+            try:
+                checker = await self.bot.wait_for('message', timeout=30.0, check=role_checker)
+                if checker.author.id == ctx.author.id:
+                    await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
+                    return await msg.edit(content=f"**{role.name}** mentioned by **{ctx.author}** in {checker.channel.mention}")
+                    break
+                else:
+                    await checker.delete()
+            except asyncio.TimeoutError:
+                await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
+                return await msg.edit(content=f"**{role.name}** was never mentioned by **{ctx.author}**...")
+                break
 
     @commands.group()
     @commands.guild_only()
