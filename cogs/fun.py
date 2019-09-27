@@ -1,6 +1,8 @@
 import random
 import discord
 import json
+import shlex
+import urllib
 import secrets
 
 from io import BytesIO
@@ -26,6 +28,17 @@ class Fun_Commands(commands.Cog):
             return await ctx.send("Couldn't find anything from the API")
 
         await ctx.send(r[endpoint])
+
+    async def api_img_creator(self, ctx, url, filename, content=None):
+        async with ctx.channel.typing():
+            req = await http.get(url, res_method="read")
+
+            if req is None:
+                return await ctx.send("I couldn't create the image ;-;")
+
+            bio = BytesIO(req)
+            bio.seek(0)
+            await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
@@ -56,6 +69,31 @@ class Fun_Commands(commands.Cog):
         """ Coinflip! """
         coinsides = ['Heads', 'Tails']
         await ctx.send(f"**{ctx.author.name}** flipped a coin and got **{random.choice(coinsides)}**!")
+
+    @commands.command()
+    async def supreme(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)):
+        """ Make a fake Supreme logo
+
+        Arguments:
+            --dark | Make the background to dark colour
+        """
+        parser = default.Arguments(add_help=False, allow_abbrev=False)
+        parser.add_argument('input', nargs="+", default=None)
+        parser.add_argument('-d', '--dark', action='store_true')
+
+        try:
+            args = parser.parse_args(shlex.split(text if text else "", posix=False))
+        except Exception as e:
+            return await ctx.send(str(e))
+
+        inputText = urllib.parse.quote(' '.join(args.input))
+
+        if args.dark:
+            dark = "true"
+        else:
+            dark = "false"
+
+        await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&dark={dark}", "supreme.png")
 
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
