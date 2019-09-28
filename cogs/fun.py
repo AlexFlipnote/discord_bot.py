@@ -76,10 +76,12 @@ class Fun_Commands(commands.Cog):
 
         Arguments:
             --dark | Make the background to dark colour
+            --light | Make background to light and text to dark colour
         """
         parser = default.Arguments(add_help=False, allow_abbrev=False)
         parser.add_argument('input', nargs="+", default=None)
         parser.add_argument('-d', '--dark', action='store_true')
+        parser.add_argument('-l', '--light', action='store_true')
 
         try:
             args = parser.parse_args(shlex.split(text if text else "", posix=False))
@@ -88,12 +90,15 @@ class Fun_Commands(commands.Cog):
 
         inputText = urllib.parse.quote(' '.join(args.input))
 
+        darkorlight = ""
         if args.dark:
-            dark = "true"
-        else:
-            dark = "false"
+            darkorlight = "dark=true"
+        if args.light:
+            darkorlight = "light=true"
+        if args.dark and args.light:
+            return await ctx.send(f"**{ctx.author.name}**, you can't define both --dark and --light, sorry..")
 
-        await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&dark={dark}", "supreme.png")
+        await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png")
 
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
