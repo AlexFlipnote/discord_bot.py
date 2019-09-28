@@ -304,7 +304,7 @@ class Moderator(commands.Cog):
     @prune.command(name='emojis')
     async def _emojis(self, ctx, search=100):
         """Removes all messages containing custom emoji."""
-        custom_emoji = re.compile(r'<(?:a)?:(\w+):(\d+)>')
+        custom_emoji = re.compile(r'<a?:(.*?):(\d{17,21})>|[\u263a-\U0001f645]')
 
         def predicate(m):
             return custom_emoji.search(m.content)
