@@ -149,13 +149,11 @@ class Moderator(commands.Cog):
                 if checker.author.id == ctx.author.id:
                     await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
                     return await msg.edit(content=f"**{role.name}** mentioned by **{ctx.author}** in {checker.channel.mention}")
-                    break
                 else:
                     await checker.delete()
             except asyncio.TimeoutError:
                 await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
                 return await msg.edit(content=f"**{role.name}** was never mentioned by **{ctx.author}**...")
-                break
 
     @commands.group()
     @commands.guild_only()
