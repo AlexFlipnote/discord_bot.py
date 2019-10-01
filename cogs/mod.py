@@ -6,20 +6,6 @@ from discord.ext import commands
 from utils import permissions, default
 
 
-# Source: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/mod.py
-class MemberID(commands.Converter):
-    async def convert(self, ctx, argument):
-        try:
-            m = await commands.MemberConverter().convert(ctx, argument)
-        except commands.BadArgument:
-            try:
-                return int(argument, base=10)
-            except ValueError:
-                raise commands.BadArgument(f"{argument} is not a valid member or member ID.") from None
-        else:
-            return m.id
-
-
 class ActionReason(commands.Converter):
     async def convert(self, ctx, argument):
         ret = argument
@@ -63,7 +49,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: MemberID, *, reason: str = None):
+    async def ban(self, ctx, member: discord.Member, *, reason: str = None):
         """ Bans a user from the current server. """
         try:
             await ctx.guild.ban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
@@ -74,7 +60,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def massban(self, ctx, reason: ActionReason, *members: MemberID):
+    async def massban(self, ctx, reason: ActionReason, *members: discord.Member):
         """ Mass bans multiple members from the server. """
 
         try:
@@ -87,7 +73,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def unban(self, ctx, member: MemberID, *, reason: str = None):
+    async def unban(self, ctx, member: discord.Member, *, reason: str = None):
         """ Unbans a user from the current server. """
         try:
             await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
