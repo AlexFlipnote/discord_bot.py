@@ -20,7 +20,7 @@ class Information(commands.Cog):
         before = time.monotonic()
         message = await ctx.send("Pong")
         ping = (time.monotonic() - before) * 1000
-        await message.edit(content=f"Pong   |   {int(ping)}ms")
+        await message.edit(content=f":ping_pong:   |   {int(ping)}ms")
 
     @commands.command(aliases=['joinme', 'join', 'botinvite'])
     async def invite(self, ctx):
