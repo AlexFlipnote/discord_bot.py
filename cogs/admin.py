@@ -31,7 +31,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(repo.is_owner)
-    async def reload(self, ctx, name: str):
+    async def reload(self, ctx, name):
         """ Reloads an extension. """
         try:
             self.bot.unload_extension(f"cogs.{name}")
@@ -50,7 +50,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(repo.is_owner)
-    async def load(self, ctx, name: str):
+    async def load(self, ctx, name):
         """ Reloads an extension. """
         try:
             self.bot.load_extension(f"cogs.{name}")
@@ -60,7 +60,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(repo.is_owner)
-    async def unload(self, ctx, name: str):
+    async def unload(self, ctx, name):
         """ Reloads an extension. """
         try:
             self.bot.unload_extension(f"cogs.{name}")
@@ -92,7 +92,7 @@ class Admin(commands.Cog):
 
     @change.command(name="username")
     @commands.check(repo.is_owner)
-    async def change_username(self, ctx, *, name: str):
+    async def change_username(self, ctx, *, name):
         """ Change username. """
         try:
             await self.bot.user.edit(username=name)
@@ -102,7 +102,7 @@ class Admin(commands.Cog):
 
     @change.command(name="nickname")
     @commands.check(repo.is_owner)
-    async def change_nickname(self, ctx, *, name: str = None):
+    async def change_nickname(self, ctx, *, name=None):
         """ Change nickname. """
         try:
             await ctx.guild.me.edit(nick=name)
@@ -115,7 +115,7 @@ class Admin(commands.Cog):
 
     @change.command(name="avatar")
     @commands.check(repo.is_owner)
-    async def change_avatar(self, ctx, url: str = None):
+    async def change_avatar(self, ctx, url=None):
         """ Change avatar. """
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url
@@ -137,7 +137,7 @@ class Admin(commands.Cog):
 
     @commands.command(aliases=['exec'])
     @commands.check(repo.is_owner)
-    async def execute(self, ctx, *, text: str):
+    async def execute(self, ctx, *, text):
         """ Do a shell command. """
         message = await ctx.send(f"Loading...")
         proc = await asyncio.create_subprocess_shell(text, stdin=None, stderr=PIPE, stdout=PIPE)
