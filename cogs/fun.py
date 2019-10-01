@@ -102,7 +102,7 @@ class Fun_Commands(commands.Cog):
 
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
-    async def urban(self, ctx, *, search: str):
+    async def urban(self, ctx, *, search):
         """ Find the 'best' definition to your words """
         async with ctx.channel.typing():
             url = await http.get(f'https://api.urbandictionary.com/v0/define?term={search}', res_method="json")
@@ -124,7 +124,7 @@ class Fun_Commands(commands.Cog):
             await ctx.send(f"📚 Definitions for **{result['word']}**```fix\n{definition}```")
 
     @commands.command()
-    async def reverse(self, ctx, *, text: str):
+    async def reverse(self, ctx, *, text):
         """ !poow ,ffuts esreveR
         Everything you type after reverse will of course, be reversed
         """
