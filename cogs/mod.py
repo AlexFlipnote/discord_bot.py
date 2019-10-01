@@ -24,7 +24,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(kick_members=True)
-    async def kick(self, ctx, member: discord.Member, *, reason: str = None):
+    async def kick(self, ctx, member: discord.Member, *, reason=None):
         """ Kicks a user from the current server. """
         try:
             await member.kick(reason=default.responsible(ctx.author, reason))
@@ -35,7 +35,7 @@ class Moderator(commands.Cog):
     @commands.command(aliases=["nick"])
     @commands.guild_only()
     @permissions.has_permissions(manage_nicknames=True)
-    async def nickname(self, ctx, member: discord.Member, *, name: str = None):
+    async def nickname(self, ctx, member: discord.Member, *, name=None):
         """ Nicknames a user from the current server. """
         try:
             await member.edit(nick=name, reason=default.responsible(ctx.author, "Changed by command"))
@@ -49,7 +49,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member, *, reason: str = None):
+    async def ban(self, ctx, member: discord.Member, *, reason=None):
         """ Bans a user from the current server. """
         try:
             await ctx.guild.ban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
@@ -73,7 +73,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def unban(self, ctx, member: discord.Member, *, reason: str = None):
+    async def unban(self, ctx, member: discord.Member, *, reason=None):
         """ Unbans a user from the current server. """
         try:
             await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
@@ -84,7 +84,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(manage_roles=True)
-    async def mute(self, ctx, member: discord.Member, *, reason: str = None):
+    async def mute(self, ctx, member: discord.Member, *, reason=None):
         """ Mutes a user from the current server. """
         message = []
         for role in ctx.guild.roles:
@@ -104,7 +104,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(manage_roles=True)
-    async def unmute(self, ctx, member: discord.Member, *, reason: str = None):
+    async def unmute(self, ctx, member: discord.Member, *, reason=None):
         """ Unmutes a user from the current server. """
         message = []
         for role in ctx.guild.roles:
@@ -166,28 +166,28 @@ class Moderator(commands.Cog):
             await ctx.send_help(str(ctx.command))
 
     @find.command(name="playing")
-    async def find_playing(self, ctx, *, search: str):
+    async def find_playing(self, ctx, *, search):
         loop = [f"{i} | {i.activity.name} ({i.id})" for i in ctx.guild.members if i.activity if (search.lower() in i.activity.name.lower()) and (not i.bot)]
         await default.prettyResults(
             ctx, "playing", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="username", aliases=["name"])
-    async def find_name(self, ctx, *, search: str):
+    async def find_name(self, ctx, *, search):
         loop = [f"{i} ({i.id})" for i in ctx.guild.members if search.lower() in i.name.lower() and not i.bot]
         await default.prettyResults(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="nickname", aliases=["nick"])
-    async def find_nickname(self, ctx, *, search: str):
+    async def find_nickname(self, ctx, *, search):
         loop = [f"{i.nick} | {i} ({i.id})" for i in ctx.guild.members if i.nick if (search.lower() in i.nick.lower()) and not i.bot]
         await default.prettyResults(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="discriminator", aliases=["discrim"])
-    async def find_discriminator(self, ctx, *, search: str):
+    async def find_discriminator(self, ctx, *, search):
         if not len(search) == 4 or not re.compile("^[0-9]*$").search(search):
             return await ctx.send("You must provide exactly 4 digits")
 
@@ -258,7 +258,7 @@ class Moderator(commands.Cog):
         await self.do_removal(ctx, search, lambda e: e.author == member)
 
     @prune.command()
-    async def contains(self, ctx, *, substr: str):
+    async def contains(self, ctx, *, substr):
         """Removes all messages containing a substring.
         The substring must be at least 3 characters long.
         """
