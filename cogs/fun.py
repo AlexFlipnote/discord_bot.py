@@ -89,6 +89,8 @@ class Fun_Commands(commands.Cog):
             return await ctx.send(str(e))
 
         inputText = urllib.parse.quote(' '.join(args.input))
+        if len(inputText) > 500:
+            return await ctx.send(f"**{ctx.author.name}**, the Supreme API is limited to 500 characters, sorry.")
 
         darkorlight = ""
         if args.dark:
