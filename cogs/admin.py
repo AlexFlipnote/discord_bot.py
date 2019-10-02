@@ -2,6 +2,7 @@ import time
 import aiohttp
 import discord
 import asyncio
+import sys
 
 from asyncio.subprocess import PIPE
 from discord.ext import commands
@@ -47,6 +48,7 @@ class Admin(commands.Cog):
         await ctx.send('Rebooting now...')
         time.sleep(1)
         await self.bot.logout()
+        sys.exit(0)
 
     @commands.command()
     @commands.check(repo.is_owner)
