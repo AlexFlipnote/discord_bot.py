@@ -9,5 +9,6 @@
   ],
   "playing": "games!",
   "playing_type": "playing|watching|listening",
-  "status_type": "online|idle|dnd"
+  "status_type": "online|idle|dnd",
+  "version": "2.0.1"
 }
