@@ -47,7 +47,6 @@ class Admin(commands.Cog):
         """ Reboot the bot """
         await ctx.send('Rebooting now...')
         time.sleep(1)
-        await self.bot.logout()
         sys.exit(0)
 
     @commands.command()
