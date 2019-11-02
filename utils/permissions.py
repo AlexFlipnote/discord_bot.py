@@ -1,11 +1,17 @@
 import discord
 
-from utils import repo
+from utils import default
 from discord.ext import commands
+
+owners = default.get("config.json").owners
+
+
+def is_owner(ctx):
+    return ctx.author.id in owners
 
 
 async def check_permissions(ctx, perms, *, check=all):
-    if ctx.author.id in repo.owners:
+    if ctx.author.id in owners:
         return True
 
     resolved = ctx.channel.permissions_for(ctx.author)

@@ -5,7 +5,7 @@ import os
 
 from datetime import datetime
 from discord.ext import commands
-from utils import repo, default
+from utils import default
 
 
 class Information(commands.Cog):
@@ -39,7 +39,7 @@ class Information(commands.Cog):
     async def botserver(self, ctx):
         """ Get an invite to our support server! """
         if isinstance(ctx.channel, discord.DMChannel) or ctx.guild.id != 86484642730885120:
-            return await ctx.send(f"**Here you go {ctx.author.name} 🍻\n<{repo.invite}>**")
+            return await ctx.send(f"**Here you go {ctx.author.name} 🍻\n<{self.config.botserver}>**")
 
         await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
 

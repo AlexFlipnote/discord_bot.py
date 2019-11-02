@@ -7,7 +7,7 @@ import sys
 from asyncio.subprocess import PIPE
 from discord.ext import commands
 from io import BytesIO
-from utils import repo, default, http, dataIO
+from utils import permissions, default, http, dataIO
 
 
 class Admin(commands.Cog):
@@ -31,7 +31,7 @@ class Admin(commands.Cog):
         await ctx.send(f"no, heck off {ctx.author.name}")
 
     @commands.command()
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def reload(self, ctx, name: str):
         """ Reloads an extension. """
         try:
@@ -42,7 +42,7 @@ class Admin(commands.Cog):
         await ctx.send(f"Reloaded extension **{name}.py**")
 
     @commands.command()
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def reboot(self, ctx):
         """ Reboot the bot """
         await ctx.send('Rebooting now...')
@@ -50,7 +50,7 @@ class Admin(commands.Cog):
         sys.exit(0)
 
     @commands.command()
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def load(self, ctx, name: str):
         """ Reloads an extension. """
         try:
@@ -60,7 +60,7 @@ class Admin(commands.Cog):
         await ctx.send(f"Loaded extension **{name}.py**")
 
     @commands.command()
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def unload(self, ctx, name: str):
         """ Reloads an extension. """
         try:
@@ -70,13 +70,13 @@ class Admin(commands.Cog):
         await ctx.send(f"Unloaded extension **{name}.py**")
 
     @commands.group()
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def change(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     @change.command(name="playing")
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def change_playing(self, ctx, *, playing: str):
         """ Change playing status. """
         try:
@@ -92,7 +92,7 @@ class Admin(commands.Cog):
             await ctx.send(e)
 
     @change.command(name="username")
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def change_username(self, ctx, *, name: str):
         """ Change username. """
         try:
@@ -102,7 +102,7 @@ class Admin(commands.Cog):
             await ctx.send(err)
 
     @change.command(name="nickname")
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def change_nickname(self, ctx, *, name: str = None):
         """ Change nickname. """
         try:
@@ -115,7 +115,7 @@ class Admin(commands.Cog):
             await ctx.send(err)
 
     @change.command(name="avatar")
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def change_avatar(self, ctx, url: str = None):
         """ Change avatar. """
         if url is None and len(ctx.message.attachments) == 1:
@@ -137,7 +137,7 @@ class Admin(commands.Cog):
             await ctx.send("You need to either provide an image URL or upload one with the command")
 
     @commands.command(aliases=['exec'])
-    @commands.check(repo.is_owner)
+    @commands.check(permissions.is_owner)
     async def execute(self, ctx, *, text: str):
         """ Do a shell command. """
         message = await ctx.send(f"Loading...")
