@@ -69,7 +69,7 @@ class Moderator(commands.Cog):
         await ctx.send(f'Done. {member.name} was softbanned.') 
         
     
-    @commands.command()
+
     
 
     @commands.command(aliases=["nick"])
