@@ -70,14 +70,7 @@ class Moderator(commands.Cog):
         
     
     @commands.command()
-    @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx, amount=11):
-        await ctx.channel.purge(limit=amount)
-        embed = discord.Embed(description=f'Cleared **{amount}** messages.', colour = discord.Colour.from_rgb(54, 57, 62))
-        await ctx.send(content=None, embed=embed)
-        await ctx.channel.purge(limit=amount)
-        
-                
+    
 
     @commands.command(aliases=["nick"])
     @commands.guild_only()
@@ -103,6 +96,14 @@ class Moderator(commands.Cog):
             await ctx.send(default.actionmessage("banned"))
         except Exception as e:
             await ctx.send(e)
+            
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    async def hackban(self, ctx, user_id: int, *, reason=None):
+        await ctx.guild.ban(discord.Object(id=user_id), reason=reason)
+        await ctx.send(f'Done , i banned the user ')
+            
 
     @commands.command()
     @commands.guild_only()
