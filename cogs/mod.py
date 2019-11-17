@@ -1,6 +1,8 @@
 import discord
 import re
 import asyncio
+import io
+from io import BytesIO
 
 from discord.ext import commands
 from utils import permissions, default
@@ -45,6 +47,37 @@ class Moderator(commands.Cog):
             await ctx.send(default.actionmessage("kicked"))
         except Exception as e:
             await ctx.send(e)
+            
+    @commands.has_permissions(administrator=True)
+    @commands.command()
+    async def say(self, ctx, *, msg=None):
+        if ctx.message.attachments:
+            file = BytesIO()
+            att = ctx.message.attachments[0]
+            await att.save(file)
+            file.seek(0)
+            await ctx.send(msg, file=discord.File(file, filename=att.filename))
+        else:
+            await ctx.send(msg)
+        await ctx.message.delete()
+    
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    async def softban(self, ctx, member: str, *, reason: str=None): 
+        await member.ban(reason=reason)
+        await member.unban(reason=reason)
+        await ctx.send(f'Done. {member.name} was softbanned.') 
+        
+    
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def clear(self, ctx, amount=11):
+        await ctx.channel.purge(limit=amount)
+        embed = discord.Embed(description=f'Cleared **{amount}** messages.', colour = discord.Colour.from_rgb(54, 57, 62))
+        await ctx.send(content=None, embed=embed)
+        await ctx.channel.purge(limit=amount)
+        
+                
 
     @commands.command(aliases=["nick"])
     @commands.guild_only()
