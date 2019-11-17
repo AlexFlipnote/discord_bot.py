@@ -2,10 +2,11 @@ import discord
 import re
 import asyncio
 import io
-from io import BytesIO
+import parsedatetime as pdt
 
 from discord.ext import commands
 from utils import permissions, default
+from utils.converters import TimeConverter
 
 
 # Source: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/mod.py
@@ -48,30 +49,44 @@ class Moderator(commands.Cog):
         except Exception as e:
             await ctx.send(e)
             
-    @commands.has_permissions(administrator=True)
-    @commands.command()
-    async def say(self, ctx, *, msg=None):
-        if ctx.message.attachments:
-            file = BytesIO()
-            att = ctx.message.attachments[0]
-            await att.save(file)
-            file.seek(0)
-            await ctx.send(msg, file=discord.File(file, filename=att.filename))
-        else:
-            await ctx.send(msg)
-        await ctx.message.delete()
-    
-    @commands.command()
+            
     @commands.has_permissions(ban_members=True)
-    async def softban(self, ctx, member: str, *, reason: str=None): 
-        await member.ban(reason=reason)
-        await member.unban(reason=reason)
-        await ctx.send(f'Done. {member.name} was softbanned.') 
+    @commands.command()
+    async def tempban(self, ctx, member: MemberID, expire: TimeConverter=None, *, reason=None):
+        """Ban a user for a certain time.
         
-    
+        Example time formats:
+            tomorrow        Next day at 8 am
+            june            Next june 1st
+            10-10-2020      October 10 2020
+            2020-10-10      October 10 2020
+        
+        Example simple time formats:
+            2h      2 hours
+            2d      2 days
+            2mo     2 months
+            2y      2 years
+            2d50m   2 days and 50 minutes
+        """
+        if not expire:
+            expire = datetime.datetime.utcnow()+datetime.timedelta(minutes=5)
+        # If the user is in the server, send them a message letting them know what happened.
+        user = self.bot.get_user(member)
+
+        informed = await self.inform_removed_user(user, ctx.author, ModAction.BAN, reason, expire)
+        try:
+            await ctx.guild.ban(discord.Object(id=member), reason=reason)
+            user = user or await self.bot.fetch_user(member)
+            await ctx.send(f"Banned {'and informed ' if informed else ''}{user}. Expires {expire:%B %d %Y %H:%M:%S}.")
+            
+            timers = self.bot.get_cog('Timers')
+            await timers.create_timer('unban', expire, member)
+        except Exception as e:
+            await ctx.send(e)
+        
+           
 
     
-
     @commands.command(aliases=["nick"])
     @commands.guild_only()
     @permissions.has_permissions(manage_nicknames=True)
@@ -98,11 +113,7 @@ class Moderator(commands.Cog):
             await ctx.send(e)
             
     @commands.command()
-    @commands.has_permissions(ban_members=True)
-    @commands.bot_has_permissions(ban_members=True)
-    async def hackban(self, ctx, user_id: int, *, reason=None):
-        await ctx.guild.ban(discord.Object(id=user_id), reason=reason)
-        await ctx.send(f'Done , i banned the user ')
+   
             
 
     @commands.command()
