@@ -40,6 +40,9 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason: str = None):
         """ Kicks a user from the current server. """
+        if await permissions.check_priv(ctx, member):
+            return
+
         try:
             await member.kick(reason=default.responsible(ctx.author, reason))
             await ctx.send(default.actionmessage("kicked"))
@@ -51,6 +54,9 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(manage_nicknames=True)
     async def nickname(self, ctx, member: discord.Member, *, name: str = None):
         """ Nicknames a user from the current server. """
+        if await permissions.check_priv(ctx, member):
+            return
+
         try:
             await member.edit(nick=name, reason=default.responsible(ctx.author, "Changed by command"))
             message = f"Changed **{member.name}'s** nickname to **{name}**"
@@ -65,6 +71,9 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(ban_members=True)
     async def ban(self, ctx, member: MemberID, *, reason: str = None):
         """ Bans a user from the current server. """
+        if await permissions.check_priv(ctx, member):
+            return
+
         try:
             await ctx.guild.ban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
             await ctx.send(default.actionmessage("banned"))
@@ -76,7 +85,6 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(ban_members=True)
     async def massban(self, ctx, reason: ActionReason, *members: MemberID):
         """ Mass bans multiple members from the server. """
-
         try:
             for member_id in members:
                 await ctx.guild.ban(discord.Object(id=member_id), reason=default.responsible(ctx.author, reason))
@@ -89,6 +97,9 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(ban_members=True)
     async def unban(self, ctx, member: MemberID, *, reason: str = None):
         """ Unbans a user from the current server. """
+        if await permissions.check_priv(ctx, member):
+            return
+
         try:
             await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
             await ctx.send(default.actionmessage("unbanned"))
@@ -100,17 +111,16 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(manage_roles=True)
     async def mute(self, ctx, member: discord.Member, *, reason: str = None):
         """ Mutes a user from the current server. """
-        message = []
-        for role in ctx.guild.roles:
-            if role.name == "Muted":
-                message.append(role.id)
-        try:
-            therole = discord.Object(id=message[0])
-        except IndexError:
+        if await permissions.check_priv(ctx, member):
+            return
+
+        muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
+
+        if not muted_role:
             return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
 
         try:
-            await member.add_roles(therole, reason=default.responsible(ctx.author, reason))
+            await member.add_roles(muted_role, reason=default.responsible(ctx.author, reason))
             await ctx.send(default.actionmessage("muted"))
         except Exception as e:
             await ctx.send(e)
@@ -120,17 +130,16 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(manage_roles=True)
     async def unmute(self, ctx, member: discord.Member, *, reason: str = None):
         """ Unmutes a user from the current server. """
-        message = []
-        for role in ctx.guild.roles:
-            if role.name == "Muted":
-                message.append(role.id)
-        try:
-            therole = discord.Object(id=message[0])
-        except IndexError:
+        if await permissions.check_priv(ctx, member):
+            return
+
+        muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
+
+        if not muted_role:
             return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
 
         try:
-            await member.remove_roles(therole, reason=default.responsible(ctx.author, reason))
+            await member.remove_roles(muted_role, reason=default.responsible(ctx.author, reason))
             await ctx.send(default.actionmessage("unmuted"))
         except Exception as e:
             await ctx.send(e)
