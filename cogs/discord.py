@@ -43,6 +43,36 @@ class Discord_Info(commands.Cog):
         embed.description = f'**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at)}'
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.guild_only()
+    async def mods(self, ctx):
+        """ Check which mods are online on current guild """
+        message = ""
+        online, idle, dnd, offline = [], [], [], []
+
+        for user in ctx.guild.members:
+            if ctx.channel.permissions_for(user).kick_members or \
+               ctx.channel.permissions_for(user).ban_members:
+                if not user.bot and user.status is discord.Status.online:
+                    online.append(f"**{user}**")
+                if not user.bot and user.status is discord.Status.idle:
+                    idle.append(f"**{user}**")
+                if not user.bot and user.status is discord.Status.dnd:
+                    dnd.append(f"**{user}**")
+                if not user.bot and user.status is discord.Status.offline:
+                    offline.append(f"**{user}**")
+
+        if online:
+            message += f"🟢 {', '.join(online)}\n"
+        if idle:
+            message += f"🟡 {', '.join(idle)}\n"
+        if dnd:
+            message += f"🔴 {', '.join(dnd)}\n"
+        if offline:
+            message += f"⚫ {', '.join(offline)}\n"
+
+        await ctx.send(f"Mods in **{ctx.guild.name}**\n{message}")
+
     @commands.group()
     @commands.guild_only()
     async def server(self, ctx):
