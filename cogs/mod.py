@@ -71,7 +71,8 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(ban_members=True)
     async def ban(self, ctx, member: MemberID, *, reason: str = None):
         """ Bans a user from the current server. """
-        if await permissions.check_priv(ctx, member):
+        m = ctx.guild.get_member(member)
+        if m is not None and await permissions.check_priv(ctx, m):
             return
 
         try:
@@ -97,9 +98,6 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(ban_members=True)
     async def unban(self, ctx, member: MemberID, *, reason: str = None):
         """ Unbans a user from the current server. """
-        if await permissions.check_priv(ctx, member):
-            return
-
         try:
             await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
             await ctx.send(default.actionmessage("unbanned"))
