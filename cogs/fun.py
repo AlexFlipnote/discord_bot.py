@@ -1,9 +1,10 @@
 import random
 import discord
-import json
 import shlex
 import urllib
 import secrets
+import aiohttp
+import re
 
 from io import BytesIO
 from discord.ext import commands
@@ -24,8 +25,10 @@ class Fun_Commands(commands.Cog):
     async def randomimageapi(self, ctx, url, endpoint):
         try:
             r = await http.get(url, res_method="json", no_cache=True)
-        except json.JSONDecodeError:
-            return await ctx.send("Couldn't find anything from the API")
+        except aiohttp.ClientConnectorError:
+            return await ctx.send("The API seems to be down...")
+        except aiohttp.ContentTypeError:
+            return await ctx.send("The API returned an error or didn't return JSON...")
 
         await ctx.send(r[endpoint])
 
@@ -101,6 +104,41 @@ class Fun_Commands(commands.Cog):
             return await ctx.send(f"**{ctx.author.name}**, you can't define both --dark and --light, sorry..")
 
         await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png")
+
+    @commands.command(aliases=['color'])
+    @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
+    async def colour(self, ctx, colour: str):
+        """ View the colour HEX details """
+        async with ctx.channel.typing():
+            if not permissions.can_embed(ctx):
+                return await ctx.send("I can't embed in this channel ;-;")
+
+            if colour == "random":
+                colour = "%06x" % random.randint(0, 0xFFFFFF)
+
+            if colour[:1] == "#":
+                colour = colour[1:]
+
+            if not re.search(r'^(?:[0-9a-fA-F]{3}){1,2}$', colour):
+                return await ctx.send("You're only allowed to enter HEX (0-9 & A-F)")
+
+            try:
+                r = await http.get(f"https://api.alexflipnote.dev/colour/{colour}", res_method="json", no_cache=True)
+            except aiohttp.ClientConnectorError:
+                return await ctx.send("The API seems to be down...")
+            except aiohttp.ContentTypeError:
+                return await ctx.send("The API returned an error or didn't return JSON...")
+
+            embed = discord.Embed(colour=r["int"])
+            embed.set_thumbnail(url=r["image"])
+            embed.set_image(url=r["image_gradient"])
+
+            embed.add_field(name="HEX", value=r['hex'], inline=True)
+            embed.add_field(name="RGB", value=r['rgb'], inline=True)
+            embed.add_field(name="Int", value=r['int'], inline=True)
+            embed.add_field(name="Brightness", value=r['brightness'], inline=True)
+
+            await ctx.send(embed=embed, content=f"{ctx.invoked_with.title()} name: **{r['name']}**")
 
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
