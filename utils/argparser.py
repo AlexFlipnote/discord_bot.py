@@ -23,6 +23,6 @@ class Arguments:
                 shlex.split(text if text else "", posix=self.posix)
             )
         except Exception as e:
-            return (f"{type(e).__name__}: {e}", False)
+            return (f"ArgumentError: {e}", False)
 
         return (args, True)
