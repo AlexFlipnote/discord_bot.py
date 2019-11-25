@@ -1,16 +1,10 @@
 import time
 import json
 import discord
-import argparse
 import timeago as timesince
 
 from collections import namedtuple
 from io import BytesIO
-
-
-class Arguments(argparse.ArgumentParser):
-    def error(self, message):
-        raise RuntimeError(message)
 
 
 def get(file):

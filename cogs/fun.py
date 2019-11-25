@@ -1,6 +1,5 @@
 import random
 import discord
-import shlex
 import urllib
 import secrets
 import aiohttp
@@ -8,7 +7,7 @@ import re
 
 from io import BytesIO
 from discord.ext import commands
-from utils import lists, permissions, http, default
+from utils import lists, permissions, http, default, argparser
 
 
 class Fun_Commands(commands.Cog):
@@ -81,15 +80,14 @@ class Fun_Commands(commands.Cog):
             --dark | Make the background to dark colour
             --light | Make background to light and text to dark colour
         """
-        parser = default.Arguments(add_help=False, allow_abbrev=False)
+        parser = argparser.Arguments()
         parser.add_argument('input', nargs="+", default=None)
         parser.add_argument('-d', '--dark', action='store_true')
         parser.add_argument('-l', '--light', action='store_true')
 
-        try:
-            args = parser.parse_args(shlex.split(text if text else "", posix=False))
-        except Exception as e:
-            return await ctx.send(str(e))
+        args, valid_check = parser.parse_args(text)
+        if not valid_check:
+            return await ctx.send(args)
 
         inputText = urllib.parse.quote(' '.join(args.input))
         if len(inputText) > 500:
