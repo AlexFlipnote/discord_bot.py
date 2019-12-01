@@ -1,5 +1,4 @@
 import discord
-import traceback
 import psutil
 import os
 
@@ -28,12 +27,7 @@ class Events(commands.Cog):
             await send_cmd_help(ctx)
 
         elif isinstance(err, errors.CommandInvokeError):
-            err = err.original
-
-            _traceback = traceback.format_tb(err.__traceback__)
-            _traceback = ''.join(_traceback)
-            error = ('```py\n{2}{0}: {3}\n```').format(type(err).__name__, ctx.message.content, _traceback, err)
-
+            error = default.traceback_maker(err.original)
             await ctx.send(f"There was an error processing the command ;-;\n{error}")
 
         elif isinstance(err, errors.CheckFailure):
