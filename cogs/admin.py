@@ -59,7 +59,7 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.check(permissions.is_owner)
     async def load(self, ctx, name: str):
-        """ loads an extension. """
+        """ Loads an extension. """
         try:
             self.bot.load_extension(f"cogs.{name}")
         except commands.ExtensionError as e:
