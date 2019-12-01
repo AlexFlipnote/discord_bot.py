@@ -36,10 +36,9 @@ class Admin(commands.Cog):
     async def reload(self, ctx, name: str):
         """ Reloads an extension. """
         try:
-            self.bot.unload_extension(f"cogs.{name}")
-            self.bot.load_extension(f"cogs.{name}")
-        except Exception as e:
-            return await ctx.send(f"```\n{e}```")
+            self.bot.reload_extension(f"cogs.{name}")
+        except commands.ExtensionError as e:
+            return await ctx.send(f"```diff\n- {e}```")
         await ctx.send(f"Reloaded extension **{name}.py**")
 
     @commands.command()
@@ -59,31 +58,31 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
-    async def reboot(self, ctx):
-        """ Reboot the bot """
-        await ctx.send('Rebooting now...')
-        time.sleep(1)
-        sys.exit(0)
-
-    @commands.command()
-    @commands.check(permissions.is_owner)
     async def load(self, ctx, name: str):
-        """ Reloads an extension. """
+        """ loads an extension. """
         try:
             self.bot.load_extension(f"cogs.{name}")
-        except Exception as e:
+        except commands.ExtensionError as e:
             return await ctx.send(f"```diff\n- {e}```")
         await ctx.send(f"Loaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
     async def unload(self, ctx, name: str):
-        """ Reloads an extension. """
+        """ Unloads an extension. """
         try:
             self.bot.unload_extension(f"cogs.{name}")
-        except Exception as e:
+        except commands.ExtensionError as e:
             return await ctx.send(f"```diff\n- {e}```")
         await ctx.send(f"Unloaded extension **{name}.py**")
+
+    @commands.command()
+    @commands.check(permissions.is_owner)
+    async def reboot(self, ctx):
+        """ Reboot the bot """
+        await ctx.send('Rebooting now...')
+        time.sleep(1)
+        sys.exit(0)
 
     @commands.command()
     @commands.check(permissions.is_owner)
