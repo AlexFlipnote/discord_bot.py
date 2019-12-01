@@ -46,15 +46,15 @@ class Admin(commands.Cog):
     @commands.check(permissions.is_owner)
     async def reloadutils(self, ctx, name: str):
         """ Reloads a utils module. """
-        name_maker = f"**utils/{name}.py**"
+        name_maker = f"utils/{name}.py"
         try:
             module_name = importlib.import_module(f"utils.{name}")
             importlib.reload(module_name)
         except ModuleNotFoundError:
-            return await ctx.send(f"Couldn't find module named {name_maker}")
+            return await ctx.send(f"Couldn't find module named **{name_maker}**")
         except Exception as e:
             error = default.traceback_maker(e)
-            return await ctx.send(f"Module {name_maker} returned error and was not reloaded...\n{error}")
+            return await ctx.send(f"Module **{name_maker}** returned error and was not reloaded...\n{error}")
         await ctx.send(f"Reloaded module **{name_maker}**")
 
     @commands.command()
