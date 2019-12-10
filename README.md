@@ -35,6 +35,12 @@ All you need to know about the library is defined inside here, even code that I 
 
 5. You're done, enjoy your bot!
 
+### Repl.it Setup (Optional)
+
+You can run this on Repl.it!
+[![Run on Repl.it](https://repl.it/badge/github/AlexFlipnote/discord_bot.py)](https://repl.it/github/AlexFlipnote/discord_bot.py)
+Make sure to setup **config.json** in the way stated above.
+
 # FAQ
 Q: I don't see my bot on my server!<br>
 A: Invite it by using this URL: https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot<br>
