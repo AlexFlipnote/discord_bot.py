@@ -2,6 +2,7 @@ import time
 import aiohttp
 import discord
 import importlib
+import os
 import asyncio
 import sys
 
@@ -41,6 +42,30 @@ class Admin(commands.Cog):
         except Exception as e:
             return await ctx.send(f"```\n{e}```")
         await ctx.send(f"Reloaded extension **{name}.py**")
+
+    @commands.command()
+    @commands.check(permissions.is_owner)
+    async def reloadall(self, ctx):
+        """ Reloads all extensions. """
+        error_collection = []
+        for file in os.listdir("cogs"):
+            if file.endswith(".py"):
+                name = file[:-3]
+                try:
+                    self.bot.reload_extension(f"cogs.{name}")
+                except Exception as e:
+                    error_collection.append(
+                        [file, default.traceback_maker(e, advance=False)]
+                    )
+
+        if error_collection:
+            output = "\n".join([f"**{g[0]}** ```diff\n- {g[1]}```" for g in error_collection])
+            return await ctx.send(
+                f"Attempted to reload all extensions, was able to reload, "
+                f"however the following failed...\n\n{output}"
+            )
+
+        await ctx.send("Successfully reloaded all extensions")
 
     @commands.command()
     @commands.check(permissions.is_owner)
