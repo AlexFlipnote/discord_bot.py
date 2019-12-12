@@ -34,6 +34,26 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
+    async def load(self, ctx, name: str):
+        """ Loads an extension. """
+        try:
+            self.bot.load_extension(f"cogs.{name}")
+        except Exception as e:
+            return await ctx.send(default.traceback_maker(e))
+        await ctx.send(f"Loaded extension **{name}.py**")
+
+    @commands.command()
+    @commands.check(permissions.is_owner)
+    async def unload(self, ctx, name: str):
+        """ Unloads an extension. """
+        try:
+            self.bot.unload_extension(f"cogs.{name}")
+        except Exception as e:
+            return await ctx.send(default.traceback_maker(e))
+        await ctx.send(f"Unloaded extension **{name}.py**")
+
+    @commands.command()
+    @commands.check(permissions.is_owner)
     async def reload(self, ctx, name: str):
         """ Reloads an extension. """
         try:
@@ -88,26 +108,6 @@ class Admin(commands.Cog):
         await ctx.send('Rebooting now...')
         time.sleep(1)
         sys.exit(0)
-
-    @commands.command()
-    @commands.check(permissions.is_owner)
-    async def load(self, ctx, name: str):
-        """ Reloads an extension. """
-        try:
-            self.bot.load_extension(f"cogs.{name}")
-        except Exception as e:
-            return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Loaded extension **{name}.py**")
-
-    @commands.command()
-    @commands.check(permissions.is_owner)
-    async def unload(self, ctx, name: str):
-        """ Reloads an extension. """
-        try:
-            self.bot.unload_extension(f"cogs.{name}")
-        except Exception as e:
-            return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Unloaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)

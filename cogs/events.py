@@ -8,13 +8,6 @@ from discord.ext.commands import errors
 from utils import default
 
 
-async def send_cmd_help(ctx):
-    if ctx.invoked_subcommand:
-        await ctx.send_help(str(ctx.invoked_subcommand))
-    else:
-        await ctx.send_help(str(ctx.command))
-
-
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -24,7 +17,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, err):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
-            await send_cmd_help(ctx)
+            helper = str(ctx.invoked_subcommand) if ctx.invoked_subcommand else str(ctx.command)
+            await ctx.send_help(helper)
 
         elif isinstance(err, errors.CommandInvokeError):
             error = default.traceback_maker(err.original)
