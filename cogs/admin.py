@@ -37,10 +37,9 @@ class Admin(commands.Cog):
     async def reload(self, ctx, name: str):
         """ Reloads an extension. """
         try:
-            self.bot.unload_extension(f"cogs.{name}")
-            self.bot.load_extension(f"cogs.{name}")
+            self.bot.reload_extension(f"cogs.{name}")
         except Exception as e:
-            return await ctx.send(f"```\n{e}```")
+            return await ctx.send(default.traceback_maker(e))
         await ctx.send(f"Reloaded extension **{name}.py**")
 
     @commands.command()
@@ -97,7 +96,7 @@ class Admin(commands.Cog):
         try:
             self.bot.load_extension(f"cogs.{name}")
         except Exception as e:
-            return await ctx.send(f"```diff\n- {e}```")
+            return await ctx.send(default.traceback_maker(e))
         await ctx.send(f"Loaded extension **{name}.py**")
 
     @commands.command()
@@ -107,7 +106,7 @@ class Admin(commands.Cog):
         try:
             self.bot.unload_extension(f"cogs.{name}")
         except Exception as e:
-            return await ctx.send(f"```diff\n- {e}```")
+            return await ctx.send(default.traceback_maker(e))
         await ctx.send(f"Unloaded extension **{name}.py**")
 
     @commands.command()
