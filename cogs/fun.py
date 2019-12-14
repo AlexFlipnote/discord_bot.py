@@ -54,7 +54,7 @@ class Fun_Commands(commands.Cog):
         """ Posts a random dog """
         await self.randomimageapi(ctx, 'https://random.dog/woof.json', 'url')
 
-    @commands.command()
+    @commands.command(aliases=["bird"])
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def birb(self, ctx):
         """ Posts a random birb """
