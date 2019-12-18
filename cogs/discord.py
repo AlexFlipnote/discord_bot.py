@@ -14,7 +14,7 @@ class Discord_Info(commands.Cog):
     @commands.guild_only()
     async def avatar(self, ctx, *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
-        user = user if user else ctx.author
+        user = user or ctx.author
         await ctx.send(f"Avatar to **{user.name}**\n{user.avatar_url_as(size=1024)}")
 
     @commands.command()
@@ -33,7 +33,7 @@ class Discord_Info(commands.Cog):
     @commands.guild_only()
     async def joinedat(self, ctx, *, user: discord.Member = None):
         """ Check when a user joined the current server """
-        user = user if user else ctx.author
+        user = user or ctx.author
 
         embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar_url)
@@ -111,7 +111,7 @@ class Discord_Info(commands.Cog):
     @commands.guild_only()
     async def user(self, ctx, *, user: discord.Member = None):
         """ Get user information """
-        user = user if user else ctx.author
+        user = user or ctx.author
 
         embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar_url)
