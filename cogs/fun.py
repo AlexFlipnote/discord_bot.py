@@ -46,7 +46,7 @@ class Fun_Commands(commands.Cog):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
         """ Posts a random cat """
-        await self.randomimageapi(ctx, 'https://nekos.life/api/v2/img/meow', 'url')
+        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/cats', 'file')
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
