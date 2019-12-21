@@ -1,6 +1,6 @@
-discord.py
-psutil
 asyncio
+git+https://github.com/Rapptz/discord.py@master
+psutil
+pytz
 timeago
 yarl<1.2
-pytz
