@@ -74,6 +74,13 @@ class Fun_Commands(commands.Cog):
         await ctx.send(f"**{ctx.author.name}** flipped a coin and got **{random.choice(coinsides)}**!")
 
     @commands.command()
+    async def f(self, ctx, *, text: commands.clean_content = None):
+        """ Press F to pay respect """
+        hearts = ['❤', '💛', '💚', '💙', '💜']
+        reason = f"for **{text}** " if text else ""
+        await ctx.send(f"**{ctx.author.name}** has paid their respect {reason}{random.choice(hearts)}")
+
+    @commands.command()
     async def supreme(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)):
         """ Make a fake Supreme logo
 
