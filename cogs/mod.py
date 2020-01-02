@@ -89,9 +89,9 @@ class Moderator(commands.Cog):
         try:
             for member_id in members:
                 await ctx.guild.ban(discord.Object(id=member_id), reason=default.responsible(ctx.author, reason))
-            await ctx.send(default.actionmessage("massbanned", mass=True))
+            await ctx.send(default.actionmessage(f"Banned {count}/{len(members)}", mass=True))
         except Exception as e:
-            await ctx.send(e)
+            await ctx.send(e)   
 
     @commands.command()
     @commands.guild_only()
