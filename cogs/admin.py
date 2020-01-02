@@ -3,12 +3,9 @@ import aiohttp
 import discord
 import importlib
 import os
-import asyncio
 import sys
 
-from asyncio.subprocess import PIPE
 from discord.ext import commands
-from io import BytesIO
 from utils import permissions, default, http, dataIO
 
 
@@ -189,38 +186,6 @@ class Admin(commands.Cog):
             await ctx.send(err)
         except TypeError:
             await ctx.send("You need to either provide an image URL or upload one with the command")
-
-    @commands.command(aliases=['exec'])
-    @commands.check(permissions.is_owner)
-    async def execute(self, ctx, *, text: str):
-        """ Do a shell command. """
-        message = await ctx.send(f"Loading...")
-        proc = await asyncio.create_subprocess_shell(text, stdin=None, stderr=PIPE, stdout=PIPE)
-        out = (await proc.stdout.read()).decode('utf-8').strip()
-        err = (await proc.stderr.read()).decode('utf-8').strip()
-
-        if not out and not err:
-            await message.delete()
-            return await ctx.message.add_reaction('👌')
-
-        content = ""
-
-        if err:
-            content += f"Error:\r\n{err}\r\n{'-' * 30}\r\n"
-        if out:
-            content += out
-
-        if len(content) > 1500:
-            try:
-                data = BytesIO(content.encode('utf-8'))
-                await message.delete()
-                await ctx.send(content=f"The result was a bit too long.. so here is a text file instead 👍",
-                               file=discord.File(data, filename=default.timetext(f'Result')))
-            except asyncio.TimeoutError as e:
-                await message.delete()
-                return await ctx.send(e)
-        else:
-            await message.edit(content=f"```fix\n{content}\n```")
 
 
 def setup(bot):
