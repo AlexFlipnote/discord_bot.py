@@ -86,6 +86,7 @@ class Moderator(commands.Cog):
     @permissions.has_permissions(ban_members=True)
     async def massban(self, ctx, reason: ActionReason, *members: MemberID):
         """ Mass bans multiple members from the server. """
+        count = 0 
         try:
             for member_id in members:
                 await ctx.guild.ban(discord.Object(id=member_id), reason=default.responsible(ctx.author, reason))
