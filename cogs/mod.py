@@ -207,6 +207,13 @@ class Moderator(commands.Cog):
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
+    @find.command(name="id")
+    async def find_id(self, ctx, *, search: int):
+        loop = [f"{i} | {i} ({i.id})" for i in ctx.guild.members if (str(search) in str(i.id)) and not i.bot]
+        await default.prettyResults(
+            ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
+        )
+
     @find.command(name="discriminator", aliases=["discrim"])
     async def find_discriminator(self, ctx, *, search: str):
         if not len(search) == 4 or not re.compile("^[0-9]*$").search(search):
