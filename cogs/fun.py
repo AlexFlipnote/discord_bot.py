@@ -53,7 +53,7 @@ class Fun_Commands(commands.Cog):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def dog(self, ctx):
         """ Posts a random dog """
-        await self.randomimageapi(ctx, 'https://random.dog/woof.json', 'url')
+        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file')
 
     @commands.command(aliases=["bird"])
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
