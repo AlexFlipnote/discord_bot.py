@@ -1,7 +1,7 @@
 import json
 
 
-def change_value(file, value, changeto):
+def change_value(file: str, value: str, changeto: str):
     try:
         with open(file, "r") as jsonFile:
             data = json.load(jsonFile)
@@ -13,7 +13,7 @@ def change_value(file, value, changeto):
         json.dump(data, jsonFile, indent=2)
 
 
-def append_value(file, value, addition):
+def append_value(file: str, value: str, addition: str):
     try:
         with open(file, "r") as jsonFile:
             data = json.load(jsonFile)
