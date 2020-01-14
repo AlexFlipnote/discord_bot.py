@@ -12,15 +12,6 @@ Do you need more help? Visit my server here: **https://discord.gg/DpxkY3x**
 Keep [this](https://discordpy.readthedocs.io/en/latest/) saved somewhere, as this is the docs to discord.py@rewrite.
 All you need to know about the library is defined inside here, even code that I don't use in this example is here.
 
-## Optional tools
-- Flake8 - Python Module (Keeps your code clean)
-  - If you're using python 3.7, install by doing
-  ```
-  pip install -e git+https://gitlab.com/pycqa/flake8#egg=flake8
-  ```
-- PM2 - NodeJS Module (Keeps the bot alive with pm2.json file)
-  - Requires NodeJS - https://nodejs.org/en/download/
-
 ## How to setup
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
 ![Image_Example1](https://i.alexflipnote.dev/f9668b.png)
@@ -35,11 +26,43 @@ All you need to know about the library is defined inside here, even code that I 
 
 5. You're done, enjoy your bot!
 
-### Repl.it Setup (Optional)
+## Optional tools
+- Flake8 - Python Module (Keeps your code clean)
+  - If you're using python 3.7, install by doing
+  `pip install -e git+https://gitlab.com/pycqa/flake8#egg=flake8`
 
+### Repl.it Setup (Optional)
 You can run this on Repl.it!
 [![Run on Repl.it](https://repl.it/badge/github/AlexFlipnote/discord_bot.py)](https://repl.it/github/AlexFlipnote/discord_bot.py)
 Make sure to setup **config.json** in the way stated above.
+
+### PM2 (Optional)
+PM2 is an alternative script provided by NodeJS, which will reboot your bot whenever it crashes and keep it up with a nice status. You can install it by doing `npm install -g pm2` and you should be done.
+```
+# Start the bot
+pm2 start pm2.json
+
+# Tips on common commands
+pm2 <command> [name]
+  start discord_bot.py    Run the bot again if it's offline
+  list                    Get a full list of all available services
+  stop discord_bot.py     Stop the bot
+  reboot discord_bot.py   Reboot the bot
+```
+
+### Docker (Optional)
+Docker is an alternative to run the bot 24/7 and always reboot again whenever it crashed. You can find the install manual [here](https://docs.docker.com/install/). You don't *have* to get it, but if you're used to having Docker, it's available at least.
+```
+# Build and run the Dockerfile
+docker-compose up -d --build
+
+# Tips on common commands
+docker-compose <command>
+  ps      Check if bot is online or not (list)
+  down    Shut down the bot
+  reboot  Reboot the bot without shutting it down or rebuilding
+  logs    Check the logs made by the bot.
+```
 
 # FAQ
 Q: I don't see my bot on my server!<br>
