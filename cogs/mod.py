@@ -188,7 +188,12 @@ class Moderator(commands.Cog):
 
     @find.command(name="playing")
     async def find_playing(self, ctx, *, search: str):
-        loop = [f"{i} | {i.activity.name} ({i.id})" for i in ctx.guild.members if i.activity if i.activity.name if (search.lower() in i.activity.name.lower()) and (not i.bot)]
+        loop = []
+        for i in ctx.guild.members:
+            if i.activities and (not i.bot):
+                for g in i.activities:
+                    if g.name and (search.lower() in g.name.lower()):
+                        loop.append(f"{i} | {type(g).__name__}: {g.name} ({i.id})")
 
         await default.prettyResults(
             ctx, "playing", f"Found **{len(loop)}** on your search for **{search}**", loop
