@@ -113,6 +113,10 @@ class Discord_Info(commands.Cog):
         """ Get user information """
         user = user or ctx.author
 
+        show_roles = ', '.join(
+            [f"<@&{x.id}>" for x in sorted(user.roles, key=lambda x: x.position, reverse=True) if x.id != ctx.guild.default_role.id]
+        ) if len(user.roles) > 1 else 'None'
+
         embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar_url)
 
@@ -123,7 +127,7 @@ class Discord_Info(commands.Cog):
 
         embed.add_field(
             name="Roles",
-            value=', '.join([f"<@&{x.id}>" for x in user.roles if x is not ctx.guild.default_role]) if len(user.roles) > 1 else 'None',
+            value=show_roles,
             inline=False
         )
 
