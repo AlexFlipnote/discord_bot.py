@@ -22,6 +22,13 @@ class Events(commands.Cog):
 
         elif isinstance(err, errors.CommandInvokeError):
             error = default.traceback_maker(err.original)
+
+            if "2000 or fewer" in str(err) and len(ctx.message.clean_content) > 1900:
+                return await ctx.send(
+                    f"You attempted to make the command display more than 2,000 characters...\n"
+                    f"Both error and command will be ignored."
+                )
+
             await ctx.send(f"There was an error processing the command ;-;\n{error}")
 
         elif isinstance(err, errors.CheckFailure):
