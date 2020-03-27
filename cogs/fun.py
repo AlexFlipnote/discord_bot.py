@@ -148,12 +148,15 @@ class Fun_Commands(commands.Cog):
 
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
-    async def urban(self, ctx, *, search: str):
+    async def urban(self, ctx, *, search: commands.clean_content):
         """ Find the 'best' definition to your words """
         async with ctx.channel.typing():
-            url = await http.get(f'https://api.urbandictionary.com/v0/define?term={search}', res_method="json")
+            try:
+                url = await http.get(f'https://api.urbandictionary.com/v0/define?term={search}', res_method="json")
+            except Exception:
+                return await ctx.send("Urban API returned invalid data... might be down atm.")
 
-            if url is None:
+            if not url:
                 return await ctx.send("I think the API broke...")
 
             if not len(url['list']):
@@ -193,13 +196,8 @@ class Fun_Commands(commands.Cog):
     @commands.command()
     async def rate(self, ctx, *, thing: commands.clean_content):
         """ Rates what you desire """
-        num = random.randint(0, 100)
-        deci = random.randint(0, 9)
-
-        if num == 100:
-            deci = 0
-
-        await ctx.send(f"I'd rate {thing} a **{num}.{deci} / 100**")
+        rate_amount = random.uniform(0.0, 100.0)
+        await ctx.send(f"I'd rate `{thing}` a **{round(rate_amount, 4)} / 100**")
 
     @commands.command()
     async def beer(self, ctx, user: discord.Member = None, *, reason: commands.clean_content = ""):
