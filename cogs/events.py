@@ -34,6 +34,9 @@ class Events(commands.Cog):
         elif isinstance(err, errors.CheckFailure):
             pass
 
+        elif isinstance(err, errors.MaxConcurrencyReached):
+            await ctx.send(f"You've reached max capacity of command usage at once, please finish the previous one...")
+
         elif isinstance(err, errors.CommandOnCooldown):
             await ctx.send(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
 

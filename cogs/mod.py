@@ -83,6 +83,7 @@ class Moderator(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    @commands.max_concurrency(1, per=commands.BucketType.user)
     @permissions.has_permissions(ban_members=True)
     async def massban(self, ctx, reason: ActionReason, *members: MemberID):
         """ Mass bans multiple members from the server. """
@@ -232,6 +233,7 @@ class Moderator(commands.Cog):
 
     @commands.group()
     @commands.guild_only()
+    @commands.max_concurrency(1, per=commands.BucketType.user)
     @permissions.has_permissions(manage_messages=True)
     async def prune(self, ctx):
         """ Removes messages from the current server. """
