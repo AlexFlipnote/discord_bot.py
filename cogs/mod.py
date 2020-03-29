@@ -233,7 +233,7 @@ class Moderator(commands.Cog):
 
     @commands.group()
     @commands.guild_only()
-    @commands.max_concurrency(1, per=commands.BucketType.user)
+    @commands.max_concurrency(1, per=commands.BucketType.guild)
     @permissions.has_permissions(manage_messages=True)
     async def prune(self, ctx):
         """ Removes messages from the current server. """
