@@ -214,7 +214,7 @@ class Fun_Commands(commands.Cog):
         msg = await ctx.send(beer_offer)
 
         def reaction_check(m):
-            if (m.message_id == msg.id and m.user_id == user.id and str(m.emoji) == "🍻"):
+            if m.message_id == msg.id and m.user_id == user.id and str(m.emoji) == "🍻":
                 return True
             return False
 
