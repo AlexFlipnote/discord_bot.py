@@ -270,7 +270,7 @@ class Fun_Commands(commands.Cog):
 
         slotmachine = f"**[ {a} {b} {c} ]\n{ctx.author.name}**,"
 
-        if (a == b == c):
+        if a == b == c:
             await ctx.send(f"{slotmachine} All matching, you won! 🎉")
         elif (a == b) or (a == c) or (b == c):
             await ctx.send(f"{slotmachine} 2 in a row, you won! 🎉")
