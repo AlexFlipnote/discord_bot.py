@@ -18,4 +18,7 @@ for file in os.listdir("cogs"):
         name = file[:-3]
         bot.load_extension(f"cogs.{name}")
 
-bot.run(config.token)
+try:
+    bot.run(config.token)
+except Exception as e:
+    print(f'Error when logging in: {e}')

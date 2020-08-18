@@ -67,6 +67,12 @@ class Fun_Commands(commands.Cog):
         """ Posts a random duck """
         await self.randomimageapi(ctx, 'https://random-d.uk/api/v1/random', 'url')
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+    async def coffee(self, ctx):
+        """ Posts a random coffee """
+        await self.randomimageapi(ctx, 'https://coffee.alexflipnote.dev/random.json', 'file')
+
     @commands.command(aliases=['flip', 'coin'])
     async def coinflip(self, ctx):
         """ Coinflip! """
