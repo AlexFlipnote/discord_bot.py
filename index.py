@@ -19,6 +19,6 @@ for file in os.listdir("cogs"):
         bot.load_extension(f"cogs.{name}")
 
 try:
-    bot.run(config.tokens.bot)
+    bot.run(config.token)
 except Exception as e:
     print(f'Error when logging in: {e}')
