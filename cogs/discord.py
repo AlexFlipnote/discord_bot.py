@@ -133,7 +133,6 @@ class Discord_Info(commands.Cog):
             value=show_roles,
             inline=False
         )
-
         await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)
 
 
