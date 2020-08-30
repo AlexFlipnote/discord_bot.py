@@ -44,7 +44,7 @@ class Information(commands.Cog):
 
         await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
 
-    @commands.command(aliases=['info', 'stats', 'status'])
+    @commands.command(aliases=['info', 'stats', 'status','botinfo'])
     async def about(self, ctx):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
