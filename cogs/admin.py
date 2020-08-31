@@ -4,7 +4,8 @@ import discord
 import importlib
 import os
 import sys
-
+import textwrap
+import traceback
 from discord.ext import commands
 from utils import permissions, default, http, dataIO
 
@@ -200,6 +201,33 @@ class Admin(commands.Cog):
             await ctx.send(err)
         except TypeError:
             await ctx.send("You need to either provide an image URL or upload one with the command")
+
+    @commands.command(name='eval')
+    @commands.check(permissions.is_owner)
+    async def _eval(self,ctx, *, code):
+        code = code.strip('` ')
+        env = {
+            'BOT': self.bot,
+            'bot': self.bot,
+            'client': self.bot,
+            'ctx': ctx,
+            'message': ctx.message,
+            'server': ctx.message.guild,
+            'guild': ctx.message.guild,
+            'channel': ctx.message.channel,
+            'author': ctx.message.author,
+            'print': ctx.send
+        }
+        env.update(globals())
+
+        new_forced_async_code = f'async def code():\n{textwrap.indent(code, "    ")}'
+
+        exec(new_forced_async_code, env)
+        code = env['code']
+        try:
+            await code()
+        except:
+            await ctx.send(f'```{traceback.format_exc()}```')
 
 
 def setup(bot):
