@@ -282,10 +282,10 @@ class Fun_Commands(commands.Cog):
             await ctx.send(f"{slotmachine} 2 in a row, you won! 🎉")
         else:
             await ctx.send(f"{slotmachine} No match, you lost 😢")
-    @commands.command()
+    @commands.command(aliases=['asciiart'])
     async def ascii(self,ctx, *, value):
-        ascii_banner = pyfiglet.figlet_format(f"{value}")
-        await ctx.send(f"```{ascii_banner}```")
+        art = pyfiglet.figlet_format(f"{value}")
+        await ctx.send(f"```{art}```")
 
 
 def setup(bot):
