@@ -5,7 +5,7 @@ import secrets
 import asyncio
 import aiohttp
 import re
-
+import pyfiglet
 from io import BytesIO
 from discord.ext import commands
 from utils import lists, permissions, http, default, argparser
@@ -282,6 +282,10 @@ class Fun_Commands(commands.Cog):
             await ctx.send(f"{slotmachine} 2 in a row, you won! 🎉")
         else:
             await ctx.send(f"{slotmachine} No match, you lost 😢")
+    @commands.command()
+    async def ascii(self,ctx, *, value):
+        ascii_banner = pyfiglet.figlet_format(f"{value}")
+        await ctx.send(f"```{ascii_banner}```")
 
 
 def setup(bot):
