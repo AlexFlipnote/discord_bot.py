@@ -1,16 +1,16 @@
 import os
 
 from utils import default
-from utils.data import Bot, HelpFormat
+from utils.data import ClientBot, HelpFormat
 
 config = default.get("config.json")
 print("Logging in...")
 
-bot = Bot(
+bot = ClientBot(
     command_prefix=config.prefix,
     prefix=config.prefix,
     command_attrs=dict(hidden=True),
-    help_command=HelpFormat()
+    help_command=HelpFormat(),
 )
 
 for file in os.listdir("cogs"):
