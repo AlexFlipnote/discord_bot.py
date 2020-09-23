@@ -1,10 +1,10 @@
 import discord
 
 from utils import permissions
-from discord.ext.commands import Bot, DefaultHelpCommand
+from discord.ext.commands import AutoShardedBot, DefaultHelpCommand
 
 
-class ClientBot(Bot):
+class Bot(AutoShardedBot):
     def __init__(self, *args, prefix=None, **kwargs):
         super().__init__(*args, **kwargs)
 
