@@ -5,8 +5,6 @@ from utils import default
 from utils.data import Bot, HelpFormat
 
 config = default.get("config.json")
-intents = discord.Intents()
-intents.members = True
 print("Logging in...")
 
 bot = Bot(
@@ -14,7 +12,7 @@ bot = Bot(
     prefix=config.prefix,
     command_attrs=dict(hidden=True),
     help_command=HelpFormat(),
-    intents=intents
+    intents=discord.Intents(members=True)
 )
 
 for file in os.listdir("cogs"):
