@@ -1,5 +1,5 @@
 asyncio
-discord.py
+git+https://github.com/Rapptz/discord.py@master
 psutil
 pytz
 timeago==1.0.13
