@@ -9,11 +9,13 @@ print("Logging in...")
 
 bot = Bot(
     command_prefix=config.prefix,
+    owner_ids=config.owners,
     prefix=config.prefix,
     command_attrs=dict(hidden=True),
     help_command=HelpFormat(),
     intents=discord.Intents(members=True)
 )
+# see more about intents here: https://discordpy.readthedocs.io/en/latest/intents.html
 
 for file in os.listdir("cogs"):
     if file.endswith(".py"):

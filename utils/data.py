@@ -1,12 +1,38 @@
 import discord
 
-from utils import permissions
+from utils import permissions, default
 from discord.ext.commands import AutoShardedBot, DefaultHelpCommand
+
+config = default.get("config.json")
 
 
 class Bot(AutoShardedBot):
     def __init__(self, *args, prefix=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.prefix = prefix
+
+        # Check if user desires to have something other than online
+        status = config.status_type.lower()
+        if status == "idle":
+            status_type = discord.Status.idle
+        elif status in ("do not disturb", "dnd"):
+            status_type = discord.Status.dnd
+        else:
+            status_type = discord.Status.online
+
+        # Check if user desires to have a different type of activity
+        activity = config.activity_type.lower()
+        if activity == "listening":
+            activity_type = discord.ActivityType.listening
+        elif activity == "watching":
+            activity_type = discord.ActivityType.watching
+        elif activity == "competing":
+            activity_type = discord.ActivityType.competing
+        else:
+            activity_type = discord.ActivityType.playing
+
+        self.activity = discord.Activity(type = activity_type, name = config.activity)
+        self.status = status_type
 
     async def on_message(self, msg):
         if not self.is_ready() or msg.author.bot or not permissions.can_send(msg):
