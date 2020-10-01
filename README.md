@@ -2,7 +2,7 @@
   <img alt="discord_bot.py" src="https://i.alexflipnote.dev/MiFAeTE.png" width="750px">
 </p>
 
-Do you need more help? Visit my server here: **https://discord.gg/DpxkY3x**
+Do you need more help? Visit my server here: **https://discord.gg/DpxkY3x** 🍺
 
 ## Requirements
 - Python 3.6 and up - https://www.python.org/downloads/
