@@ -5,10 +5,11 @@
     86477779717066752
   ],
   "prefix": [
-    "!"
+    "!",
+    "?"
   ],
-  "playing": "games!",
-  "playing_type": "playing|watching|listening",
+  "activity": "games!",
+  "activity_type": "playing|watching|listening|competing",
   "status_type": "online|idle|dnd",
-  "version": "2.0.1"
+  "version": "2.0.2"
 }

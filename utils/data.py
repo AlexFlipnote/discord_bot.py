@@ -1,12 +1,36 @@
 import discord
 
-from utils import permissions
+from utils import permissions, default
 from discord.ext.commands import AutoShardedBot, DefaultHelpCommand
+
+config = default.get("config.json")
 
 
 class Bot(AutoShardedBot):
     def __init__(self, *args, prefix=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.prefix = prefix
+
+        # Check if user desires to have something other than online
+        if config.status_type.lower() == "idle":
+            status_type = discord.Status.idle
+        elif config.status_type.lower() in ("do not disturb", "dnd"):
+            status_type = discord.Status.dnd
+        else:
+            status_type = discord.Status.online
+
+        # Check if user desires to have a different type of activity
+        if config.activity_type.lower() == "listening":
+            activity_type = discord.ActivityType.listening
+        elif config.activity_type.lower() == "watching":
+            activity_type = discord.ActivityType.watching
+        elif config.activity_type.lower() == "competing":
+            activity_type = discord.ActivityType.competing
+        else:
+            activity_type = discord.ActivityType.playing
+
+        self.activity = discord.Activity(type = activity_type, name = config.activity)
+        self.status = status_type
 
     async def on_message(self, msg):
         if not self.is_ready() or msg.author.bot or not permissions.can_send(msg):
@@ -23,13 +47,13 @@ class HelpFormat(DefaultHelpCommand):
             return self.context.author
 
     async def send_error_message(self, error):
-        destination = self.get_destination(no_pm=True)
+        destination = self.get_destination(no_pm = True)
         await destination.send(error)
 
     async def send_command_help(self, command):
         self.add_command_formatting(command)
         self.paginator.close_page()
-        await self.send_pages(no_pm=True)
+        await self.send_pages(no_pm = True)
 
     async def send_pages(self, no_pm: bool = False):
         try:
@@ -39,9 +63,9 @@ class HelpFormat(DefaultHelpCommand):
             pass
 
         try:
-            destination = self.get_destination(no_pm=no_pm)
+            destination = self.get_destination(no_pm = no_pm)
             for page in self.paginator.pages:
                 await destination.send(page)
         except discord.Forbidden:
-            destination = self.get_destination(no_pm=True)
+            destination = self.get_destination(no_pm = True)
             await destination.send("Couldn't send help to you due to blocked DMs...")
