@@ -9,7 +9,7 @@ print("Logging in...")
 
 bot = Bot(
     command_prefix=config.prefix,
-    owner_ids = config.owners,
+    owner_ids=config.owners,
     prefix=config.prefix,
     command_attrs=dict(hidden=True),
     help_command=HelpFormat(),
