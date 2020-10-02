@@ -31,7 +31,7 @@ class Bot(AutoShardedBot):
         else:
             activity_type = discord.ActivityType.playing
 
-        self.activity = discord.Activity(type = activity_type, name = config.activity)
+        self.activity = discord.Activity(type=activity_type, name=config.activity)
         self.status = status_type
 
     async def on_message(self, msg):
