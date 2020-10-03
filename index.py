@@ -8,14 +8,14 @@ config = default.get("config.json")
 print("Logging in...")
 
 bot = Bot(
-    command_prefix=config.prefix,
-    owner_ids=config.owners,
-    prefix=config.prefix,
-    command_attrs=dict(hidden=True),
+    command_prefix=config.prefix, prefix=config.prefix,
+    owner_ids=config.owners, command_attrs=dict(hidden=True),
     help_command=HelpFormat(),
-    intents=discord.Intents(members=True)
+    intents=discord.Intents(  # kwargs found at https://discordpy.readthedocs.io/en/latest/api.html?highlight=intents#discord.Intents
+        guilds=True, members=True,
+        messages=True, reactions=True
+    )
 )
-# see more about intents here: https://discordpy.readthedocs.io/en/latest/intents.html
 
 for file in os.listdir("cogs"):
     if file.endswith(".py"):
