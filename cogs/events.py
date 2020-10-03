@@ -25,8 +25,8 @@ class Events(commands.Cog):
 
             if "2000 or fewer" in str(err) and len(ctx.message.clean_content) > 1900:
                 return await ctx.send(
-                    f"You attempted to make the command display more than 2,000 characters...\n"
-                    f"Both error and command will be ignored."
+                    "You attempted to make the command display more than 2,000 characters...\n"
+                    "Both error and command will be ignored."
                 )
 
             await ctx.send(f"There was an error processing the command ;-;\n{error}")
@@ -35,7 +35,7 @@ class Events(commands.Cog):
             pass
 
         elif isinstance(err, errors.MaxConcurrencyReached):
-            await ctx.send(f"You've reached max capacity of command usage at once, please finish the previous one...")
+            await ctx.send("You've reached max capacity of command usage at once, please finish the previous one...")
 
         elif isinstance(err, errors.CommandOnCooldown):
             await ctx.send(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
@@ -68,9 +68,23 @@ class Events(commands.Cog):
         if not hasattr(self.bot, 'uptime'):
             self.bot.uptime = datetime.utcnow()
 
+        # Check if user desires to have something other than online
+        status = self.config.status_type.lower()
+        status_type = {"idle": discord.Status.idle, "dnd": discord.Status.dnd}
+
+        # Check if user desires to have a different type of activity
+        activity = self.config.activity_type.lower()
+        activity_type = {"listening": 2, "watching": 3, "competing": 5}
+
+        await self.bot.change_presence(
+            activity=discord.Game(
+                type=activity_type.get(activity, 0), name=self.config.activity
+            ),
+            status=status_type.get(status, discord.Status.online)
+        )
+
         # Indicate that the bot has successfully booted up
         print(f'Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}')
-
 
 
 def setup(bot):

@@ -124,12 +124,7 @@ class Discord_Info(commands.Cog):
         embed.add_field(name="Nickname", value=user.nick if hasattr(user, "nick") else "None", inline=True)
         embed.add_field(name="Account created", value=default.date(user.created_at), inline=True)
         embed.add_field(name="Joined this server", value=default.date(user.joined_at), inline=True)
-
-        embed.add_field(
-            name="Roles",
-            value=show_roles,
-            inline=False
-        )
+        embed.add_field(name="Roles", value=show_roles, inline=False)
 
         await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)
 

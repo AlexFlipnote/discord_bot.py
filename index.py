@@ -12,8 +12,7 @@ bot = Bot(
     owner_ids=config.owners, command_attrs=dict(hidden=True),
     help_command=HelpFormat(),
     intents=discord.Intents(  # kwargs found at https://discordpy.readthedocs.io/en/latest/api.html?highlight=intents#discord.Intents
-        guilds=True, members=True,
-        messages=True, reactions=True
+        guilds=True, members=True, messages=True, reactions=True
     )
 )
 

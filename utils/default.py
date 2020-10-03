@@ -33,14 +33,14 @@ def timeago(target):
 
 
 def date(target, clock=True):
-    if clock is False:
+    if not clock:
         return target.strftime("%d %B %Y")
     return target.strftime("%d %B %Y, %H:%M")
 
 
 def responsible(target, reason):
     responsible = f"[ {target} ]"
-    if reason is None:
+    if not reason:
         return f"{responsible} no reason given..."
     return f"{responsible} {reason}"
 
@@ -48,7 +48,7 @@ def responsible(target, reason):
 def actionmessage(case, mass=False):
     output = f"**{case}** the user"
 
-    if mass is True:
+    if mass:
         output = f"**{case}** the IDs/Users"
 
     return f"✅ Successfully {output}"
