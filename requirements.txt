@@ -4,3 +4,5 @@ psutil
 pytz
 timeago==1.0.13
 yarl<1.2
+youtube-dl>=2020.7.28
+youtube-search-python>=1.3.1
