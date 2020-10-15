@@ -17,6 +17,9 @@ class Music(commands.Cog):
         if ctx.author.voice == None:
             await ctx.send('pls join a vc')
             return
+        if ctx.guild.voice_client in bot.voice_clients:
+            await ctx.send('already connected to vc')
+            return
         await ctx.author.voice.channel.connect()
         await ctx.send('connected to your vc')
     
