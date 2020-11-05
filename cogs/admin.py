@@ -130,24 +130,18 @@ class Admin(commands.Cog):
     @commands.check(permissions.is_owner)
     async def change_playing(self, ctx, *, playing: str):
         """ Change playing status. """
-        if self.config.status_type == "idle":
-            status_type = discord.Status.idle
-        elif self.config.status_type == "dnd":
-            status_type = discord.Status.dnd
-        else:
-            status_type = discord.Status.online
+        status = self.config.status_type.lower()
+        status_type = {"idle": discord.Status.idle, "dnd": discord.Status.dnd}
 
-        if self.config.playing_type == "listening":
-            playing_type = 2
-        elif self.config.playing_type == "watching":
-            playing_type = 3
-        else:
-            playing_type = 0
+        activity = self.config.activity_type.lower()
+        activity_type = {"listening": 2, "watching": 3, "competing": 5}
 
         try:
             await self.bot.change_presence(
-                activity=discord.Activity(type=playing_type, name=playing),
-                status=status_type
+                activity=discord.Game(
+                    type=activity_type.get(activity, 0), name=playing
+                ),
+                status=status_type.get(status, discord.Status.online)
             )
             dataIO.change_value("config.json", "playing", playing)
             await ctx.send(f"Successfully changed playing status to **{playing}**")
