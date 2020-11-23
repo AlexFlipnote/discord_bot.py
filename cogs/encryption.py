@@ -12,6 +12,7 @@ from utils import default, http
 class Encryption(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.config()
 
     @commands.group()
     async def encode(self, ctx):
@@ -26,6 +27,7 @@ class Encryption(commands.Cog):
             await ctx.send_help(str(ctx.command))
 
     async def detect_file(self, ctx):
+        """ Detect if user uploaded a file to convert longer text """
         if ctx.message.attachments:
             file = ctx.message.attachments[0].url
 
@@ -41,7 +43,8 @@ class Encryption(commands.Cog):
             raise BadArgument("File you've provided is empty")
         return content
 
-    async def encryptout(self, ctx, convert, input):
+    async def encryptout(self, ctx, convert: str, input):
+        """ The main, modular function to control encrypt/decrypt commands """
         if not input:
             return await ctx.send(f"Aren't you going to give me anything to encode/decode **{ctx.author.name}**")
 
@@ -135,8 +138,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> hex",
-            binascii.hexlify(input.encode('UTF-8'))
+            ctx, "Text -> hex", binascii.hexlify(input.encode('UTF-8'))
         )
 
     @decode.command(name="hex")
@@ -157,8 +159,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> base85",
-            base64.b85encode(input.encode('UTF-8'))
+            ctx, "Text -> base85", base64.b85encode(input.encode('UTF-8'))
         )
 
     @decode.command(name="base85", aliases=["b85"])
@@ -179,8 +180,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> ASCII85",
-            base64.a85encode(input.encode('UTF-8'))
+            ctx, "Text -> ASCII85", base64.a85encode(input.encode('UTF-8'))
         )
 
     @decode.command(name="ascii85", aliases=["a85"])

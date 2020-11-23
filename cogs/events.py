@@ -11,7 +11,7 @@ from utils import default
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = default.get("config.json")
+        self.config = default.config()
         self.process = psutil.Process(os.getpid())
 
     @commands.Cog.listener()
@@ -45,7 +45,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        if not self.config.join_message:
+        if not self.config["join_message"]:
             return
 
         try:
@@ -53,7 +53,7 @@ class Events(commands.Cog):
         except IndexError:
             pass
         else:
-            await to_send.send(self.config.join_message)
+            await to_send.send(self.config["join_message"])
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
@@ -69,16 +69,16 @@ class Events(commands.Cog):
             self.bot.uptime = datetime.utcnow()
 
         # Check if user desires to have something other than online
-        status = self.config.status_type.lower()
+        status = self.config["status_type"].lower()
         status_type = {"idle": discord.Status.idle, "dnd": discord.Status.dnd}
 
         # Check if user desires to have a different type of activity
-        activity = self.config.activity_type.lower()
+        activity = self.config["activity_type"].lower()
         activity_type = {"listening": 2, "watching": 3, "competing": 5}
 
         await self.bot.change_presence(
             activity=discord.Game(
-                type=activity_type.get(activity, 0), name=self.config.activity
+                type=activity_type.get(activity, 0), name=self.config["activity"]
             ),
             status=status_type.get(status, discord.Status.online)
         )

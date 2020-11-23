@@ -8,7 +8,7 @@ from discord.ext import commands
 class Discord_Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = default.get("config.json")
+        self.config = default.config()
 
     @commands.command()
     @commands.guild_only()
@@ -45,28 +45,22 @@ class Discord_Info(commands.Cog):
     async def mods(self, ctx):
         """ Check which mods are online on current guild """
         message = ""
-        online, idle, dnd, offline = [], [], [], []
+        all_status = {
+            "online": {"users": [], "emoji": "🟢"},
+            "idle": {"users": [], "emoji": "🟡"},
+            "dnd": {"users": [], "emoji": "🔴"},
+            "offline": {"users": [], "emoji": "⚫"}
+        }
 
         for user in ctx.guild.members:
-            if ctx.channel.permissions_for(user).kick_members or \
-               ctx.channel.permissions_for(user).ban_members:
-                if not user.bot and user.status is discord.Status.online:
-                    online.append(f"**{user}**")
-                if not user.bot and user.status is discord.Status.idle:
-                    idle.append(f"**{user}**")
-                if not user.bot and user.status is discord.Status.dnd:
-                    dnd.append(f"**{user}**")
-                if not user.bot and user.status is discord.Status.offline:
-                    offline.append(f"**{user}**")
+            user_perm = ctx.channel.permissions_for(user)
+            if user_perm.kick_members or user_perm.ban_members:
+                if not user.bot:
+                    all_status[str(user.status)]["users"].append(f"**{user}**")
 
-        if online:
-            message += f"🟢 {', '.join(online)}\n"
-        if idle:
-            message += f"🟡 {', '.join(idle)}\n"
-        if dnd:
-            message += f"🔴 {', '.join(dnd)}\n"
-        if offline:
-            message += f"⚫ {', '.join(offline)}\n"
+        for g in all_status:
+            if all_status[g]["users"]:
+                message += f"{all_status[g]['emoji']} {', '.join(all_status[g]['users'])}\n"
 
         await ctx.send(f"Mods in **{ctx.guild.name}**\n{message}")
 

@@ -14,7 +14,8 @@ from utils import lists, permissions, http, default, argparser
 class Fun_Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = default.get("config.json")
+        self.config = default.config()
+        self.alex_api_token = self.config["alexflipnote_api"]
 
     @commands.command(aliases=['8ball'])
     async def eightball(self, ctx, *, question: commands.clean_content):
@@ -22,9 +23,9 @@ class Fun_Commands(commands.Cog):
         answer = random.choice(lists.ballresponse)
         await ctx.send(f"🎱 **Question:** {question}\n**Answer:** {answer}")
 
-    async def randomimageapi(self, ctx, url, endpoint):
+    async def randomimageapi(self, ctx, url: str, endpoint: str, token: str = None):
         try:
-            r = await http.get(url, res_method="json", no_cache=True)
+            r = await http.get(url, res_method="json", no_cache=True, headers={"Authorization": token})
         except aiohttp.ClientConnectorError:
             return await ctx.send("The API seems to be down...")
         except aiohttp.ContentTypeError:
@@ -32,11 +33,11 @@ class Fun_Commands(commands.Cog):
 
         await ctx.send(r[endpoint])
 
-    async def api_img_creator(self, ctx, url, filename, content=None):
+    async def api_img_creator(self, ctx, url: str, filename: str, content: str = None, token: str = None):
         async with ctx.channel.typing():
-            req = await http.get(url, res_method="read")
+            req = await http.get(url, res_method="read", headers={"Authorization": token})
 
-            if req is None:
+            if not req:
                 return await ctx.send("I couldn't create the image ;-;")
 
             bio = BytesIO(req)
@@ -47,19 +48,19 @@ class Fun_Commands(commands.Cog):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
         """ Posts a random cat """
-        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/cats', 'file')
+        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/cats', 'file', token=self.alex_api_token)
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def dog(self, ctx):
         """ Posts a random dog """
-        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file')
+        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file', token=self.alex_api_token)
 
     @commands.command(aliases=["bird"])
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def birb(self, ctx):
         """ Posts a random birb """
-        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/birb', 'file')
+        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/birb', 'file', token=self.alex_api_token)
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
@@ -115,14 +116,14 @@ class Fun_Commands(commands.Cog):
         if args.dark and args.light:
             return await ctx.send(f"**{ctx.author.name}**, you can't define both --dark and --light, sorry..")
 
-        await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png")
+        await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png", token=self.alex_api_token)
 
     @commands.command(aliases=['color'])
     @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
     async def colour(self, ctx, colour: str):
         """ View the colour HEX details """
         async with ctx.channel.typing():
-            if not permissions.can_embed(ctx):
+            if not permissions.can_handle(ctx, "embed_links"):
                 return await ctx.send("I can't embed in this channel ;-;")
 
             if colour == "random":
@@ -135,7 +136,10 @@ class Fun_Commands(commands.Cog):
                 return await ctx.send("You're only allowed to enter HEX (0-9 & A-F)")
 
             try:
-                r = await http.get(f"https://api.alexflipnote.dev/colour/{colour}", res_method="json", no_cache=True)
+                r = await http.get(
+                    f"https://api.alexflipnote.dev/colour/{colour}", res_method="json",
+                    no_cache=True, headers={"Authorization": self.alex_api_token}
+                )
             except aiohttp.ClientConnectorError:
                 return await ctx.send("The API seems to be down...")
             except aiohttp.ContentTypeError:
@@ -259,7 +263,7 @@ class Fun_Commands(commands.Cog):
     @commands.command(aliases=['noticemesenpai'])
     async def noticeme(self, ctx):
         """ Notice me senpai! owo """
-        if not permissions.can_upload(ctx):
+        if not permissions.can_handle(ctx, "attach_files"):
             return await ctx.send("I cannot send images here ;-;")
 
         bio = BytesIO(await http.get("https://i.alexflipnote.dev/500ce4.gif", res_method="read"))

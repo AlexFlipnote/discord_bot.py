@@ -11,7 +11,7 @@ from utils import default
 class Information(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = default.get("config.json")
+        self.config = default.config()
         self.process = psutil.Process(os.getpid())
 
     @commands.command()
@@ -40,8 +40,7 @@ class Information(commands.Cog):
     async def botserver(self, ctx):
         """ Get an invite to our support server! """
         if isinstance(ctx.channel, discord.DMChannel) or ctx.guild.id != 86484642730885120:
-            return await ctx.send(f"**Here you go {ctx.author.name} 🍻\n<{self.config.botserver}>**")
-
+            return await ctx.send(f"**Here you go {ctx.author.name} 🍻\n<{self.config['botserver']}>**")
         await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
 
     @commands.command(aliases=['info', 'stats', 'status'])
@@ -58,15 +57,15 @@ class Information(commands.Cog):
         embed.set_thumbnail(url=ctx.bot.user.avatar_url)
         embed.add_field(name="Last boot", value=default.timeago(datetime.now() - self.bot.uptime), inline=True)
         embed.add_field(
-            name=f"Developer{'' if len(self.config.owners) == 1 else 's'}",
-            value=', '.join([str(self.bot.get_user(x)) for x in self.config.owners]),
+            name=f"Developer{'' if len(self.config['owners']) == 1 else 's'}",
+            value=', '.join([str(self.bot.get_user(x)) for x in self.config["owners"]]),
             inline=True)
         embed.add_field(name="Library", value="discord.py", inline=True)
         embed.add_field(name="Servers", value=f"{len(ctx.bot.guilds)} ( avg: {avgmembers} users/server )", inline=True)
         embed.add_field(name="Commands loaded", value=len([x.name for x in self.bot.commands]), inline=True)
         embed.add_field(name="RAM", value=f"{ramUsage:.2f} MB", inline=True)
 
-        await ctx.send(content=f"ℹ About **{ctx.bot.user}** | **{self.config.version}**", embed=embed)
+        await ctx.send(content=f"ℹ About **{ctx.bot.user}** | **{self.config['version']}**", embed=embed)
 
 
 def setup(bot):

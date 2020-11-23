@@ -4,21 +4,32 @@ import discord
 import importlib
 import os
 import sys
+import json
 
 from discord.ext import commands
-from utils import permissions, default, http, dataIO
+from utils import permissions, default, http
 
 
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = default.get("config.json")
+        self.config = default.config()
         self._last_result = None
+
+    def change_config_value(self, value: str, changeto: str):
+        """ Change a value from the configs """
+        config_name = "config.json"
+        with open(config_name, "r") as jsonFile:
+            data = json.load(jsonFile)
+
+        data[value] = changeto
+        with open(config_name, "w") as jsonFile:
+            json.dump(data, jsonFile, indent=2)
 
     @commands.command()
     async def amiadmin(self, ctx):
         """ Are you an admin? """
-        if ctx.author.id in self.config.owners:
+        if ctx.author.id in self.config["owners"]:
             return await ctx.send(f"Yes **{ctx.author.name}** you are an admin! ✅")
 
         # Please do not remove this part.
@@ -130,10 +141,10 @@ class Admin(commands.Cog):
     @commands.check(permissions.is_owner)
     async def change_playing(self, ctx, *, playing: str):
         """ Change playing status. """
-        status = self.config.status_type.lower()
+        status = self.config["status_type"].lower()
         status_type = {"idle": discord.Status.idle, "dnd": discord.Status.dnd}
 
-        activity = self.config.activity_type.lower()
+        activity = self.config["activity_type"].lower()
         activity_type = {"listening": 2, "watching": 3, "competing": 5}
 
         try:
@@ -143,7 +154,7 @@ class Admin(commands.Cog):
                 ),
                 status=status_type.get(status, discord.Status.online)
             )
-            dataIO.change_value("config.json", "playing", playing)
+            self.change_config_value("playing", playing)
             await ctx.send(f"Successfully changed playing status to **{playing}**")
         except discord.InvalidArgument as err:
             await ctx.send(err)
