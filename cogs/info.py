@@ -47,7 +47,7 @@ class Information(commands.Cog):
     async def about(self, ctx):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
-        avgmembers = round(len(self.bot.users) / len(self.bot.guilds))
+        avgmembers = sum(g.member_count for g in self.bot.guilds) / len(self.bot.guilds)
 
         embedColour = discord.Embed.Empty
         if hasattr(ctx, 'guild') and ctx.guild is not None:
@@ -59,9 +59,10 @@ class Information(commands.Cog):
         embed.add_field(
             name=f"Developer{'' if len(self.config['owners']) == 1 else 's'}",
             value=', '.join([str(self.bot.get_user(x)) for x in self.config["owners"]]),
-            inline=True)
+            inline=True
+        )
         embed.add_field(name="Library", value="discord.py", inline=True)
-        embed.add_field(name="Servers", value=f"{len(ctx.bot.guilds)} ( avg: {avgmembers} users/server )", inline=True)
+        embed.add_field(name="Servers", value=f"{len(ctx.bot.guilds)} ( avg: {avgmembers:,.2f} users/server )", inline=True)
         embed.add_field(name="Commands loaded", value=len([x.name for x in self.bot.commands]), inline=True)
         embed.add_field(name="RAM", value=f"{ramUsage:.2f} MB", inline=True)
 
