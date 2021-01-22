@@ -25,7 +25,10 @@ class Fun_Commands(commands.Cog):
 
     async def randomimageapi(self, ctx, url: str, endpoint: str, token: str = None):
         try:
-            r = await http.get(url, res_method="json", no_cache=True, headers={"Authorization": token})
+            r = await http.get(
+                url, res_method="json", no_cache=True,
+                headers={"Authorization": token} if token else None
+            )
         except aiohttp.ClientConnectorError:
             return await ctx.send("The API seems to be down...")
         except aiohttp.ContentTypeError:
@@ -35,7 +38,10 @@ class Fun_Commands(commands.Cog):
 
     async def api_img_creator(self, ctx, url: str, filename: str, content: str = None, token: str = None):
         async with ctx.channel.typing():
-            req = await http.get(url, res_method="read", headers={"Authorization": token})
+            req = await http.get(
+                url, res_method="read",
+                headers={"Authorization": token} if token else None
+            )
 
             if not req:
                 return await ctx.send("I couldn't create the image ;-;")
