@@ -46,15 +46,15 @@ class Discord_Info(commands.Cog):
         """ Check which mods are online on current guild """
         message = ""
         all_status = {
-            "online": {"users": [], "emoji": "🟢"},
-            "idle": {"users": [], "emoji": "🟡"},
-            "dnd": {"users": [], "emoji": "🔴"},
-            "offline": {"users": [], "emoji": "⚫"}
+            "online": {"users": [], "emoji": "<:colorblind_online:811309213514203226>"},
+            "idle": {"users": [], "emoji": "<:colorblind_idle:811309242493173832>"},
+            "dnd": {"users": [], "emoji": "<:colorblind_dnd:811309257534079056>"},
+            "offline": {"users": [], "emoji": "<:colorblind_offline:811309228592857108>"}
         }
 
         for user in ctx.guild.members:
             user_perm = ctx.channel.permissions_for(user)
-            if user_perm.kick_members or user_perm.ban_members:
+            if user_perm.kick_members or user_perm.ban_members or user_perm.move_members:
                 if not user.bot:
                     all_status[str(user.status)]["users"].append(f"**{user}**")
 
@@ -121,7 +121,6 @@ class Discord_Info(commands.Cog):
         embed.add_field(name="Roles", value=show_roles, inline=False)
 
         await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)
-
 
 def setup(bot):
     bot.add_cog(Discord_Info(bot))

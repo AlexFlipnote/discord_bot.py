@@ -48,7 +48,7 @@ class Admin(commands.Cog):
             self.bot.load_extension(f"cogs.{name}")
         except Exception as e:
             return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Loaded extension **{name}.py**")
+        await ctx.send(f":white_check_mark: Loaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
@@ -58,7 +58,7 @@ class Admin(commands.Cog):
             self.bot.unload_extension(f"cogs.{name}")
         except Exception as e:
             return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Unloaded extension **{name}.py**")
+        await ctx.send(f":white_check_mark: Unloaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
@@ -68,7 +68,7 @@ class Admin(commands.Cog):
             self.bot.reload_extension(f"cogs.{name}")
         except Exception as e:
             return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Reloaded extension **{name}.py**")
+        await ctx.send(f":white_check_mark: Reloaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
@@ -92,7 +92,7 @@ class Admin(commands.Cog):
                 f"however the following failed...\n\n{output}"
             )
 
-        await ctx.send("Successfully reloaded all extensions")
+        await ctx.send(":white_check_mark: Successfully reloaded all extensions")
 
     @commands.command()
     @commands.check(permissions.is_owner)
@@ -205,7 +205,6 @@ class Admin(commands.Cog):
             await ctx.send(err)
         except TypeError:
             await ctx.send("You need to either provide an image URL or upload one with the command")
-
 
 def setup(bot):
     bot.add_cog(Admin(bot))
