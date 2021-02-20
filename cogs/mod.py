@@ -351,7 +351,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(manage_messages=True)
-    async def slowmode(self, ctx, *, seconds, user: discord.Member = None):
+    async def slowmode(self, ctx, seconds):
         """ Change the channel slowmode. """
         await ctx.channel.edit(slowmode_delay=seconds)
         embed = discord.Embed(description=f"Set the slowmode delay in this channel to {seconds} seconds!",
