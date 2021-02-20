@@ -50,41 +50,41 @@ class Fun_Commands(commands.Cog):
             bio.seek(0)
             await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-    @commands.command()
-    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def cat(self, ctx):
-        """ Posts a random cat """
-        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/cats', 'file', token=self.alex_api_token)
+#    @commands.command()
+#    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+#    async def cat(self, ctx):
+#        """ Posts a random cat """
+#        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/cats', 'file', token=self.alex_api_token)
 
-    @commands.command()
-    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def dog(self, ctx):
-        """ Posts a random dog """
-        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file', token=self.alex_api_token)
+#    @commands.command()
+#    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+#    async def dog(self, ctx):
+#        """ Posts a random dog """
+#        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file', token=self.alex_api_token)
 
-    @commands.command(aliases=["bird"])
-    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def birb(self, ctx):
-        """ Posts a random birb """
-        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/birb', 'file', token=self.alex_api_token)
+#    @commands.command(aliases=["bird"])
+#    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+#    async def birb(self, ctx):
+#        """ Posts a random birb """
+#        await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/birb', 'file', token=self.alex_api_token)
 
-    @commands.command()
-    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def duck(self, ctx):
-        """ Posts a random duck """
-        await self.randomimageapi(ctx, 'https://random-d.uk/api/v1/random', 'url')
+#    @commands.command()
+#    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+#    async def duck(self, ctx):
+#        """ Posts a random duck """
+#        await self.randomimageapi(ctx, 'https://random-d.uk/api/v1/random', 'url')
 
-    @commands.command()
-    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def coffee(self, ctx):
-        """ Posts a random coffee """
-        await self.randomimageapi(ctx, 'https://coffee.alexflipnote.dev/random.json', 'file')
+#    @commands.command()
+#    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+#    async def coffee(self, ctx):
+#        """ Posts a random coffee """
+#        await self.randomimageapi(ctx, 'https://coffee.alexflipnote.dev/random.json', 'file')
 
-    @commands.command(aliases=['flip', 'coin'])
-    async def coinflip(self, ctx):
-        """ Coinflip! """
-        coinsides = ['Heads', 'Tails']
-        await ctx.send(f"**{ctx.author.name}** flipped a coin and got **{random.choice(coinsides)}**!")
+#    @commands.command(aliases=['flip', 'coin'])
+#    async def coinflip(self, ctx):
+#        """ Coinflip! """
+#        coinsides = ['Heads', 'Tails']
+#        await ctx.send(f"**{ctx.author.name}** flipped a coin and got **{random.choice(coinsides)}**!")
 
     @commands.command()
     async def f(self, ctx, *, text: commands.clean_content = None):
@@ -93,74 +93,74 @@ class Fun_Commands(commands.Cog):
         reason = f"for **{text}** " if text else ""
         await ctx.send(f"**{ctx.author.name}** has paid their respect {reason}{random.choice(hearts)}")
 
-    @commands.command()
-    async def supreme(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)):
-        """ Make a fake Supreme logo
+#    @commands.command()
+#    async def supreme(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)):
+#        """ Make a fake Supreme logo
+#
+#        Arguments:
+#            --dark | Make the background to dark colour
+#            --light | Make background to light and text to dark colour
+#        """
+#        parser = argparser.Arguments()
+#        parser.add_argument('input', nargs="+", default=None)
+#        parser.add_argument('-d', '--dark', action='store_true')
+#        parser.add_argument('-l', '--light', action='store_true')
+#
+#        args, valid_check = parser.parse_args(text)
+#        if not valid_check:
+#            return await ctx.send(args)
+#
+#        inputText = urllib.parse.quote(' '.join(args.input))
+#        if len(inputText) > 500:
+#            return await ctx.send(f"**{ctx.author.name}**, the Supreme API is limited to 500 characters, sorry.")
 
-        Arguments:
-            --dark | Make the background to dark colour
-            --light | Make background to light and text to dark colour
-        """
-        parser = argparser.Arguments()
-        parser.add_argument('input', nargs="+", default=None)
-        parser.add_argument('-d', '--dark', action='store_true')
-        parser.add_argument('-l', '--light', action='store_true')
+#        darkorlight = ""
+#        if args.dark:
+#            darkorlight = "dark=true"
+#        if args.light:
+#            darkorlight = "light=true"
+#        if args.dark and args.light:
+#            return await ctx.send(f"**{ctx.author.name}**, you can't define both --dark and --light, sorry..")
+#
+#        await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png", token=self.alex_api_token)
 
-        args, valid_check = parser.parse_args(text)
-        if not valid_check:
-            return await ctx.send(args)
-
-        inputText = urllib.parse.quote(' '.join(args.input))
-        if len(inputText) > 500:
-            return await ctx.send(f"**{ctx.author.name}**, the Supreme API is limited to 500 characters, sorry.")
-
-        darkorlight = ""
-        if args.dark:
-            darkorlight = "dark=true"
-        if args.light:
-            darkorlight = "light=true"
-        if args.dark and args.light:
-            return await ctx.send(f"**{ctx.author.name}**, you can't define both --dark and --light, sorry..")
-
-        await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png", token=self.alex_api_token)
-
-    @commands.command(aliases=['color'])
-    @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
-    async def colour(self, ctx, colour: str):
-        """ View the colour HEX details """
-        async with ctx.channel.typing():
-            if not permissions.can_handle(ctx, "embed_links"):
-                return await ctx.send("I can't embed in this channel ;-;")
-
-            if colour == "random":
-                colour = "%06x" % random.randint(0, 0xFFFFFF)
-
-            if colour[:1] == "#":
-                colour = colour[1:]
-
-            if not re.search(r'^(?:[0-9a-fA-F]{3}){1,2}$', colour):
-                return await ctx.send("You're only allowed to enter HEX (0-9 & A-F)")
-
-            try:
-                r = await http.get(
-                    f"https://api.alexflipnote.dev/colour/{colour}", res_method="json",
-                    no_cache=True, headers={"Authorization": self.alex_api_token}
-                )
-            except aiohttp.ClientConnectorError:
-                return await ctx.send("The API seems to be down...")
-            except aiohttp.ContentTypeError:
-                return await ctx.send("The API returned an error or didn't return JSON...")
-
-            embed = discord.Embed(colour=r["int"])
-            embed.set_thumbnail(url=r["image"])
-            embed.set_image(url=r["image_gradient"])
-
-            embed.add_field(name="HEX", value=r['hex'], inline=True)
-            embed.add_field(name="RGB", value=r['rgb'], inline=True)
-            embed.add_field(name="Int", value=r['int'], inline=True)
-            embed.add_field(name="Brightness", value=r['brightness'], inline=True)
-
-            await ctx.send(embed=embed, content=f"{ctx.invoked_with.title()} name: **{r['name']}**")
+#    @commands.command(aliases=['color'])
+#    @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
+#    async def colour(self, ctx, colour: str):
+#        """ View the colour HEX details """
+#        async with ctx.channel.typing():
+#            if not permissions.can_handle(ctx, "embed_links"):
+#                return await ctx.send("I can't embed in this channel ;-;")
+#
+#            if colour == "random":
+#                colour = "%06x" % random.randint(0, 0xFFFFFF)
+#
+#            if colour[:1] == "#":
+#                colour = colour[1:]
+#
+#            if not re.search(r'^(?:[0-9a-fA-F]{3}){1,2}$', colour):
+#                return await ctx.send("You're only allowed to enter HEX (0-9 & A-F)")
+#
+#            try:
+#                r = await http.get(
+#                    f"https://api.alexflipnote.dev/colour/{colour}", res_method="json",
+#                    no_cache=True, headers={"Authorization": self.alex_api_token}
+#                )
+#            except aiohttp.ClientConnectorError:
+#                return await ctx.send("The API seems to be down...")
+#            except aiohttp.ContentTypeError:
+#                return await ctx.send("The API returned an error or didn't return JSON...")
+#
+#            embed = discord.Embed(colour=r["int"])
+#            embed.set_thumbnail(url=r["image"])
+#            embed.set_image(url=r["image_gradient"])
+#
+#            embed.add_field(name="HEX", value=r['hex'], inline=True)
+#            embed.add_field(name="RGB", value=r['rgb'], inline=True)
+#            embed.add_field(name="Int", value=r['int'], inline=True)
+#            embed.add_field(name="Brightness", value=r['brightness'], inline=True)
+#
+#            await ctx.send(embed=embed, content=f"{ctx.invoked_with.title()} name: **{r['name']}**")
 
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
@@ -266,14 +266,14 @@ class Fun_Commands(commands.Cog):
 
         await ctx.send(f"**{user.name}** is **{hot:.2f}%** hot {emoji}")
 
-    @commands.command(aliases=['noticemesenpai'])
-    async def noticeme(self, ctx):
-        """ Notice me senpai! owo """
-        if not permissions.can_handle(ctx, "attach_files"):
-            return await ctx.send("I cannot send images here ;-;")
-
-        bio = BytesIO(await http.get("https://i.alexflipnote.dev/500ce4.gif", res_method="read"))
-        await ctx.send(file=discord.File(bio, filename="noticeme.gif"))
+#    @commands.command(aliases=['noticemesenpai'])
+#    async def noticeme(self, ctx):
+#        """ Notice me senpai! owo """
+#        if not permissions.can_handle(ctx, "attach_files"):
+#            return await ctx.send("I cannot send images here ;-;")
+#
+#        bio = BytesIO(await http.get("https://i.alexflipnote.dev/500ce4.gif", res_method="read"))
+#        await ctx.send(file=discord.File(bio, filename="noticeme.gif"))
 
     @commands.command(aliases=['slots', 'bet'])
     @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)

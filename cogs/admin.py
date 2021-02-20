@@ -206,5 +206,13 @@ class Admin(commands.Cog):
         except TypeError:
             await ctx.send("You need to either provide an image URL or upload one with the command")
 
+    @commands.command()
+    @commands.check(permissions.is_owner)
+    async def say(self, ctx, *, message):
+        try:
+            await ctx.send(message)
+        except:
+            await ctx.send("Please Give Some Message!")
+
 def setup(bot):
     bot.add_cog(Admin(bot))
