@@ -209,6 +209,7 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.check(permissions.is_owner)
     async def say(self, ctx, *, message):
+        """ Say something."""
         try:
             await ctx.send(message)
         except:
