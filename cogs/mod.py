@@ -116,7 +116,7 @@ class Moderator(commands.Cog):
         muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
 
         if not muted_role:
-            return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
+            return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensitive too...")
 
         try:
             await member.add_roles(muted_role, reason=default.responsible(ctx.author, reason))
@@ -135,7 +135,7 @@ class Moderator(commands.Cog):
         muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
 
         if not muted_role:
-            return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
+            return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensitive too...")
 
         try:
             await member.remove_roles(muted_role, reason=default.responsible(ctx.author, reason))
@@ -152,7 +152,7 @@ class Moderator(commands.Cog):
             return await ctx.send("To prevent abuse, I won't allow mentionable role for everyone/here role.")
 
         if ctx.author.top_role.position <= role.position:
-            return await ctx.send("It seems like the role you attempt to mention is over your permissions, therefor I won't allow you.")
+            return await ctx.send("It seems like the role you attempt to mention is over your permissions, therefore I won't allow you.")
 
         if ctx.me.top_role.position <= role.position:
             return await ctx.send("This role is above my permissions, I can't make it mentionable ;-;")
