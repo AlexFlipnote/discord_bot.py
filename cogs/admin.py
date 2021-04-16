@@ -113,7 +113,7 @@ class Admin(commands.Cog):
     @commands.check(permissions.is_owner)
     async def reboot(self, ctx):
         """ Reboot the bot """
-        await ctx.send('Rebooting now...')
+        await ctx.send("Rebooting now...")
         time.sleep(1)
         sys.exit(0)
 
@@ -191,7 +191,7 @@ class Admin(commands.Cog):
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url
         else:
-            url = url.strip('<>') if url else None
+            url = url.strip("<>") if url else None
 
         try:
             bio = await http.get(url, res_method="read")

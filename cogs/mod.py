@@ -26,7 +26,7 @@ class ActionReason(commands.Converter):
 
         if len(ret) > 512:
             reason_max = 512 - len(ret) - len(argument)
-            raise commands.BadArgument(f'reason is too long ({len(argument)}/{reason_max})')
+            raise commands.BadArgument(f"reason is too long ({len(argument)}/{reason_max})")
         return ret
 
 
@@ -167,7 +167,7 @@ class Moderator(commands.Cog):
                 return False
 
             try:
-                checker = await self.bot.wait_for('message', timeout=30.0, check=role_checker)
+                checker = await self.bot.wait_for("message", timeout=30.0, check=role_checker)
                 if checker.author.id == ctx.author.id:
                     await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
                     return await msg.edit(content=f"**{role.name}** mentioned by **{ctx.author}** in {checker.channel.mention}")
@@ -242,7 +242,7 @@ class Moderator(commands.Cog):
 
     async def do_removal(self, ctx, limit, predicate, *, before=None, after=None, message=True):
         if limit > 2000:
-            return await ctx.send(f'Too many messages to search given ({limit}/2000)')
+            return await ctx.send(f"Too many messages to search given ({limit}/2000)")
 
         if not before:
             before = ctx.message
@@ -255,13 +255,13 @@ class Moderator(commands.Cog):
         try:
             deleted = await ctx.channel.purge(limit=limit, before=before, after=after, check=predicate)
         except discord.Forbidden:
-            return await ctx.send('I do not have permissions to delete messages.')
+            return await ctx.send("I do not have permissions to delete messages.")
         except discord.HTTPException as e:
-            return await ctx.send(f'Error: {e} (try a smaller search?)')
+            return await ctx.send(f"Error: {e} (try a smaller search?)")
 
         deleted = len(deleted)
         if message is True:
-            await ctx.send(f'🚮 Successfully removed {deleted} message{"" if deleted == 1 else "s"}.')
+            await ctx.send(f"🚮 Successfully removed {deleted} message{'' if deleted == 1 else 's'}.")
 
     @prune.command()
     async def embeds(self, ctx, search=100):
@@ -283,7 +283,7 @@ class Moderator(commands.Cog):
         """Removes messages that have embeds or attachments."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds) or len(e.attachments))
 
-    @prune.command(name='all')
+    @prune.command(name="all")
     async def _remove_all(self, ctx, search=100):
         """Removes all messages."""
         await self.do_removal(ctx, search, lambda e: True)
@@ -299,11 +299,11 @@ class Moderator(commands.Cog):
         The substring must be at least 3 characters long.
         """
         if len(substr) < 3:
-            await ctx.send('The substring length must be at least 3 characters.')
+            await ctx.send("The substring length must be at least 3 characters.")
         else:
             await self.do_removal(ctx, 100, lambda e: substr in e.content)
 
-    @prune.command(name='bots')
+    @prune.command(name="bots")
     async def _bots(self, ctx, search=100, prefix=None):
         """Removes a bot user's messages and messages with their optional prefix."""
 
@@ -314,7 +314,7 @@ class Moderator(commands.Cog):
 
         await self.do_removal(ctx, search, predicate)
 
-    @prune.command(name='users')
+    @prune.command(name="users")
     async def _users(self, ctx, prefix=None, search=100):
         """Removes only user messages. """
 
@@ -323,22 +323,22 @@ class Moderator(commands.Cog):
 
         await self.do_removal(ctx, search, predicate)
 
-    @prune.command(name='emojis')
+    @prune.command(name="emojis")
     async def _emojis(self, ctx, search=100):
         """Removes all messages containing custom emoji."""
-        custom_emoji = re.compile(r'<a?:(.*?):(\d{17,21})>|[\u263a-\U0001f645]')
+        custom_emoji = re.compile(r"<a?:(.*?):(\d{17,21})>|[\u263a-\U0001f645]")
 
         def predicate(m):
             return custom_emoji.search(m.content)
 
         await self.do_removal(ctx, search, predicate)
 
-    @prune.command(name='reactions')
+    @prune.command(name="reactions")
     async def _reactions(self, ctx, search=100):
         """Removes all reactions from messages that have them."""
 
         if search > 2000:
-            return await ctx.send(f'Too many messages to search for ({search}/2000)')
+            return await ctx.send(f"Too many messages to search for ({search}/2000)")
 
         total_reactions = 0
         async for message in ctx.history(limit=search, before=ctx.message):
@@ -346,7 +346,7 @@ class Moderator(commands.Cog):
                 total_reactions += sum(r.count for r in message.reactions)
                 await message.clear_reactions()
 
-        await ctx.send(f'Successfully removed {total_reactions} reactions.')
+        await ctx.send(f"Successfully removed {total_reactions} reactions.")
 
 
 def setup(bot):

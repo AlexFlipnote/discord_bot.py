@@ -26,7 +26,7 @@ class Discord_Info(commands.Cog):
         for num, role in enumerate(sorted(ctx.guild.roles, reverse=True), start=1):
             allroles += f"[{str(num).zfill(2)}] {role.id}\t{role.name}\t[ Users: {len(role.members)} ]\r\n"
 
-        data = BytesIO(allroles.encode('utf-8'))
+        data = BytesIO(allroles.encode("utf-8"))
         await ctx.send(content=f"Roles in **{ctx.guild.name}**", file=discord.File(data, filename=f"{default.timetext('Roles')}"))
 
     @commands.command()
@@ -37,7 +37,7 @@ class Discord_Info(commands.Cog):
 
         embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar_url)
-        embed.description = f'**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at)}'
+        embed.description = f"**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at)}"
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -107,9 +107,9 @@ class Discord_Info(commands.Cog):
         """ Get user information """
         user = user or ctx.author
 
-        show_roles = ', '.join(
+        show_roles = ", ".join(
             [f"<@&{x.id}>" for x in sorted(user.roles, key=lambda x: x.position, reverse=True) if x.id != ctx.guild.default_role.id]
-        ) if len(user.roles) > 1 else 'None'
+        ) if len(user.roles) > 1 else "None"
 
         embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar_url)

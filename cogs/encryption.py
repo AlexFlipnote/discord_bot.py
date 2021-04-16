@@ -51,7 +51,7 @@ class Encryption(commands.Cog):
         async with ctx.channel.typing():
             if len(input) > 1900:
                 try:
-                    data = BytesIO(input.encode('utf-8'))
+                    data = BytesIO(input.encode("utf-8"))
                 except AttributeError:
                     data = BytesIO(input)
 
@@ -64,7 +64,7 @@ class Encryption(commands.Cog):
                     return await ctx.send(f"The file I returned was over 8 MB, sorry {ctx.author.name}...")
 
             try:
-                await ctx.send(f"📑 **{convert}**```fix\n{input.decode('UTF-8')}```")
+                await ctx.send(f"📑 **{convert}**```fix\n{input.decode('utf-8')}```")
             except AttributeError:
                 await ctx.send(f"📑 **{convert}**```fix\n{input}```")
 
@@ -75,7 +75,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> base32", base64.b32encode(input.encode('UTF-8'))
+            ctx, "Text -> base32", base64.b32encode(input.encode("utf-8"))
         )
 
     @decode.command(name="base32", aliases=["b32"])
@@ -85,7 +85,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         try:
-            await self.encryptout(ctx, "base32 -> Text", base64.b32decode(input.encode('UTF-8')))
+            await self.encryptout(ctx, "base32 -> Text", base64.b32decode(input.encode("utf-8")))
         except Exception:
             await ctx.send("Invalid base32...")
 
@@ -96,7 +96,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> base64", base64.urlsafe_b64encode(input.encode('UTF-8'))
+            ctx, "Text -> base64", base64.urlsafe_b64encode(input.encode("utf-8"))
         )
 
     @decode.command(name="base64", aliases=["b64"])
@@ -106,7 +106,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         try:
-            await self.encryptout(ctx, "base64 -> Text", base64.urlsafe_b64decode(input.encode('UTF-8')))
+            await self.encryptout(ctx, "base64 -> Text", base64.urlsafe_b64decode(input.encode("utf-8")))
         except Exception:
             await ctx.send("Invalid base64...")
 
@@ -117,7 +117,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> rot13", codecs.decode(input, 'rot_13')
+            ctx, "Text -> rot13", codecs.decode(input, "rot_13")
         )
 
     @decode.command(name="rot13", aliases=["r13"])
@@ -127,7 +127,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         try:
-            await self.encryptout(ctx, "rot13 -> Text", codecs.decode(input, 'rot_13'))
+            await self.encryptout(ctx, "rot13 -> Text", codecs.decode(input, "rot_13"))
         except Exception:
             await ctx.send("Invalid rot13...")
 
@@ -138,7 +138,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> hex", binascii.hexlify(input.encode('UTF-8'))
+            ctx, "Text -> hex", binascii.hexlify(input.encode("utf-8"))
         )
 
     @decode.command(name="hex")
@@ -148,7 +148,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         try:
-            await self.encryptout(ctx, "hex -> Text", binascii.unhexlify(input.encode('UTF-8')))
+            await self.encryptout(ctx, "hex -> Text", binascii.unhexlify(input.encode("utf-8")))
         except Exception:
             await ctx.send("Invalid hex...")
 
@@ -159,7 +159,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> base85", base64.b85encode(input.encode('UTF-8'))
+            ctx, "Text -> base85", base64.b85encode(input.encode("utf-8"))
         )
 
     @decode.command(name="base85", aliases=["b85"])
@@ -169,7 +169,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         try:
-            await self.encryptout(ctx, "base85 -> Text", base64.b85decode(input.encode('UTF-8')))
+            await self.encryptout(ctx, "base85 -> Text", base64.b85decode(input.encode("utf-8")))
         except Exception:
             await ctx.send("Invalid base85...")
 
@@ -180,7 +180,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         await self.encryptout(
-            ctx, "Text -> ASCII85", base64.a85encode(input.encode('UTF-8'))
+            ctx, "Text -> ASCII85", base64.a85encode(input.encode("utf-8"))
         )
 
     @decode.command(name="ascii85", aliases=["a85"])
@@ -190,7 +190,7 @@ class Encryption(commands.Cog):
             input = await self.detect_file(ctx)
 
         try:
-            await self.encryptout(ctx, "ASCII85 -> Text", base64.a85decode(input.encode('UTF-8')))
+            await self.encryptout(ctx, "ASCII85 -> Text", base64.a85decode(input.encode("utf-8")))
         except Exception:
             await ctx.send("Invalid ASCII85...")
 

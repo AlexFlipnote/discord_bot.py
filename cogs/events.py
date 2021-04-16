@@ -65,7 +65,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         """ The function that activates when boot was completed """
-        if not hasattr(self.bot, 'uptime'):
+        if not hasattr(self.bot, "uptime"):
             self.bot.uptime = datetime.utcnow()
 
         # Check if user desires to have something other than online
@@ -84,7 +84,7 @@ class Events(commands.Cog):
         )
 
         # Indicate that the bot has successfully booted up
-        print(f'Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}')
+        print(f"Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}")
 
 
 def setup(bot):

@@ -24,4 +24,4 @@ for file in os.listdir("cogs"):
 try:
     bot.run(config["token"])
 except Exception as e:
-    print(f'Error when logging in: {e}')
+    print(f"Error when logging in: {e}")
