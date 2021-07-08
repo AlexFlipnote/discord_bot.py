@@ -48,6 +48,71 @@ class Moderator(commands.Cog):
             await ctx.send(default.actionmessage("kicked"))
         except Exception as e:
             await ctx.send(e)
+            
+    @commands.command()
+    @commands.guild_only()
+    @permissions.has_permissions(manage_channels=True)
+    async def nuke(self,ctx):
+        y = ctx.channel.position
+        await ctx.channel.delete()
+        x = await ctx.channel.clone()
+        await x.edit(position=y)
+        await x.send("https://emoji.gg/assets/emoji/7102_NukeExplosion.gif")
+    @commands.command()
+    @commands.guild_only()
+    @permissions.has_permissions(manage_roles=True)
+    async def lock(self,ctx):
+        channel = ctx.channel
+        overwrite = channel.overwrites_for(ctx.guild.default_role)
+        if overwrite.send_messages == False:
+            embed = discord.Embed(colour=0xFF004D,
+                                  description=f"{channel.mention} is already a locked channel")
+            embed.set_author(name='Invalid usage',
+                             icon_url='https://media.giphy.com/media/uljItOrPUGYfXrgAhO/giphy.gif')
+            try:
+                await ctx.send(embed=embed)
+                return
+            except:
+                try:
+                    await ctx.author.send(embed=embed)
+                    return
+                except:
+                    return
+        embed = discord.Embed(colour=0xFF004D,
+                              description=f":lock: **Locked channel** {ctx.channel.mention}")
+        await ctx.send(embed=embed)
+        await channel.set_permissions(ctx.guild.default_role, send_messages=False)
+    @commands.command()
+    @commands.guild_only()
+    @permissions.has_permissions(manage_roles=True)
+    async def unlock(self,ctx):
+        channel = ctx.channel
+        overwrite = channel.overwrites_for(ctx.guild.default_role)
+        if overwrite.send_messages == True:
+            embed = discord.Embed(colour=0xFF004D,
+                                  description=f"{channel.mention} is not a locked channel")
+            embed.set_author(name='Invalid usage',
+                             icon_url='https://media.giphy.com/media/uljItOrPUGYfXrgAhO/giphy.gif')
+            try:
+                await ctx.send(embed=embed)
+                return
+            except:
+                try:
+                    await ctx.author.send(embed=embed)
+                    return
+                except:
+                    return
+        await channel.set_permissions(ctx.guild.default_role, send_messages=True)
+        embed = discord.Embed(colour=0xFF004D,
+                              description=f":unlock: **Unlocked channel** {ctx.channel.mention}")
+        try:
+            await ctx.send(embed=embed)
+        except:
+            try:
+
+                await ctx.author.send(embed=embed)
+            except:
+                pass
 
     @commands.command(aliases=["nick"])
     @commands.guild_only()
