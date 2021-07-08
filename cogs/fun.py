@@ -3,6 +3,8 @@ import discord
 import secrets
 import asyncio
 import aiohttp
+import html5lib
+from bs4 import BeautifulSoup
 
 from io import BytesIO
 from discord.ext import commands
@@ -14,6 +16,18 @@ class Fun_Commands(commands.Cog):
         self.bot = bot
         self.config = default.config()
         self.alex_api_token = self.config["alexflipnote_api"]
+       
+    @commands.command()
+    async def topic(self,ctx):
+        url="https://www.conversationstarters.com/generator.php"
+        async with aiohttp.ClientSession() as s:
+            async with s.get(url) as r:
+                output=await r.read()
+                soup = BeautifulSoup(output, 'html5lib')
+                topics=soup.find("div", {"id": "random"})
+                _topic=topics.contents[1]
+        await ctx.send(f"**{_topic}**")
+
 
     @commands.command(aliases=["8ball"])
     async def eightball(self, ctx, *, question: commands.clean_content):
