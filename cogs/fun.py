@@ -164,12 +164,12 @@ class Fun_Commands(commands.Cog):
         r = random.randint(1, 100)
         hot = r / 1.17
 
-        if hot > 25:
-            emoji = "❤"
+        if hot > 75:
+            emoji = "💞"
         elif hot > 50:
             emoji = "💖"
-        elif hot > 75:
-            emoji = "💞"
+        elif hot > 25:
+            emoji = "❤"
         else:
             emoji = "💔"
 
