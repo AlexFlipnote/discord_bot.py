@@ -201,7 +201,41 @@ class Fun_Commands(commands.Cog):
             await ctx.send(f"{slotmachine} 2 in a row, you won! 🎉")
         else:
             await ctx.send(f"{slotmachine} No match, you lost 😢")
+    
+    @commands.command(aliases=['Covid'])
+    async def covid(self, ctx, country_name):
+        """Covid-19 Statistics for any countries"""
+        country_name = country_name.lower()
+        url = f'https://disease.sh/v3/covid-19/countries/{country_name}'
+        response = requests.request("GET", url)
+        json_data = response.json()
 
+        total_cases = json_data["cases"]
+        total_deaths = json_data["deaths"]
+        total_recover = json_data["recovered"]
+        total_active_cases = json_data["active"]
+        total_critical = json_data["critical"]
+
+        new_cases = json_data["todayCases"]
+        new_deaths = json_data["todayDeaths"]
+        new_recover = json_data["todayRecovered"]
+
+        embed = discord.Embed(title = f"**COVID-19 Statistics {country_name}**")
+        embed.add_field(name = "Total Cases", value = total_cases,inline = False)
+        embed.add_field(name = "Total Deaths", value = total_deaths,inline = False)
+        embed.add_field(name = "Total Recover", value = total_recover,inline = False)
+        embed.add_field(name = "Total Active Cases", value = total_active_cases,inline = False)
+        embed.add_field(name = "Total Critical Condition", value = total_critical,inline = False)
+
+        embed.add_field(name = "New Cases Today", value = new_cases,inline = False)
+        embed.add_field(name = "New Deaths Today", value = new_deaths,inline = False)
+        embed.add_field(name = "New Recovery Today", value = new_recover,inline = False)
+
+        await ctx.send(embed = embed)
+    @covid.error
+    async def covid_err(self, msg, error):
+      """This will return error to user if something is wrong with command or code"""
+      await msg.send(f"**{error}**\n**If you get KeyError: 'cases' make sure you write country name correctly**\n**Syntax:** `<prefix> covid <country_name>`",delete_after=20)
 
 def setup(bot):
     bot.add_cog(Fun_Commands(bot))
