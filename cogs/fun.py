@@ -206,30 +206,18 @@ class Fun_Commands(commands.Cog):
     async def covid(self, ctx, country_name):
         """Covid-19 Statistics for any countries"""
         country_name = country_name.lower()
-        url = f'https://disease.sh/v3/covid-19/countries/{country_name}'
-        response = requests.request("GET", url)
-        json_data = response.json()
-
-        total_cases = json_data["cases"]
-        total_deaths = json_data["deaths"]
-        total_recover = json_data["recovered"]
-        total_active_cases = json_data["active"]
-        total_critical = json_data["critical"]
-
-        new_cases = json_data["todayCases"]
-        new_deaths = json_data["todayDeaths"]
-        new_recover = json_data["todayRecovered"]
+        json_data = await http.get(f'https://disease.sh/v3/covid-19/countries/{country_name}',res_method="json")
 
         embed = discord.Embed(title = f"**COVID-19 Statistics {country_name}**")
-        embed.add_field(name = "Total Cases", value = total_cases,inline = False)
-        embed.add_field(name = "Total Deaths", value = total_deaths,inline = False)
-        embed.add_field(name = "Total Recover", value = total_recover,inline = False)
-        embed.add_field(name = "Total Active Cases", value = total_active_cases,inline = False)
-        embed.add_field(name = "Total Critical Condition", value = total_critical,inline = False)
+        embed.add_field(name = "Total Cases", value = json_data["cases"],inline = False)
+        embed.add_field(name = "Total Deaths", value = json_data["deaths"],inline = False)
+        embed.add_field(name = "Total Recover", value = json_data["recovered"],inline = False)
+        embed.add_field(name = "Total Active Cases", value = json_data["active"],inline = False)
+        embed.add_field(name = "Total Critical Condition", value = json_data["critical"],inline = False)
 
-        embed.add_field(name = "New Cases Today", value = new_cases,inline = False)
-        embed.add_field(name = "New Deaths Today", value = new_deaths,inline = False)
-        embed.add_field(name = "New Recovery Today", value = new_recover,inline = False)
+        embed.add_field(name = "New Cases Today", value = json_data["todayCases"],inline = False)
+        embed.add_field(name = "New Deaths Today", value = json_data["todayDeaths"],inline = False)
+        embed.add_field(name = "New Recovery Today", value = json_data["todayRecovered"],inline = False)
 
         await ctx.send(embed = embed)
     @covid.error
