@@ -45,14 +45,12 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        if not self.config["join_message"]:
-            return
+        to_send = next((
+            chan for chan in sorted(guild.channels, key=lambda x: x.position)
+            if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)
+        ), None)
 
-        try:
-            to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
-        except IndexError:
-            pass
-        else:
+        if to_send:
             await to_send.send(self.config["join_message"])
 
     @commands.Cog.listener()
@@ -66,7 +64,7 @@ class Events(commands.Cog):
     async def on_ready(self):
         """ The function that activates when boot was completed """
         if not hasattr(self.bot, "uptime"):
-            self.bot.uptime = datetime.utcnow()
+            self.bot.uptime = datetime.now()
 
         # Check if user desires to have something other than online
         status = self.config["status_type"].lower()
