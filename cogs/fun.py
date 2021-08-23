@@ -201,7 +201,29 @@ class Fun_Commands(commands.Cog):
             await ctx.send(f"{slotmachine} 2 in a row, you won! 🎉")
         else:
             await ctx.send(f"{slotmachine} No match, you lost 😢")
+    
+    @commands.command(aliases=['Covid'])
+    async def covid(self, ctx, country_name):
+        """Covid-19 Statistics for any countries"""
+        country_name = country_name.lower()
+        json_data = await http.get(f'https://disease.sh/v3/covid-19/countries/{country_name}',res_method="json")
 
+        embed = discord.Embed(title = f"**COVID-19 Statistics {country_name}**")
+        embed.add_field(name = "Total Cases", value = json_data["cases"],inline = False)
+        embed.add_field(name = "Total Deaths", value = json_data["deaths"],inline = False)
+        embed.add_field(name = "Total Recover", value = json_data["recovered"],inline = False)
+        embed.add_field(name = "Total Active Cases", value = json_data["active"],inline = False)
+        embed.add_field(name = "Total Critical Condition", value = json_data["critical"],inline = False)
+
+        embed.add_field(name = "New Cases Today", value = json_data["todayCases"],inline = False)
+        embed.add_field(name = "New Deaths Today", value = json_data["todayDeaths"],inline = False)
+        embed.add_field(name = "New Recovery Today", value = json_data["todayRecovered"],inline = False)
+
+        await ctx.send(embed = embed)
+    @covid.error
+    async def covid_err(self, msg, error):
+      """This will return error to user if something is wrong with command or code"""
+      await msg.send(f"**{error}**\n**If you get KeyError: 'cases' make sure you write country name correctly**\n**Syntax:** `<prefix> covid <country_name>`",delete_after=20)
 
 def setup(bot):
     bot.add_cog(Fun_Commands(bot))
