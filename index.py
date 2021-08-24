@@ -3,12 +3,14 @@ import discord
 
 from utils import default
 from utils.data import Bot, HelpFormat
+from discord.ext import commands
 
 config = default.config()
 print("Logging in...")
 
 bot = Bot(
-    command_prefix=config["prefix"], prefix=config["prefix"],
+    command_prefix=commands.when_mentioned_or(config["prefix"]),
+    prefix=config["prefix"], strip_after_prefix=True,
     owner_ids=config["owners"], command_attrs=dict(hidden=True), help_command=HelpFormat(),
     allowed_mentions=discord.AllowedMentions(roles=False, users=True, everyone=False),
     intents=discord.Intents(  # kwargs found at https://discordpy.readthedocs.io/en/latest/api.html?highlight=intents#discord.Intents
