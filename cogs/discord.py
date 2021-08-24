@@ -15,7 +15,7 @@ class Discord_Info(commands.Cog):
     async def avatar(self, ctx, *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
         user = user or ctx.author
-        await ctx.send(f"Avatar to **{user.name}**\n{user.avatar_url_as(size=1024)}")
+        await ctx.send(f"Avatar to **{user.name}**\n{user.avatar.with_size(1024)}")
 
     @commands.command()
     @commands.guild_only()
@@ -36,8 +36,8 @@ class Discord_Info(commands.Cog):
         user = user or ctx.author
 
         embed = discord.Embed(colour=user.top_role.colour.value)
-        embed.set_thumbnail(url=user.avatar_url)
-        embed.description = f"**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at)}"
+        embed.set_thumbnail(url=user.avatar)
+        embed.description = f"**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at, ago=True)}"
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -74,9 +74,9 @@ class Discord_Info(commands.Cog):
             embed = discord.Embed()
 
             if ctx.guild.icon:
-                embed.set_thumbnail(url=ctx.guild.icon_url)
+                embed.set_thumbnail(url=ctx.guild.icon)
             if ctx.guild.banner:
-                embed.set_image(url=ctx.guild.banner_url_as(format="png"))
+                embed.set_image(url=ctx.guild.banner.with_format("png").with_size(1024))
 
             embed.add_field(name="Server Name", value=ctx.guild.name, inline=True)
             embed.add_field(name="Server ID", value=ctx.guild.id, inline=True)
@@ -84,7 +84,7 @@ class Discord_Info(commands.Cog):
             embed.add_field(name="Bots", value=find_bots, inline=True)
             embed.add_field(name="Owner", value=ctx.guild.owner, inline=True)
             embed.add_field(name="Region", value=ctx.guild.region, inline=True)
-            embed.add_field(name="Created", value=default.date(ctx.guild.created_at), inline=True)
+            embed.add_field(name="Created", value=default.date(ctx.guild.created_at, ago=True), inline=True)
             await ctx.send(content=f"ℹ information about **{ctx.guild.name}**", embed=embed)
 
     @server.command(name="avatar", aliases=["icon"])
@@ -92,14 +92,14 @@ class Discord_Info(commands.Cog):
         """ Get the current server icon """
         if not ctx.guild.icon:
             return await ctx.send("This server does not have a avatar...")
-        await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon_url_as(size=1024)}")
+        await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon}")
 
     @server.command(name="banner")
     async def server_banner(self, ctx):
         """ Get the current banner image """
         if not ctx.guild.banner:
             return await ctx.send("This server does not have a banner...")
-        await ctx.send(f"Banner of **{ctx.guild.name}**\n{ctx.guild.banner_url_as(format='png')}")
+        await ctx.send(f"Banner of **{ctx.guild.name}**\n{ctx.guild.banner.with_format('png')}")
 
     @commands.command()
     @commands.guild_only()
@@ -112,12 +112,12 @@ class Discord_Info(commands.Cog):
         ) if len(user.roles) > 1 else "None"
 
         embed = discord.Embed(colour=user.top_role.colour.value)
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_thumbnail(url=user.avatar)
 
         embed.add_field(name="Full name", value=user, inline=True)
         embed.add_field(name="Nickname", value=user.nick if hasattr(user, "nick") else "None", inline=True)
-        embed.add_field(name="Account created", value=default.date(user.created_at), inline=True)
-        embed.add_field(name="Joined this server", value=default.date(user.joined_at), inline=True)
+        embed.add_field(name="Account created", value=default.date(user.created_at, ago=True), inline=True)
+        embed.add_field(name="Joined this server", value=default.date(user.joined_at, ago=True), inline=True)
         embed.add_field(name="Roles", value=show_roles, inline=False)
 
         await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)
