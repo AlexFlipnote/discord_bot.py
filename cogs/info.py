@@ -2,6 +2,8 @@ import time
 import discord
 import psutil
 import os
+from PyDictionary import PyDictionary
+import wikipedia
 
 from discord.ext import commands
 from utils import default, http
@@ -73,6 +75,80 @@ class Information(commands.Cog):
                 embed=embed
             )
 
+            
+    @commands.command(aliases=['dict', 'dic'])
+    async def dictionary(self, ctx, *, keyword):
+        dictionary = PyDictionary()
+
+        def check(what_to_do):
+            return ctx.author == what_to_do.author and what_to_do.channel == ctx.channel
+
+        await ctx.send(embed=discord.Embed(title="What would you like to find?", color=discord.Color.random()))
+        what_to_do = await self.bot.wait_for("message", check=check)
+
+        try:
+            if "meaning" in str(what_to_do.content).lower():
+                try:
+                    meaning = dictionary.meaning(keyword)
+                    embed = discord.Embed(
+                        title=f"The Meaning of {keyword}.", color=discord.Color.random())
+
+                    if meaning.get('Noun') is not None:
+                        for i in range(0, len(meaning['Noun'])):
+                            embed.add_field(name=f"Noun Meaning {i + 1}:", value=f"{(meaning['Noun'])[i]}",
+                                            inline=False)
+                    if meaning.get('Verb') is not None:
+                        for i in range(0, len(meaning['Verb'])):
+                            embed.add_field(name=f"Verb Meaning {i + 1}:", value=f"{(meaning['Verb'])[i]}",
+                                            inline=False)
+                    await ctx.send(embed=embed)
+                except:
+                    await ctx.send(embed=discord.Embed(title='Meaning not found', color=discord.Color.random()))
+
+            if "synonym" in str(what_to_do.content).lower():
+                try:
+                    synonym_list = dictionary.synonym(keyword)
+                    string = ""
+                    for i in range(0, len(synonym_list)):
+                        string += f"{i + 1}. {synonym_list[i]}\n"
+                    embed = discord.Embed(
+                        title=f"The Synonyms of {keyword}.", description=string, color=discord.Color.random())
+                    await ctx.send(embed=embed)
+                except:
+                    await ctx.send(embed=discord.Embed(title='Synonym not found', color=discord.Color.random()))
+
+            if "antonym" in str(what_to_do.content).lower():
+                try:
+                    antonym_list = dictionary.antonym(keyword)
+                    string = ""
+                    for i in range(0, len(antonym_list)):
+                        string += f"{i + 1}. {antonym_list[i]}\n"
+                    embed = discord.Embed(
+                        title=f"The Antonyms of the {keyword}.", description=string, color=discord.Color.random())
+                    await ctx.send(embed=embed)
+                except:
+                    await ctx.send(embed=discord.Embed(title='Antonym not found', color=discord.Color.random()))
+
+        except:
+            embed = discord.Embed(title="Error! Could not find")
+            await ctx.send(embed=embed)
+            
+    @commands.command()
+    async def wiki(self, ctx, *, question):
+        try:
+            wiki = wikipedia.summary(question, 2)
+            embed = discord.Embed(
+                title="According to Wikipedia: ",
+                description=f"{wiki}"
+            )
+            embed.set_footer(text="Information requested by: {}".format(
+                ctx.author.display_name))
+            embed.color = discord.Color.random()
+            await ctx.send(embed=embed)
+        except:
+            await ctx.send(f"Could not find wikipedia results for: {question}")
+
+    
     @commands.command(aliases=["info", "stats", "status"])
     async def about(self, ctx):
         """ About the bot """
