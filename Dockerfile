@@ -1,7 +1,7 @@
-FROM python:3.7-alpine
+FROM python:3.10-alpine
 LABEL maintainer="AlexFlipnote <root@alexflipnote.dev>"
 
-LABEL build_date="2021-05-14"
+LABEL build_date="2021-10-17"
 RUN apk update && apk upgrade
 RUN apk add --no-cache git make build-base linux-headers
 WORKDIR /discord_bot

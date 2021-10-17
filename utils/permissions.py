@@ -31,7 +31,7 @@ async def check_priv(ctx, member):
     """ Custom (weird) way to check permissions when handling moderation commands """
     try:
         # Self checks
-        if member == ctx.author:
+        if member.id == ctx.author.id:
             return await ctx.send(f"You can't {ctx.command.name} yourself")
         if member.id == ctx.bot.user.id:
             return await ctx.send("So that's what you think of me huh..? sad ;-;")

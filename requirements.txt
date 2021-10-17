@@ -1,3 +1,3 @@
-git+https://github.com/Rapptz/discord.py@master
+git+https://github.com/Pycord-Development/pycord
 psutil
 timeago==1.0.13
