@@ -76,6 +76,40 @@ class Fun_Commands(commands.Cog):
         reason = f"for **{text}** " if text else ""
         await ctx.send(f"**{ctx.author.name}** has paid their respect {reason}{random.choice(hearts)}")
 
+    @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
+    @commands.command(aliases=['epicgamerate', 'egr', 'epicgr', 'egrate', 'epicgamerr8', 'epicgamer8'])
+    async def epicgamerrate(self, ctx, member: discord.Member = None):
+        num = random.randint(1, 100)
+        if member is None:
+            member = ctx.author
+
+        membervar = member.display_name
+
+        embed = discord.Embed(
+            title=f"Epic Gamer Rate :sunglasses:",
+            description=f"{membervar} is {num}% epic gamer."
+        )
+        embed.color = discord.Color.random()
+        embed.set_footer(text="Gamers = Poggers")
+        await ctx.send(embed=embed)
+
+    @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
+    @commands.command(aliases=['sr', 'simpr', 'srate', 'sr8'])
+    async def simprate(self, ctx, member: discord.Member = None):
+        num = random.randint(1, 100)
+        if member is None:
+            member = ctx.author
+
+        membervar = member.display_name
+
+        embed = discord.Embed(
+            title=f"Simp Rate :blush:",
+            description=f"{membervar} is {num}% simp."
+        )
+        embed.color = discord.Color.random()
+        embed.set_footer(text="Their favourite show be the SIMPsons")
+        await ctx.send(embed=embed)
+
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
     async def urban(self, ctx, *, search: commands.clean_content):
