@@ -6,7 +6,6 @@ from utils.data import Bot, HelpFormat
 
 config = default.config()
 print("Logging in...")
-print(f"Discord API v{discord.http.API_VERSION}")
 
 bot = Bot(
     command_prefix=config["prefix"], prefix=config["prefix"],

@@ -10,12 +10,42 @@ class Discord_Info(commands.Cog):
         self.bot = bot
         self.config = default.config()
 
-    @commands.command()
+    @commands.command(aliases=["av", "pfp"])
     @commands.guild_only()
     async def avatar(self, ctx, *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
         user = user or ctx.author
-        await ctx.send(f"Avatar to **{user.name}**\n{user.avatar.with_size(1024)}")
+
+        avatars_list = []
+
+        def target_avatar_formats(target):
+            formats = ["JPEG", "PNG", "WebP"]
+            if target.is_animated():
+                formats.append("GIF")
+            return formats
+
+        if not user.avatar and not user.guild_avatar:
+            return await ctx.send(f"**{user}** has no avatar set, at all...")
+
+        if user.avatar:
+            avatars_list.append("**Account avatar:** " + " **-** ".join(
+                f"[{img_format}]({user.avatar.replace(format=img_format.lower(), size=1024)})"
+                for img_format in target_avatar_formats(user.avatar)
+            ))
+
+        embed = discord.Embed(colour=user.top_role.colour.value)
+
+        if user.guild_avatar:
+            avatars_list.append("**Server avatar:** " + " **-** ".join(
+                f"[{img_format}]({user.guild_avatar.replace(format=img_format.lower(), size=1024)})"
+                for img_format in target_avatar_formats(user.guild_avatar)
+            ))
+            embed.set_thumbnail(url=user.avatar.replace(format="png"))
+
+        embed.set_image(url=f"{user.display_avatar.with_size(256).with_static_format('png')}")
+        embed.description = "\n".join(avatars_list)
+
+        await ctx.send(f"🖼 Avatar to **{user}**", embed=embed)
 
     @commands.command()
     @commands.guild_only()
@@ -29,16 +59,15 @@ class Discord_Info(commands.Cog):
         data = BytesIO(allroles.encode("utf-8"))
         await ctx.send(content=f"Roles in **{ctx.guild.name}**", file=discord.File(data, filename=f"{default.timetext('Roles')}"))
 
-    @commands.command()
+    @commands.command(aliases=["joindate", "joined"])
     @commands.guild_only()
     async def joinedat(self, ctx, *, user: discord.Member = None):
         """ Check when a user joined the current server """
         user = user or ctx.author
-
-        embed = discord.Embed(colour=user.top_role.colour.value)
-        embed.set_thumbnail(url=user.avatar)
-        embed.description = f"**{user}** joined **{ctx.guild.name}**\n{default.date(user.joined_at, ago=True)}"
-        await ctx.send(embed=embed)
+        await ctx.send(
+            f"**{user}** joined **{ctx.guild.name}**\n"
+            f"{default.date(user.joined_at, ago=True)}"
+        )
 
     @commands.command()
     @commands.guild_only()
@@ -83,16 +112,30 @@ class Discord_Info(commands.Cog):
             embed.add_field(name="Members", value=ctx.guild.member_count, inline=True)
             embed.add_field(name="Bots", value=find_bots, inline=True)
             embed.add_field(name="Owner", value=ctx.guild.owner, inline=True)
-            embed.add_field(name="Region", value=ctx.guild.region, inline=True)
             embed.add_field(name="Created", value=default.date(ctx.guild.created_at, ago=True), inline=True)
             await ctx.send(content=f"ℹ information about **{ctx.guild.name}**", embed=embed)
 
     @server.command(name="avatar", aliases=["icon"])
+    @commands.guild_only()
     async def server_avatar(self, ctx):
         """ Get the current server icon """
         if not ctx.guild.icon:
-            return await ctx.send("This server does not have a avatar...")
-        await ctx.send(f"Avatar of **{ctx.guild.name}**\n{ctx.guild.icon}")
+            return await ctx.send("This server does not have an icon...")
+
+        format_list = []
+        formats = ["JPEG", "PNG", "WebP"]
+        if ctx.guild.icon.is_animated():
+            formats.append("GIF")
+
+        for img_format in formats:
+            format_list.append(f"[{img_format}]({ctx.guild.icon.replace(format=img_format.lower(), size=1024)})")
+
+        embed = discord.Embed()
+        embed.set_image(url=f"{ctx.guild.icon.with_size(256).with_static_format('png')}")
+        embed.title = "Icon formats"
+        embed.description = " **-** ".join(format_list)
+
+        await ctx.send(f"🖼 Icon to **{ctx.guild.name}**", embed=embed)
 
     @server.command(name="banner")
     async def server_banner(self, ctx):

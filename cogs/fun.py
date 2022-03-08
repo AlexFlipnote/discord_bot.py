@@ -140,7 +140,7 @@ class Fun_Commands(commands.Cog):
             return await ctx.send(f"I would love to give beer to the bot **{ctx.author.name}**, but I don't think it will respond to you :/")
 
         beer_offer = f"**{user.name}**, you got a 🍺 offer from **{ctx.author.name}**"
-        beer_offer = beer_offer + f"\n\n**Reason:** {reason}" if reason else beer_offer
+        beer_offer = f"{beer_offer}\n\n**Reason:** {reason}" if reason else beer_offer
         msg = await ctx.send(beer_offer)
 
         def reaction_check(m):
@@ -158,7 +158,7 @@ class Fun_Commands(commands.Cog):
         except discord.Forbidden:
             # Yeah so, bot doesn't have reaction permission, drop the "offer" word
             beer_offer = f"**{user.name}**, you got a 🍺 from **{ctx.author.name}**"
-            beer_offer = beer_offer + f"\n\n**Reason:** {reason}" if reason else beer_offer
+            beer_offer = f"{beer_offer}\n\n**Reason:** {reason}" if reason else beer_offer
             await msg.edit(content=beer_offer)
 
     @commands.command(aliases=["howhot", "hot"])
@@ -191,14 +191,10 @@ class Fun_Commands(commands.Cog):
         await ctx.send(file=discord.File(bio, filename="noticeme.gif"))
 
     @commands.command(aliases=["slots", "bet"])
-    @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
     async def slot(self, ctx):
         """ Roll the slot machine """
         emojis = "🍎🍊🍐🍋🍉🍇🍓🍒"
-        a = random.choice(emojis)
-        b = random.choice(emojis)
-        c = random.choice(emojis)
-
+        a, b, c = [random.choice(emojis) for g in range(3)]
         slotmachine = f"**[ {a} {b} {c} ]\n{ctx.author.name}**,"
 
         if (a == b == c):
