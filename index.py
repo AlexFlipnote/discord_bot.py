@@ -1,4 +1,3 @@
-import os
 import discord
 
 from utils import default
@@ -15,11 +14,6 @@ bot = Bot(
         guilds=True, members=True, messages=True, reactions=True, presences=True, message_content=True,
     )
 )
-
-for file in os.listdir("cogs"):
-    if file.endswith(".py"):
-        name = file[:-3]
-        bot.load_extension(f"cogs.{name}")
 
 try:
     bot.run(config["token"])

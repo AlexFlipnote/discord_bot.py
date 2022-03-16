@@ -195,5 +195,5 @@ class Encryption(commands.Cog):
             await ctx.send("Invalid ASCII85...")
 
 
-def setup(bot):
-    bot.add_cog(Encryption(bot))
+async def setup(bot):
+    await bot.add_cog(Encryption(bot))

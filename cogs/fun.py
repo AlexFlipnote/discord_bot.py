@@ -205,5 +205,5 @@ class Fun_Commands(commands.Cog):
             await ctx.send(f"{slotmachine} No match, you lost 😢")
 
 
-def setup(bot):
-    bot.add_cog(Fun_Commands(bot))
+async def setup(bot):
+    await bot.add_cog(Fun_Commands(bot))

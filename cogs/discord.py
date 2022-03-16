@@ -166,5 +166,5 @@ class Discord_Info(commands.Cog):
         await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Discord_Info(bot))
+async def setup(bot):
+    await bot.add_cog(Discord_Info(bot))

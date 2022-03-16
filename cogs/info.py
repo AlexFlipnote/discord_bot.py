@@ -79,7 +79,7 @@ class Information(commands.Cog):
         ramUsage = self.process.memory_full_info().rss / 1024**2
         avgmembers = sum(g.member_count for g in self.bot.guilds) / len(self.bot.guilds)
 
-        embedColour = discord.Embed.Empty
+        embedColour = None
         if hasattr(ctx, "guild") and ctx.guild is not None:
             embedColour = ctx.me.top_role.colour
 
@@ -98,5 +98,5 @@ class Information(commands.Cog):
         await ctx.send(content=f"ℹ About **{ctx.bot.user}**", embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Information(bot))
+async def setup(bot):
+    await bot.add_cog(Information(bot))

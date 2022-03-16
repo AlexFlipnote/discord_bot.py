@@ -347,5 +347,5 @@ class Moderator(commands.Cog):
         await ctx.send(f"Successfully removed {total_reactions} reactions.")
 
 
-def setup(bot):
-    bot.add_cog(Moderator(bot))
+async def setup(bot):
+    await bot.add_cog(Moderator(bot))
