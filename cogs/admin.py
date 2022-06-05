@@ -1,10 +1,4 @@
-import time
-import aiohttp
-import discord
-import importlib
-import os
-import sys
-import json
+import time, aiohttp, discord, importlib, os, sys, json
 
 from discord.ext import commands
 from utils import permissions, default, http
@@ -30,7 +24,7 @@ class Admin(commands.Cog):
     async def amiadmin(self, ctx):
         """ Are you an admin? """
         if ctx.author.id in self.config["owners"]:
-            return await ctx.send(f"Yes **{ctx.author.name}** you are an admin! ✅")
+            return await ctx.send(f"Yes **{ctx.author.name}**, you are an admin! ✅")
 
         # Please do not remove this part.
         # I would love to be credited as the original creator of the source code.
@@ -45,30 +39,30 @@ class Admin(commands.Cog):
     async def load(self, ctx, name: str):
         """ Loads an extension. """
         try:
-            self.bot.load_extension(f"cogs.{name}")
+            await self.bot.load_extension(f"cogs.{name}")
         except Exception as e:
             return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Loaded extension **{name}.py**")
+        await ctx.send(f"ℹ Loaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
     async def unload(self, ctx, name: str):
         """ Unloads an extension. """
         try:
-            self.bot.unload_extension(f"cogs.{name}")
+            await self.bot.unload_extension(f"cogs.{name}")
         except Exception as e:
             return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Unloaded extension **{name}.py**")
+        await ctx.send(f"ℹ Unloaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
     async def reload(self, ctx, name: str):
         """ Reloads an extension. """
         try:
-            self.bot.reload_extension(f"cogs.{name}")
+            await self.bot.reload_extension(f"cogs.{name}")
         except Exception as e:
             return await ctx.send(default.traceback_maker(e))
-        await ctx.send(f"Reloaded extension **{name}.py**")
+        await ctx.send(f"ℹ Reloaded extension **{name}.py**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
@@ -79,7 +73,7 @@ class Admin(commands.Cog):
             if file.endswith(".py"):
                 name = file[:-3]
                 try:
-                    self.bot.reload_extension(f"cogs.{name}")
+                    await self.bot.reload_extension(f"cogs.{name}")
                 except Exception as e:
                     error_collection.append(
                         [file, default.traceback_maker(e, advance=False)]
@@ -92,7 +86,7 @@ class Admin(commands.Cog):
                 f"however the following failed...\n\n{output}"
             )
 
-        await ctx.send("Successfully reloaded all extensions")
+        await ctx.send("ℹ Successfully reloaded all extensions")
 
     @commands.command()
     @commands.check(permissions.is_owner)
@@ -107,13 +101,13 @@ class Admin(commands.Cog):
         except Exception as e:
             error = default.traceback_maker(e)
             return await ctx.send(f"Module **{name_maker}** returned error and was not reloaded...\n{error}")
-        await ctx.send(f"Reloaded module **{name_maker}**")
+        await ctx.send(f"ℹ Reloaded module **{name_maker}**")
 
     @commands.command()
     @commands.check(permissions.is_owner)
     async def reboot(self, ctx):
         """ Reboot the bot """
-        await ctx.send("Rebooting now...")
+        await ctx.send(":warning: Rebooting now...")
         time.sleep(1)
         sys.exit(0)
 
@@ -121,11 +115,14 @@ class Admin(commands.Cog):
     @commands.check(permissions.is_owner)
     async def dm(self, ctx, user: discord.User, *, message: str):
         """ DM the user of your choice """
-        try:
-            await user.send(message)
-            await ctx.send(f"✉️ Sent a DM to **{user}**")
-        except discord.Forbidden:
-            await ctx.send("This user might be having DMs blocked or it's a bot account...")
+        if user.bot:
+            await ctx.send("This is a bot, silly!")
+        else:
+            try:
+                await user.send(message)
+                await ctx.send(f"✉️ Sent a DM to **{user}**")
+            except discord.Forbidden:
+                await ctx.send("Error: This user has DMs blocked...")
 
     @commands.group()
     @commands.check(permissions.is_owner)
@@ -196,7 +193,7 @@ class Admin(commands.Cog):
         except aiohttp.InvalidURL:
             await ctx.send("The URL is invalid...")
         except discord.InvalidArgument:
-            await ctx.send("This URL does not contain a useable image")
+            await ctx.send("This URL does not contain a usable image")
         except discord.HTTPException as err:
             await ctx.send(err)
         except TypeError:

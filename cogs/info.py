@@ -1,17 +1,24 @@
-import time
-import discord
-import psutil
-import os
+import time, discord, psutil, os
 
 from discord.ext import commands
 from utils import default, http
 
+
+class CustomHelp(commands.MinimalHelpCommand):
+    async def send_pages(self):
+        destination = self.get_destination()
+        for page in self.paginator.pages:
+            emby = discord.Embed(description=page)
+            await destination.send(embed=emby)
 
 class Information(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = default.config()
         self.process = psutil.Process(os.getpid())
+        help_command = CustomHelp()
+        help_command.cog = self # Instance of YourCog class
+        bot.help_command = help_command
 
     @commands.command()
     async def ping(self, ctx):
@@ -96,6 +103,8 @@ class Information(commands.Cog):
         embed.add_field(name="RAM", value=f"{ramUsage:.2f} MB")
 
         await ctx.send(content=f"ℹ About **{ctx.bot.user}**", embed=embed)
+
+
 
 
 async def setup(bot):

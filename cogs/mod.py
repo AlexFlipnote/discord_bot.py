@@ -1,6 +1,4 @@
-import discord
-import re
-import asyncio
+import discord, re, asyncio
 
 from discord.ext import commands
 from utils import permissions, default

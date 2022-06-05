@@ -1,8 +1,4 @@
-import random
-import discord
-import secrets
-import asyncio
-import aiohttp
+import random, discord, secrets, asyncio, aiohttp
 
 from io import BytesIO
 from discord.ext import commands
@@ -120,8 +116,8 @@ class Fun_Commands(commands.Cog):
         if nbytes not in range(3, 1401):
             return await ctx.send("I only accept any numbers between 3-1400")
         if hasattr(ctx, "guild") and ctx.guild is not None:
-            await ctx.send(f"Sending you a private message with your random generated password **{ctx.author.name}**")
-        await ctx.author.send(f"🎁 **Here is your password:**\n{secrets.token_urlsafe(nbytes)}")
+            await ctx.send(f"Sending you a private message with your random generated password, **{ctx.author.name}**")
+        await ctx.author.send(f"🎁 **Here is your password:**\n`{secrets.token_urlsafe(nbytes)}`")
 
     @commands.command()
     async def rate(self, ctx, *, thing: commands.clean_content):
