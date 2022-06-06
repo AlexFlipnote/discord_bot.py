@@ -1,4 +1,10 @@
-import time, aiohttp, discord, importlib, os, sys, json
+import time
+import aiohttp
+import discord
+import importlib
+import os
+import sys
+import json
 
 from discord.ext import commands
 from utils import permissions, default, http
@@ -107,7 +113,7 @@ class Admin(commands.Cog):
     @commands.check(permissions.is_owner)
     async def reboot(self, ctx):
         """ Reboot the bot """
-        await ctx.send(":warning: Rebooting now...")
+        await ctx.send("⚠️ Rebooting now...")
         time.sleep(1)
         sys.exit(0)
 

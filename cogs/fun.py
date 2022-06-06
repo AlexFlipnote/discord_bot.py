@@ -1,4 +1,8 @@
-import random, discord, secrets, asyncio, aiohttp
+import random
+import discord
+import secrets
+import asyncio
+import aiohttp
 
 from io import BytesIO
 from discord.ext import commands

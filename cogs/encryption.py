@@ -1,4 +1,7 @@
-import base64, binascii, codecs, discord
+import base64
+import binascii
+import codecs
+import discord
 
 from io import BytesIO
 from discord.ext import commands

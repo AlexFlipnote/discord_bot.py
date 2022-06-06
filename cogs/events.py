@@ -1,4 +1,6 @@
-import discord, psutil, os
+import discord
+import psutil
+import os
 
 from datetime import datetime
 from discord.ext import commands
@@ -76,16 +78,22 @@ class Events(commands.Cog):
         )
 
         # Indicate that the bot has successfully booted up
-        print(f"\nLogged in as: {self.bot.user.name} - {self.bot.user.id}\n"
-        f"Version: {discord.__version__}")
-        member_count = 0
-        guild_string = ""
-        for g in self.bot.guilds:
-            guild_string += f"-> {g.name} - ID: {g.id} - Members: {g.member_count}\n"
-            member_count += g.member_count
-        print(
-            f"Active on {len(self.bot.guilds)} guilds:\n{guild_string}")
-
+        print("\n".join([
+            f"Logged in as: {self.bot.user.name} - {self.bot.user.id}",
+            f"Version: {discord.__version__}"
+        ]))
+        formatted_guilds = [
+            f"Name: {g.name} - ID: {g.id} - Members: {g.member_count}"
+            for g in self.bot.guilds
+        ]
+        guild_string = "\n".join(formatted_guilds)
+        print("\n".join([
+            f"-> Active on {len(self.bot.guilds)} guilds",
+            f"-> {len(set(self.bot.get_all_members()))} unique members ({sum(g.member_count for g in self.bot.guilds)} total)",
+            f"\n"
+            f"=== LIST OF GUILDS ===",
+            f"{guild_string}"
+        ]))
 
 async def setup(bot):
     await bot.add_cog(Events(bot))
