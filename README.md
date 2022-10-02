@@ -16,7 +16,7 @@ All you need to know about the library is defined inside here, even code that I 
 1. Make a bot [here](https://discordapp.com/developers/applications/me) and grab the token
 ![Image_Example1](https://i.alexflipnote.dev/f9668b.png)
 
-2. Rename the file **config.json.example** to **config.json**, then fill in the required spots, such as token, prefix and game
+2. Rename the file **config.json.example** to **config.json**, then fill in the required spots, such as token, prefix, owners and game
 
 3. To install what you need, do **pip install -r requirements.txt**<br>
 (If that doesn't work, do **python -m pip install -r requirements.txt**)<br>
