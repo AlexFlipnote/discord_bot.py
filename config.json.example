@@ -1,9 +1,7 @@
 {
   "token": "",
   "join_message": "I have joined to do stuff 🌟",
-  "owners": [
-    86477779717066752
-  ],
+  "owners": [],
   "prefix": [
     "!"
   ],
