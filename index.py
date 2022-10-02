@@ -4,6 +4,13 @@ from utils import default
 from utils.data import Bot, HelpFormat
 
 config = default.config()
+
+if config["owners"] == []:
+    choice = input("No owner id(s) set in config.json. Do you want to continue? (y/n) > ") 
+    if choice.lower() == "n":
+        print("Please place your owner id(s) in the owners array in config.json.")
+        exit(1)
+
 print("Logging in...")
 
 bot = Bot(
