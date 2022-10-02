@@ -22,7 +22,7 @@ All you need to know about the library is defined inside here, even code that I 
 (If that doesn't work, do **python -m pip install -r requirements.txt**)<br>
 `NOTE: Use pip install with Administrator/sudo`
 
-4. Start the bot by having the cmd/terminal inside the bot folder and type **python index.py**
+4. To start the bot, navigate to the discord_bot.py folder in cmd/terminal and type **python index.py**
 
 5. You're done, enjoy your bot!
 
