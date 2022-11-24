@@ -6,17 +6,19 @@ from discord.ext.commands import AutoShardedBot, DefaultHelpCommand
 
 
 class Bot(AutoShardedBot):
-    def __init__(self, *args, prefix=None, **kwargs):
+    def __init__(self, *args, prefix: list[str] = None, **kwargs):
         super().__init__(*args, **kwargs)
         self.prefix = prefix
 
     async def setup_hook(self):
         for file in os.listdir("cogs"):
-            if file.endswith(".py"):
-                name = file[:-3]
-                await self.load_extension(f"cogs.{name}")
+            if not file.endswith(".py"):
+                continue  # Skip non-python files
 
-    async def on_message(self, msg):
+            name = file[:-3]
+            await self.load_extension(f"cogs.{name}")
+
+    async def on_message(self, msg: discord.Message):
         if not self.is_ready() or msg.author.bot or not permissions.can_handle(msg, "send_messages"):
             return
 
@@ -30,7 +32,7 @@ class HelpFormat(DefaultHelpCommand):
         else:
             return self.context.author
 
-    async def send_error_message(self, error):
+    async def send_error_message(self, error: str):
         destination = self.get_destination(no_pm=True)
         await destination.send(error)
 

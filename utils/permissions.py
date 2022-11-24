@@ -1,17 +1,20 @@
 import discord
 
 from utils import default
+from typing import Union
 from discord.ext import commands
+from discord.ext.commands.context import Context
+from discord.ext.commands._types import BotT
 
-owners = default.config()["owners"]
+owners = default.load_json()["owners"]
 
 
-def is_owner(ctx):
+def is_owner(ctx: Context[BotT]) -> bool:
     """ Checks if the author is one of the owners """
     return ctx.author.id in owners
 
 
-async def check_permissions(ctx, perms, *, check=all):
+async def check_permissions(ctx: Context[BotT], perms, *, check=all) -> bool:
     """ Checks if author has permissions to a permission """
     if ctx.author.id in owners:
         return True
@@ -20,14 +23,14 @@ async def check_permissions(ctx, perms, *, check=all):
     return check(getattr(resolved, name, None) == value for name, value in perms.items())
 
 
-def has_permissions(*, check=all, **perms):
+def has_permissions(*, check=all, **perms) -> bool:
     """ discord.Commands method to check if author has permissions """
-    async def pred(ctx):
+    async def pred(ctx: Context[BotT]):
         return await check_permissions(ctx, perms, check=check)
     return commands.check(pred)
 
 
-async def check_priv(ctx, member):
+async def check_priv(ctx: Context[BotT], member: discord.Member) -> Union[discord.Message, bool, None]:
     """ Custom (weird) way to check permissions when handling moderation commands """
     try:
         # Self checks
@@ -56,6 +59,7 @@ async def check_priv(ctx, member):
         pass
 
 
-def can_handle(ctx, permission: str):
+def can_handle(ctx: Context[BotT], permission: str) -> bool:
     """ Checks if bot has permissions or is in DMs right now """
-    return isinstance(ctx.channel, discord.DMChannel) or getattr(ctx.channel.permissions_for(ctx.guild.me), permission)
+    return isinstance(ctx.channel, discord.DMChannel) or \
+        getattr(ctx.channel.permissions_for(ctx.guild.me), permission)

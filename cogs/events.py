@@ -3,6 +3,8 @@ import psutil
 import os
 
 from datetime import datetime
+from discord.ext.commands.context import Context
+from discord.ext.commands._types import BotT
 from discord.ext import commands
 from discord.ext.commands import errors
 from utils import default
@@ -10,12 +12,12 @@ from utils import default
 
 class Events(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        self.config = default.config()
+        self.bot: discord.Client = bot
+        self.config = default.load_json()
         self.process = psutil.Process(os.getpid())
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, err):
+    async def on_command_error(self, ctx: Context[BotT], err: Exception):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
             helper = str(ctx.invoked_subcommand) if ctx.invoked_subcommand else str(ctx.command)
             await ctx.send_help(helper)
@@ -24,10 +26,10 @@ class Events(commands.Cog):
             error = default.traceback_maker(err.original)
 
             if "2000 or fewer" in str(err) and len(ctx.message.clean_content) > 1900:
-                return await ctx.send(
-                    "You attempted to make the command display more than 2,000 characters...\n"
+                return await ctx.send("\n".join([
+                    "You attempted to make the command display more than 2,000 characters...",
                     "Both error and command will be ignored."
-                )
+                ]))
 
             await ctx.send(f"There was an error processing the command ;-;\n{error}")
 
@@ -44,13 +46,17 @@ class Events(commands.Cog):
             pass
 
     @commands.Cog.listener()
-    async def on_guild_join(self, guild):
-        to_send = next((chan for chan in guild.text_channels if chan.permissions_for(guild.me).send_messages), None)
+    async def on_guild_join(self, guild: discord.Guild):
+        to_send = next((
+            chan for chan in guild.text_channels
+            if chan.permissions_for(guild.me).send_messages
+        ), None)
+
         if to_send:
             await to_send.send(self.config["join_message"])
 
     @commands.Cog.listener()
-    async def on_command(self, ctx):
+    async def on_command(self, ctx: Context[BotT]):
         try:
             print(f"{ctx.guild.name} > {ctx.author} > {ctx.message.clean_content}")
         except AttributeError:
@@ -72,7 +78,8 @@ class Events(commands.Cog):
 
         await self.bot.change_presence(
             activity=discord.Game(
-                type=activity_type.get(activity, 0), name=self.config["activity"]
+                type=activity_type.get(activity, 0),
+                name=self.config["activity"]
             ),
             status=status_type.get(status, discord.Status.online)
         )

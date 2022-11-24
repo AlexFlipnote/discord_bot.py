@@ -3,32 +3,37 @@ import json
 import discord
 import traceback
 
+from discord.ext.commands.context import Context
+from discord.ext.commands._types import BotT
 from datetime import datetime
 from io import BytesIO
 
 
-def config(filename: str = "config"):
+def load_json(filename: str = "config.json") -> dict:
     """ Fetch default config file """
     try:
-        with open(f"{filename}.json", encoding='utf8') as data:
+        with open(filename, encoding='utf8') as data:
             return json.load(data)
     except FileNotFoundError:
         raise FileNotFoundError("JSON file wasn't found")
 
 
-def traceback_maker(err, advance: bool = True):
+def traceback_maker(err, advance: bool = True) -> str:
     """ A way to debug your code anywhere """
-    _traceback = ''.join(traceback.format_tb(err.__traceback__))
-    error = ('```py\n{1}{0}: {2}\n```').format(type(err).__name__, _traceback, err)
+    _traceback = "".join(traceback.format_tb(err.__traceback__))
+    error = f"```py\n{_traceback}{type(err).__name__}: {err}\n```"
     return error if advance else f"{type(err).__name__}: {err}"
 
 
-def timetext(name):
+def timetext(name) -> str:
     """ Timestamp, but in text form """
     return f"{name}_{int(time.time())}.txt"
 
 
-def date(target, clock: bool = True, seconds: bool = False, ago: bool = False, only_ago: bool = False):
+def date(
+    target, clock: bool = True,
+    ago: bool = False, only_ago: bool = False
+) -> str:
     if isinstance(target, int) or isinstance(target, float):
         target = datetime.utcfromtimestamp(target)
 
@@ -41,7 +46,7 @@ def date(target, clock: bool = True, seconds: bool = False, ago: bool = False, o
     return timestamp
 
 
-def responsible(target, reason):
+def responsible(target: discord.Member, reason: str) -> str:
     """ Default responsible maker targeted to find user in AuditLogs """
     responsible = f"[ {target} ]"
     if not reason:
@@ -49,7 +54,7 @@ def responsible(target, reason):
     return f"{responsible} {reason}"
 
 
-def actionmessage(case, mass=False):
+def actionmessage(case: str, mass: bool = False) -> str:
     """ Default way to present action confirmation in chat """
     output = f"**{case}** the user"
 
@@ -59,7 +64,10 @@ def actionmessage(case, mass=False):
     return f"✅ Successfully {output}"
 
 
-async def prettyResults(ctx, filename: str = "Results", resultmsg: str = "Here's the results:", loop=None):
+async def pretty_results(
+    ctx: Context[BotT], filename: str = "Results",
+    resultmsg: str = "Here's the results:", loop: list = None
+) -> None:
     """ A prettier way to show loop results """
     if not loop:
         return await ctx.send("The result was empty...")
@@ -72,5 +80,8 @@ async def prettyResults(ctx, filename: str = "Results", resultmsg: str = "Here's
     data = BytesIO(pretty.encode('utf-8'))
     await ctx.send(
         content=resultmsg,
-        file=discord.File(data, filename=timetext(filename.title()))
+        file=discord.File(
+            data,
+            filename=timetext(filename.title())
+        )
     )

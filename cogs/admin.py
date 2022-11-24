@@ -1,22 +1,21 @@
-import time
 import aiohttp
 import discord
 import importlib
 import os
-import sys
 import json
 
 from discord.ext import commands
+from discord.ext.commands.context import Context
+from discord.ext.commands._types import BotT
 from utils import permissions, default, http
 
 
 class Admin(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        self.config = default.config()
-        self._last_result = None
+        self.bot: discord.Client = bot
+        self.config = default.load_json()
 
-    def change_config_value(self, value: str, changeto: str):
+    def change_config_value(self, value: str, changeto: str) -> None:
         """ Change a value from the configs """
         config_name = "config.json"
         with open(config_name, "r") as jsonFile:
@@ -27,7 +26,7 @@ class Admin(commands.Cog):
             json.dump(data, jsonFile, indent=2)
 
     @commands.command()
-    async def amiadmin(self, ctx):
+    async def amiadmin(self, ctx: Context[BotT]):
         """ Are you an admin? """
         if ctx.author.id in self.config["owners"]:
             return await ctx.send(f"Yes **{ctx.author.name}** you are an admin! ✅")
@@ -42,7 +41,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
-    async def load(self, ctx, name: str):
+    async def load(self, ctx: Context[BotT], name: str):
         """ Loads an extension. """
         try:
             await self.bot.load_extension(f"cogs.{name}")
@@ -52,7 +51,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
-    async def unload(self, ctx, name: str):
+    async def unload(self, ctx: Context[BotT], name: str):
         """ Unloads an extension. """
         try:
             await self.bot.unload_extension(f"cogs.{name}")
@@ -62,7 +61,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
-    async def reload(self, ctx, name: str):
+    async def reload(self, ctx: Context[BotT], name: str):
         """ Reloads an extension. """
         try:
             await self.bot.reload_extension(f"cogs.{name}")
@@ -72,7 +71,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
-    async def reloadall(self, ctx):
+    async def reloadall(self, ctx: Context[BotT]):
         """ Reloads all extensions. """
         error_collection = []
         for file in os.listdir("cogs"):
@@ -96,7 +95,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
-    async def reloadutils(self, ctx, name: str):
+    async def reloadutils(self, ctx: Context[BotT], name: str):
         """ Reloads a utils module. """
         name_maker = f"utils/{name}.py"
         try:
@@ -111,15 +110,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.check(permissions.is_owner)
-    async def reboot(self, ctx):
-        """ Reboot the bot """
-        await ctx.send("Rebooting now...")
-        time.sleep(1)
-        sys.exit(0)
-
-    @commands.command()
-    @commands.check(permissions.is_owner)
-    async def dm(self, ctx, user: discord.User, *, message: str):
+    async def dm(self, ctx: Context[BotT], user: discord.User, *, message: str):
         """ DM the user of your choice """
         try:
             await user.send(message)
@@ -129,13 +120,13 @@ class Admin(commands.Cog):
 
     @commands.group()
     @commands.check(permissions.is_owner)
-    async def change(self, ctx):
+    async def change(self, ctx: Context[BotT]):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     @change.command(name="playing")
     @commands.check(permissions.is_owner)
-    async def change_playing(self, ctx, *, playing: str):
+    async def change_playing(self, ctx: Context[BotT], *, playing: str):
         """ Change playing status. """
         status = self.config["status_type"].lower()
         status_type = {"idle": discord.Status.idle, "dnd": discord.Status.dnd}
@@ -159,7 +150,7 @@ class Admin(commands.Cog):
 
     @change.command(name="username")
     @commands.check(permissions.is_owner)
-    async def change_username(self, ctx, *, name: str):
+    async def change_username(self, ctx: Context[BotT], *, name: str):
         """ Change username. """
         try:
             await self.bot.user.edit(username=name)
@@ -169,7 +160,7 @@ class Admin(commands.Cog):
 
     @change.command(name="nickname")
     @commands.check(permissions.is_owner)
-    async def change_nickname(self, ctx, *, name: str = None):
+    async def change_nickname(self, ctx: Context[BotT], *, name: str = None):
         """ Change nickname. """
         try:
             await ctx.guild.me.edit(nick=name)
@@ -182,7 +173,7 @@ class Admin(commands.Cog):
 
     @change.command(name="avatar")
     @commands.check(permissions.is_owner)
-    async def change_avatar(self, ctx, url: str = None):
+    async def change_avatar(self, ctx: Context[BotT], url: str = None):
         """ Change avatar. """
         if url is None and len(ctx.message.attachments) == 1:
             url = ctx.message.attachments[0].url

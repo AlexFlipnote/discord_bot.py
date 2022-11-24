@@ -5,28 +5,30 @@ import discord
 
 from io import BytesIO
 from discord.ext import commands
+from discord.ext.commands.context import Context
+from discord.ext.commands._types import BotT
 from discord.ext.commands.errors import BadArgument
 from utils import default, http
 
 
 class Encryption(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        self.config = default.config()
+        self.bot: discord.Client = bot
+        self.config = default.load_json()
 
     @commands.group()
-    async def encode(self, ctx):
+    async def encode(self, ctx: Context[BotT]):
         """ All encode methods """
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     @commands.group()
-    async def decode(self, ctx):
+    async def decode(self, ctx: Context[BotT]):
         """ All decode methods """
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
-    async def detect_file(self, ctx):
+    async def detect_file(self, ctx: Context[BotT]):
         """ Detect if user uploaded a file to convert longer text """
         if ctx.message.attachments:
             file = ctx.message.attachments[0].url
@@ -43,7 +45,7 @@ class Encryption(commands.Cog):
             raise BadArgument("File you've provided is empty")
         return content
 
-    async def encryptout(self, ctx, convert: str, input):
+    async def encryptout(self, ctx: Context[BotT], convert: str, input: str):
         """ The main, modular function to control encrypt/decrypt commands """
         if not input:
             return await ctx.send(f"Aren't you going to give me anything to encode/decode **{ctx.author.name}**")
@@ -69,7 +71,7 @@ class Encryption(commands.Cog):
                 await ctx.send(f"📑 **{convert}**```fix\n{input}```")
 
     @encode.command(name="base32", aliases=["b32"])
-    async def encode_base32(self, ctx, *, input: commands.clean_content = None):
+    async def encode_base32(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Encode in base32 """
         if not input:
             input = await self.detect_file(ctx)
@@ -79,7 +81,7 @@ class Encryption(commands.Cog):
         )
 
     @decode.command(name="base32", aliases=["b32"])
-    async def decode_base32(self, ctx, *, input: commands.clean_content = None):
+    async def decode_base32(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Decode in base32 """
         if not input:
             input = await self.detect_file(ctx)
@@ -90,7 +92,7 @@ class Encryption(commands.Cog):
             await ctx.send("Invalid base32...")
 
     @encode.command(name="base64", aliases=["b64"])
-    async def encode_base64(self, ctx, *, input: commands.clean_content = None):
+    async def encode_base64(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Encode in base64 """
         if not input:
             input = await self.detect_file(ctx)
@@ -100,7 +102,7 @@ class Encryption(commands.Cog):
         )
 
     @decode.command(name="base64", aliases=["b64"])
-    async def decode_base64(self, ctx, *, input: commands.clean_content = None):
+    async def decode_base64(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Decode in base64 """
         if not input:
             input = await self.detect_file(ctx)
@@ -111,7 +113,7 @@ class Encryption(commands.Cog):
             await ctx.send("Invalid base64...")
 
     @encode.command(name="rot13", aliases=["r13"])
-    async def encode_rot13(self, ctx, *, input: commands.clean_content = None):
+    async def encode_rot13(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Encode in rot13 """
         if not input:
             input = await self.detect_file(ctx)
@@ -121,7 +123,7 @@ class Encryption(commands.Cog):
         )
 
     @decode.command(name="rot13", aliases=["r13"])
-    async def decode_rot13(self, ctx, *, input: commands.clean_content = None):
+    async def decode_rot13(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Decode in rot13 """
         if not input:
             input = await self.detect_file(ctx)
@@ -132,7 +134,7 @@ class Encryption(commands.Cog):
             await ctx.send("Invalid rot13...")
 
     @encode.command(name="hex")
-    async def encode_hex(self, ctx, *, input: commands.clean_content = None):
+    async def encode_hex(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Encode in hex """
         if not input:
             input = await self.detect_file(ctx)
@@ -142,7 +144,7 @@ class Encryption(commands.Cog):
         )
 
     @decode.command(name="hex")
-    async def decode_hex(self, ctx, *, input: commands.clean_content = None):
+    async def decode_hex(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Decode in hex """
         if not input:
             input = await self.detect_file(ctx)
@@ -153,7 +155,7 @@ class Encryption(commands.Cog):
             await ctx.send("Invalid hex...")
 
     @encode.command(name="base85", aliases=["b85"])
-    async def encode_base85(self, ctx, *, input: commands.clean_content = None):
+    async def encode_base85(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Encode in base85 """
         if not input:
             input = await self.detect_file(ctx)
@@ -163,7 +165,7 @@ class Encryption(commands.Cog):
         )
 
     @decode.command(name="base85", aliases=["b85"])
-    async def decode_base85(self, ctx, *, input: commands.clean_content = None):
+    async def decode_base85(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Decode in base85 """
         if not input:
             input = await self.detect_file(ctx)
@@ -174,7 +176,7 @@ class Encryption(commands.Cog):
             await ctx.send("Invalid base85...")
 
     @encode.command(name="ascii85", aliases=["a85"])
-    async def encode_ascii85(self, ctx, *, input: commands.clean_content = None):
+    async def encode_ascii85(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Encode in ASCII85 """
         if not input:
             input = await self.detect_file(ctx)
@@ -184,7 +186,7 @@ class Encryption(commands.Cog):
         )
 
     @decode.command(name="ascii85", aliases=["a85"])
-    async def decode_ascii85(self, ctx, *, input: commands.clean_content = None):
+    async def decode_ascii85(self, ctx: Context[BotT], *, input: commands.clean_content = None):
         """ Decode in ASCII85 """
         if not input:
             input = await self.detect_file(ctx)

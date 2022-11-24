@@ -2,17 +2,19 @@ import discord
 
 from io import BytesIO
 from utils import default
+from discord.ext.commands.context import Context
+from discord.ext.commands._types import BotT
 from discord.ext import commands
 
 
 class Discord_Info(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        self.config = default.config()
+        self.bot: discord.Client = bot
+        self.config = default.load_json()
 
     @commands.command(aliases=["av", "pfp"])
     @commands.guild_only()
-    async def avatar(self, ctx, *, user: discord.Member = None):
+    async def avatar(self, ctx: Context[BotT], *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
         user = user or ctx.author
 
@@ -49,7 +51,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def roles(self, ctx):
+    async def roles(self, ctx: Context[BotT]):
         """ Get all roles in current server """
         allroles = ""
 
@@ -61,17 +63,17 @@ class Discord_Info(commands.Cog):
 
     @commands.command(aliases=["joindate", "joined"])
     @commands.guild_only()
-    async def joinedat(self, ctx, *, user: discord.Member = None):
+    async def joinedat(self, ctx: Context[BotT], *, user: discord.Member = None):
         """ Check when a user joined the current server """
         user = user or ctx.author
-        await ctx.send(
-            f"**{user}** joined **{ctx.guild.name}**\n"
+        await ctx.send("\n".join([
+            f"**{user}** joined **{ctx.guild.name}**",
             f"{default.date(user.joined_at, ago=True)}"
-        )
+        ]))
 
     @commands.command()
     @commands.guild_only()
-    async def mods(self, ctx):
+    async def mods(self, ctx: Context[BotT]):
         """ Check which mods are online on current guild """
         message = ""
         all_status = {
@@ -95,7 +97,7 @@ class Discord_Info(commands.Cog):
 
     @commands.group()
     @commands.guild_only()
-    async def server(self, ctx):
+    async def server(self, ctx: Context[BotT]):
         """ Check info about current server """
         if ctx.invoked_subcommand is None:
             find_bots = sum(1 for member in ctx.guild.members if member.bot)
@@ -107,17 +109,17 @@ class Discord_Info(commands.Cog):
             if ctx.guild.banner:
                 embed.set_image(url=ctx.guild.banner.with_format("png").with_size(1024))
 
-            embed.add_field(name="Server Name", value=ctx.guild.name, inline=True)
-            embed.add_field(name="Server ID", value=ctx.guild.id, inline=True)
-            embed.add_field(name="Members", value=ctx.guild.member_count, inline=True)
-            embed.add_field(name="Bots", value=find_bots, inline=True)
-            embed.add_field(name="Owner", value=ctx.guild.owner, inline=True)
-            embed.add_field(name="Created", value=default.date(ctx.guild.created_at, ago=True), inline=True)
+            embed.add_field(name="Server Name", value=ctx.guild.name)
+            embed.add_field(name="Server ID", value=ctx.guild.id)
+            embed.add_field(name="Members", value=ctx.guild.member_count)
+            embed.add_field(name="Bots", value=find_bots)
+            embed.add_field(name="Owner", value=ctx.guild.owner)
+            embed.add_field(name="Created", value=default.date(ctx.guild.created_at, ago=True))
             await ctx.send(content=f"ℹ information about **{ctx.guild.name}**", embed=embed)
 
     @server.command(name="avatar", aliases=["icon"])
     @commands.guild_only()
-    async def server_avatar(self, ctx):
+    async def server_avatar(self, ctx: Context[BotT]):
         """ Get the current server icon """
         if not ctx.guild.icon:
             return await ctx.send("This server does not have an icon...")
@@ -138,29 +140,40 @@ class Discord_Info(commands.Cog):
         await ctx.send(f"🖼 Icon to **{ctx.guild.name}**", embed=embed)
 
     @server.command(name="banner")
-    async def server_banner(self, ctx):
+    async def server_banner(self, ctx: Context[BotT]):
         """ Get the current banner image """
         if not ctx.guild.banner:
             return await ctx.send("This server does not have a banner...")
-        await ctx.send(f"Banner of **{ctx.guild.name}**\n{ctx.guild.banner.with_format('png')}")
+
+        await ctx.send("\n".join([
+            f"Banner of **{ctx.guild.name}**",
+            f"{ctx.guild.banner.with_format('png')}"
+        ]))
 
     @commands.command()
     @commands.guild_only()
-    async def user(self, ctx, *, user: discord.Member = None):
+    async def user(self, ctx: Context[BotT], *, user: discord.Member = None):
         """ Get user information """
         user = user or ctx.author
 
-        show_roles = ", ".join(
-            [f"<@&{x.id}>" for x in sorted(user.roles, key=lambda x: x.position, reverse=True) if x.id != ctx.guild.default_role.id]
-        ) if len(user.roles) > 1 else "None"
+        show_roles = "None"
+        if len(user.roles) > 1:
+            show_roles = ", ".join([
+                f"<@&{x.id}>" for x in sorted(
+                    user.roles,
+                    key=lambda x: x.position,
+                    reverse=True
+                )
+                if x.id != ctx.guild.default_role.id
+            ])
 
         embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar)
 
-        embed.add_field(name="Full name", value=user, inline=True)
-        embed.add_field(name="Nickname", value=user.nick if hasattr(user, "nick") else "None", inline=True)
-        embed.add_field(name="Account created", value=default.date(user.created_at, ago=True), inline=True)
-        embed.add_field(name="Joined this server", value=default.date(user.joined_at, ago=True), inline=True)
+        embed.add_field(name="Full name", value=user)
+        embed.add_field(name="Nickname", value=user.nick if hasattr(user, "nick") else "None")
+        embed.add_field(name="Account created", value=default.date(user.created_at, ago=True))
+        embed.add_field(name="Joined this server", value=default.date(user.joined_at, ago=True))
         embed.add_field(name="Roles", value=show_roles, inline=False)
 
         await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)

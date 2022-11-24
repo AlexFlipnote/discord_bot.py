@@ -1,12 +1,12 @@
 from functools import wraps
 
 
-def cache(maxsize=128):
+def cache(maxsize: int = 128):
     cache = {}
 
     def decorator(func):
         @wraps(func)
-        def inner(*args, no_cache=False, **kwargs):
+        def inner(*args, no_cache: bool = False, **kwargs):
             if no_cache:
                 return func(*args, **kwargs)
 
@@ -28,12 +28,12 @@ def cache(maxsize=128):
     return decorator
 
 
-def async_cache(maxsize=128):
+def async_cache(maxsize: int = 128):
     cache = {}
 
     def decorator(func):
         @wraps(func)
-        async def inner(*args, no_cache=False, **kwargs):
+        async def inner(*args, no_cache: bool = False, **kwargs):
             if no_cache:
                 return await func(*args, **kwargs)
 
