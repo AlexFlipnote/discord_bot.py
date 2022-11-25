@@ -11,7 +11,7 @@ from utils import default, http
 
 class Information(commands.Cog):
     def __init__(self, bot):
-        self.bot: discord.Client = bot
+        self.bot: commands.AutoShardedBot = bot
         self.config = default.load_json()
         self.process = psutil.Process(os.getpid())
 

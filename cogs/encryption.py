@@ -13,7 +13,7 @@ from utils import default, http
 
 class Encryption(commands.Cog):
     def __init__(self, bot):
-        self.bot: discord.Client = bot
+        self.bot: commands.AutoShardedBot = bot
         self.config = default.load_json()
 
     @commands.group()

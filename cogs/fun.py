@@ -13,7 +13,7 @@ from utils import permissions, http, default
 
 class Fun_Commands(commands.Cog):
     def __init__(self, bot):
-        self.bot: discord.Client = bot
+        self.bot: commands.AutoShardedBot = bot
         self.config = default.load_json()
 
     @commands.command(aliases=["8ball"])

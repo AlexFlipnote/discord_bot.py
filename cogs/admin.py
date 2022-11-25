@@ -12,7 +12,7 @@ from utils import permissions, default, http
 
 class Admin(commands.Cog):
     def __init__(self, bot):
-        self.bot: discord.Client = bot
+        self.bot: commands.AutoShardedBot = bot
         self.config = default.load_json()
 
     def change_config_value(self, value: str, changeto: str) -> None:

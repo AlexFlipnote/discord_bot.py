@@ -34,7 +34,7 @@ class ActionReason(commands.Converter):
 
 class Moderator(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.AutoShardedBot = bot
         self.config = default.load_json()
 
     @commands.command()
