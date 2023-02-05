@@ -3,6 +3,7 @@ import discord
 import secrets
 import asyncio
 import aiohttp
+import time
 
 from io import BytesIO
 from discord.ext.commands.context import Context
@@ -214,6 +215,39 @@ class Fun_Commands(commands.Cog):
         else:
             await ctx.send(f"{slotmachine} No match, you lost 😢")
 
+    @commands.command()
+    async def dice(self,ctx:Context[BotT]):
+        """ Dice game. Good luck """
+        bot_dice=(random.randint(1, 6))
+        player_dice=(random.randint(1, 6))
+        await ctx.send(f"My dice   🎲 {bot_dice}\nYour dice 🎲 {player_dice}")
+        if bot_dice>player_dice:
+            await ctx.send('I won,try again!')
+        elif bot_dice==player_dice:
+            await ctx.send('Its a tie!')
+        else:
+            await ctx.send('Congrats,you won🎉!')
 
+    @commands.command(aliases=['colors'])
+    async def roula(self,ctx:Context[BotT]):
+        """ Colors roulette """
+        colors= ['blue','red','green','yellow']
+        message = (ctx.message.content.lstrip('$roula').split()[0])
+        print(message)
+        if not(message.lower() in colors):
+            await ctx.send('Please give correct color')
+        else:
+            chosen_color =random.choice(colors)
+            print(chosen_color.upper())
+
+            await ctx.send(f"Spinning 🔵🔴🟢🟡")
+            time.sleep(1)
+            await ctx.send(f"Result: {chosen_color.upper()}")
+        
+            if chosen_color == message:
+                await ctx.send('Congrats,you won🎉!')
+            else:
+                await ctx.send('Better luck next time')
+            
 async def setup(bot):
     await bot.add_cog(Fun_Commands(bot))
