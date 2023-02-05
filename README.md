@@ -5,8 +5,9 @@
 Do you need more help? Visit my server here: **https://discord.gg/DpxkY3x** 🍺
 
 ## Requirements
-- Python 3.6 and up - https://www.python.org/downloads/
+- Python 3.10 and up - https://www.python.org/downloads/
 - git - https://git-scm.com/download/
+- Discord bot with Message Intent enabled
 
 ## Useful to always have
 Keep [this](https://discordpy.readthedocs.io/en/latest/) saved somewhere, as this is the docs to discord.py@rewrite.

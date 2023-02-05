@@ -57,10 +57,8 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command(self, ctx: Context[BotT]):
-        try:
-            print(f"{ctx.guild.name} > {ctx.author} > {ctx.message.clean_content}")
-        except AttributeError:
-            print(f"Private message > {ctx.author} > {ctx.message.clean_content}")
+        location_name = ctx.guild.name if ctx.guild else "Private message"
+        print(f"{location_name} > {ctx.author} > {ctx.message.clean_content}")
 
     @commands.Cog.listener()
     async def on_ready(self):

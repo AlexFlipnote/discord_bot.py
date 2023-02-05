@@ -3,7 +3,6 @@ import discord
 import secrets
 import asyncio
 import aiohttp
-import time
 
 from io import BytesIO
 from discord.ext.commands.context import Context
@@ -117,7 +116,10 @@ class Fun_Commands(commands.Cog):
         Everything you type after reverse will of course, be reversed
         """
         t_rev = text[::-1].replace("@", "@\u200B").replace("&", "&\u200B")
-        await ctx.send(f"🔁 {t_rev}")
+        await ctx.send(
+            f"🔁 {t_rev}",
+            allowed_mentions=discord.AllowedMentions.none()
+        )
 
     @commands.command()
     async def password(self, ctx: Context[BotT], nbytes: int = 18):
@@ -174,19 +176,19 @@ class Fun_Commands(commands.Cog):
     async def hotcalc(self, ctx: Context[BotT], *, user: discord.Member = None):
         """ Returns a random percent for how hot is a discord user """
         user = user or ctx.author
-
         random.seed(user.id)
         r = random.randint(1, 100)
         hot = r / 1.17
 
-        if hot > 75:
-            emoji = "💞"
-        elif hot > 50:
-            emoji = "💖"
-        elif hot > 25:
-            emoji = "❤"
-        else:
-            emoji = "💔"
+        match hot:
+            case x if x > 75:
+                emoji = "💞"
+            case x if x > 50:
+                emoji = "💖"
+            case x if x > 25:
+                emoji = "❤"
+            case _:
+                emoji = "💔"
 
         await ctx.send(f"**{user.name}** is **{hot:.2f}%** hot {emoji}")
 
@@ -202,49 +204,59 @@ class Fun_Commands(commands.Cog):
     @commands.command(aliases=["slots", "bet"])
     async def slot(self, ctx: Context[BotT]):
         """ Roll the slot machine """
-        a, b, c = [
-            random.choice("🍎🍊🍐🍋🍉🍇🍓🍒")
-            for _ in range(3)
-        ]
-        slotmachine = f"**[ {a} {b} {c} ]\n{ctx.author.name}**,"
+        a, b, c = [random.choice("🍎🍊🍐🍋🍉🍇🍓🍒") for _ in range(3)]
 
         if (a == b == c):
-            await ctx.send(f"{slotmachine} All matching, you won! 🎉")
+            results = "All matching, you won! 🎉"
         elif (a == b) or (a == c) or (b == c):
-            await ctx.send(f"{slotmachine} 2 in a row, you won! 🎉")
+            results = "2 in a row, you won! 🎉"
         else:
-            await ctx.send(f"{slotmachine} No match, you lost 😢")
+            results = "No match, you lost 😢"
+
+        await ctx.send(f"**[ {a} {b} {c} ]\n{ctx.author.name}**, {results}")
 
     @commands.command()
-    async def dice(self,ctx:Context[BotT]):
+    async def dice(self, ctx: Context[BotT]):
         """ Dice game. Good luck """
-        bot_dice=(random.randint(1, 6))
-        player_dice=(random.randint(1, 6))
-        await ctx.send(f"My dice   🎲 {bot_dice}\nYour dice 🎲 {player_dice}")
-        if bot_dice>player_dice:
-            await ctx.send('I won,try again!')
-        elif bot_dice==player_dice:
-            await ctx.send('Its a tie!')
-        else:
-            await ctx.send('Congrats,you won🎉!')
+        bot_dice, player_dice = [random.randint(1, 6) for g in range(2)]
+
+        results = "\n".join([
+            f"**{self.bot.user.display_name}:** 🎲 {bot_dice}",
+            f"**{ctx.author.display_name}** 🎲 {player_dice}"
+        ])
+
+        match player_dice:
+            case x if x > bot_dice:
+                final_message = "Congrats, you won 🎉"
+            case x if x < bot_dice:
+                final_message = "You lost, try again... 🍃"
+            case _:
+                final_message = "It's a tie 🎲"
+
+        await ctx.send(f"{results}\n> {final_message}")
 
     @commands.command(aliases=['colors'])
-    async def roulette(self,ctx:Context[BotT],picked_colour: str):
-        """ Colors roulette """
-        colors= ['blue','red','green','yellow']
+    async def roulette(self, ctx: Context[BotT], picked_colour: str = None):
+        """ Colours roulette """
+        colour_table = ["blue", "red", "green", "yellow"]
+        if not picked_colour:
+            pretty_colours = ", ".join(colour_table)
+            return await ctx.send(f"Please pick a colour from: {pretty_colours}")
+
         picked_colour = picked_colour.lower()
-        if picked_colour not in colors:
-          await ctx.send('Please give correct color')
+        if picked_colour not in colour_table:
+            return await ctx.send("Please give correct color")
+
+        chosen_color = random.choice(colour_table)
+        msg = await ctx.send("Spinning 🔵🔴🟢🟡")
+        await asyncio.sleep(1)
+        result = f"Result: {chosen_color.upper()}"
+
+        if chosen_color == picked_colour:
+            await msg.edit(content=f"> {result}\nCongrats, you won 🎉!")
         else:
-            chosen_color =random.choice(colors)
-            await ctx.send(f"Spinning 🔵🔴🟢🟡")
-            await asyncio.sleep(1)
-            await ctx.send(f"Result: {chosen_color.upper()}")
-        
-            if chosen_color == picked_colour:
-                await ctx.send('Congrats,you won🎉!')
-            else:
-                await ctx.send('Better luck next time')
-            
+            await msg.edit(content=f"> {result}\nBetter luck next time")
+
+
 async def setup(bot):
     await bot.add_cog(Fun_Commands(bot))

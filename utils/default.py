@@ -34,6 +34,7 @@ def date(
     target, clock: bool = True,
     ago: bool = False, only_ago: bool = False
 ) -> str:
+    """ Converts a timestamp to a Discord timestamp format """
     if isinstance(target, int) or isinstance(target, float):
         target = datetime.utcfromtimestamp(target)
 

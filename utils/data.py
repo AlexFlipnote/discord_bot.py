@@ -32,16 +32,19 @@ class HelpFormat(DefaultHelpCommand):
         else:
             return self.context.author
 
-    async def send_error_message(self, error: str):
+    async def send_error_message(self, error: str) -> None:
+        """ Sends an error message to the destination. """
         destination = self.get_destination(no_pm=True)
         await destination.send(error)
 
-    async def send_command_help(self, command):
+    async def send_command_help(self, command) -> None:
+        """ Sends the help for a single command. """
         self.add_command_formatting(command)
         self.paginator.close_page()
         await self.send_pages(no_pm=True)
 
-    async def send_pages(self, no_pm: bool = False):
+    async def send_pages(self, no_pm: bool = False) -> None:
+        """ Sends the help pages to the destination. """
         try:
             if permissions.can_handle(self.context, "add_reactions"):
                 await self.context.message.add_reaction(chr(0x2709))

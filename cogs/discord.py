@@ -160,8 +160,7 @@ class Discord_Info(commands.Cog):
         if len(user.roles) > 1:
             show_roles = ", ".join([
                 f"<@&{x.id}>" for x in sorted(
-                    user.roles,
-                    key=lambda x: x.position,
+                    user.roles, key=lambda x: x.position,
                     reverse=True
                 )
                 if x.id != ctx.guild.default_role.id
