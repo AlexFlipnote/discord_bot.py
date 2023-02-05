@@ -229,22 +229,19 @@ class Fun_Commands(commands.Cog):
             await ctx.send('Congrats,you won🎉!')
 
     @commands.command(aliases=['colors'])
-    async def roula(self,ctx:Context[BotT]):
+    async def roulette(self,ctx:Context[BotT],picked_colour: str):
         """ Colors roulette """
         colors= ['blue','red','green','yellow']
-        message = (ctx.message.content.lstrip('$roula').split()[0])
-        print(message)
-        if not(message.lower() in colors):
-            await ctx.send('Please give correct color')
+        picked_colour = picked_colour.lower()
+        if picked_colour not in colors:
+          await ctx.send('Please give correct color')
         else:
             chosen_color =random.choice(colors)
-            print(chosen_color.upper())
-
             await ctx.send(f"Spinning 🔵🔴🟢🟡")
-            time.sleep(1)
+            await asyncio.sleep(1)
             await ctx.send(f"Result: {chosen_color.upper()}")
         
-            if chosen_color == message:
+            if chosen_color == picked_colour:
                 await ctx.send('Congrats,you won🎉!')
             else:
                 await ctx.send('Better luck next time')
