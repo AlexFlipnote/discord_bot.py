@@ -3,7 +3,6 @@ import discord
 from io import BytesIO
 from utils import default
 from discord.ext.commands.context import Context
-from discord.ext.commands._types import BotT
 from discord.ext import commands
 
 
@@ -14,7 +13,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command(aliases=["av", "pfp"])
     @commands.guild_only()
-    async def avatar(self, ctx: Context[BotT], *, user: discord.Member = None):
+    async def avatar(self, ctx: Context, *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
         user = user or ctx.author
 
@@ -51,7 +50,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def roles(self, ctx: Context[BotT]):
+    async def roles(self, ctx: Context):
         """ Get all roles in current server """
         allroles = ""
 
@@ -63,7 +62,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command(aliases=["joindate", "joined"])
     @commands.guild_only()
-    async def joinedat(self, ctx: Context[BotT], *, user: discord.Member = None):
+    async def joinedat(self, ctx: Context, *, user: discord.Member = None):
         """ Check when a user joined the current server """
         user = user or ctx.author
         await ctx.send("\n".join([
@@ -73,7 +72,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def mods(self, ctx: Context[BotT]):
+    async def mods(self, ctx: Context):
         """ Check which mods are online on current guild """
         message = ""
         all_status = {
@@ -97,7 +96,7 @@ class Discord_Info(commands.Cog):
 
     @commands.group()
     @commands.guild_only()
-    async def server(self, ctx: Context[BotT]):
+    async def server(self, ctx: Context):
         """ Check info about current server """
         if ctx.invoked_subcommand is None:
             find_bots = sum(1 for member in ctx.guild.members if member.bot)
@@ -119,7 +118,7 @@ class Discord_Info(commands.Cog):
 
     @server.command(name="avatar", aliases=["icon"])
     @commands.guild_only()
-    async def server_avatar(self, ctx: Context[BotT]):
+    async def server_avatar(self, ctx: Context):
         """ Get the current server icon """
         if not ctx.guild.icon:
             return await ctx.send("This server does not have an icon...")
@@ -140,7 +139,7 @@ class Discord_Info(commands.Cog):
         await ctx.send(f"🖼 Icon to **{ctx.guild.name}**", embed=embed)
 
     @server.command(name="banner")
-    async def server_banner(self, ctx: Context[BotT]):
+    async def server_banner(self, ctx: Context):
         """ Get the current banner image """
         if not ctx.guild.banner:
             return await ctx.send("This server does not have a banner...")
@@ -152,7 +151,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def user(self, ctx: Context[BotT], *, user: discord.Member = None):
+    async def user(self, ctx: Context, *, user: discord.Member = None):
         """ Get user information """
         user = user or ctx.author
 

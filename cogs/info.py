@@ -4,7 +4,6 @@ import psutil
 import os
 
 from discord.ext.commands.context import Context
-from discord.ext.commands._types import BotT
 from discord.ext import commands
 from utils import default, http
 
@@ -16,7 +15,7 @@ class Information(commands.Cog):
         self.process = psutil.Process(os.getpid())
 
     @commands.command()
-    async def ping(self, ctx: Context[BotT]):
+    async def ping(self, ctx: Context):
         """ Pong! """
         before = time.monotonic()
         before_ws = int(round(self.bot.latency * 1000, 1))
@@ -25,7 +24,7 @@ class Information(commands.Cog):
         await msg.edit(content=f"🏓 WS: {before_ws}ms  |  REST: {int(ping)}ms")
 
     @commands.command(aliases=["joinme", "join", "botinvite"])
-    async def invite(self, ctx: Context[BotT]):
+    async def invite(self, ctx: Context):
         """ Invite me to your server """
         await ctx.send("\n".join([
             f"**{ctx.author.name}**, use this URL to invite me",
@@ -33,7 +32,7 @@ class Information(commands.Cog):
         ]))
 
     @commands.command()
-    async def source(self, ctx: Context[BotT]):
+    async def source(self, ctx: Context):
         """ Check out my source code <3 """
         # Do not remove this command, this has to stay due to the GitHub LICENSE.
         # TL:DR, you have to disclose source according to MIT, don't change output either.
@@ -44,14 +43,14 @@ class Information(commands.Cog):
         ]))
 
     @commands.command(aliases=["supportserver", "feedbackserver"])
-    async def botserver(self, ctx: Context[BotT]):
+    async def botserver(self, ctx: Context):
         """ Get an invite to our support server! """
         if isinstance(ctx.channel, discord.DMChannel) or ctx.guild.id != 86484642730885120:
             return await ctx.send(f"**Here you go {ctx.author.name} 🍻**\nhttps://discord.gg/DpxkY3x")
         await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
 
     @commands.command()
-    async def covid(self, ctx: Context[BotT], *, country: str):
+    async def covid(self, ctx: Context, *, country: str):
         """Covid-19 Statistics for any countries"""
         async with ctx.channel.typing():
             r = await http.get(f"https://disease.sh/v3/covid-19/countries/{country.lower()}", res_method="json")
@@ -82,7 +81,7 @@ class Information(commands.Cog):
             )
 
     @commands.command(aliases=["info", "stats", "status"])
-    async def about(self, ctx: Context[BotT]):
+    async def about(self, ctx: Context):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
         avgmembers = sum(g.member_count for g in self.bot.guilds) / len(self.bot.guilds)

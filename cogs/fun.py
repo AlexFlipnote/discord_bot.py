@@ -6,7 +6,6 @@ import aiohttp
 
 from io import BytesIO
 from discord.ext.commands.context import Context
-from discord.ext.commands._types import BotT
 from discord.ext import commands
 from utils import permissions, http, default
 
@@ -17,7 +16,7 @@ class Fun_Commands(commands.Cog):
         self.config = default.load_json()
 
     @commands.command(aliases=["8ball"])
-    async def eightball(self, ctx: Context[BotT], *, question: commands.clean_content):
+    async def eightball(self, ctx: Context, *, question: commands.clean_content):
         """ Consult 8ball to receive an answer """
         ballresponse = [
             "Yes", "No", "Take a wild guess...", "Very doubtful",
@@ -30,7 +29,7 @@ class Fun_Commands(commands.Cog):
         await ctx.send(f"🎱 **Question:** {question}\n**Answer:** {answer}")
 
     async def randomimageapi(
-        self, ctx: Context[BotT], url: str,
+        self, ctx: Context, url: str,
         endpoint: str, token: str = None
     ) -> discord.Message:
         try:
@@ -46,7 +45,7 @@ class Fun_Commands(commands.Cog):
         return await ctx.send(r[endpoint])
 
     async def api_img_creator(
-        self, ctx: Context[BotT], url: str,
+        self, ctx: Context, url: str,
         filename: str, content: str = None
     ) -> discord.Message:
         async with ctx.channel.typing():
@@ -61,24 +60,24 @@ class Fun_Commands(commands.Cog):
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def duck(self, ctx: Context[BotT]):
+    async def duck(self, ctx: Context):
         """ Posts a random duck """
         await self.randomimageapi(ctx, "https://random-d.uk/api/v1/random", "url")
 
     @commands.command()
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def coffee(self, ctx: Context[BotT]):
+    async def coffee(self, ctx: Context):
         """ Posts a random coffee """
         await self.randomimageapi(ctx, "https://coffee.alexflipnote.dev/random.json", "file")
 
     @commands.command(aliases=["flip", "coin"])
-    async def coinflip(self, ctx: Context[BotT]):
+    async def coinflip(self, ctx: Context):
         """ Coinflip! """
         coinsides = ["Heads", "Tails"]
         await ctx.send(f"**{ctx.author.name}** flipped a coin and got **{random.choice(coinsides)}**!")
 
     @commands.command()
-    async def f(self, ctx: Context[BotT], *, text: commands.clean_content = None):
+    async def f(self, ctx: Context, *, text: commands.clean_content = None):
         """ Press F to pay respect """
         hearts = ["❤", "💛", "💚", "💙", "💜"]
         reason = f"for **{text}** " if text else ""
@@ -86,7 +85,7 @@ class Fun_Commands(commands.Cog):
 
     @commands.command()
     @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
-    async def urban(self, ctx: Context[BotT], *, search: commands.clean_content):
+    async def urban(self, ctx: Context, *, search: commands.clean_content):
         """ Find the 'best' definition to your words """
         async with ctx.channel.typing():
             try:
@@ -111,7 +110,7 @@ class Fun_Commands(commands.Cog):
             await ctx.send(f"📚 Definitions for **{result['word']}**```fix\n{definition}```")
 
     @commands.command()
-    async def reverse(self, ctx: Context[BotT], *, text: str):
+    async def reverse(self, ctx: Context, *, text: str):
         """ !poow ,ffuts esreveR
         Everything you type after reverse will of course, be reversed
         """
@@ -122,7 +121,7 @@ class Fun_Commands(commands.Cog):
         )
 
     @commands.command()
-    async def password(self, ctx: Context[BotT], nbytes: int = 18):
+    async def password(self, ctx: Context, nbytes: int = 18):
         """ Generates a random password string for you
 
         This returns a random URL-safe text string, containing nbytes random bytes.
@@ -135,13 +134,13 @@ class Fun_Commands(commands.Cog):
         await ctx.author.send(f"🎁 **Here is your password:**\n{secrets.token_urlsafe(nbytes)}")
 
     @commands.command()
-    async def rate(self, ctx: Context[BotT], *, thing: commands.clean_content):
+    async def rate(self, ctx: Context, *, thing: commands.clean_content):
         """ Rates what you desire """
         rate_amount = random.uniform(0.0, 100.0)
         await ctx.send(f"I'd rate `{thing}` a **{round(rate_amount, 4)} / 100**")
 
     @commands.command()
-    async def beer(self, ctx: Context[BotT], user: discord.Member = None, *, reason: commands.clean_content = ""):
+    async def beer(self, ctx: Context, user: discord.Member = None, *, reason: commands.clean_content = ""):
         """ Give someone a beer! 🍻 """
         if not user or user.id == ctx.author.id:
             return await ctx.send(f"**{ctx.author.name}**: paaaarty!🎉🍺")
@@ -173,7 +172,7 @@ class Fun_Commands(commands.Cog):
             await msg.edit(content=beer_offer)
 
     @commands.command(aliases=["howhot", "hot"])
-    async def hotcalc(self, ctx: Context[BotT], *, user: discord.Member = None):
+    async def hotcalc(self, ctx: Context, *, user: discord.Member = None):
         """ Returns a random percent for how hot is a discord user """
         user = user or ctx.author
         random.seed(user.id)
@@ -193,7 +192,7 @@ class Fun_Commands(commands.Cog):
         await ctx.send(f"**{user.name}** is **{hot:.2f}%** hot {emoji}")
 
     @commands.command(aliases=["noticemesenpai"])
-    async def noticeme(self, ctx: Context[BotT]):
+    async def noticeme(self, ctx: Context):
         """ Notice me senpai! owo """
         if not permissions.can_handle(ctx, "attach_files"):
             return await ctx.send("I cannot send images here ;-;")
@@ -202,7 +201,7 @@ class Fun_Commands(commands.Cog):
         await ctx.send(file=discord.File(bio, filename="noticeme.gif"))
 
     @commands.command(aliases=["slots", "bet"])
-    async def slot(self, ctx: Context[BotT]):
+    async def slot(self, ctx: Context):
         """ Roll the slot machine """
         a, b, c = [random.choice("🍎🍊🍐🍋🍉🍇🍓🍒") for _ in range(3)]
 
@@ -216,7 +215,7 @@ class Fun_Commands(commands.Cog):
         await ctx.send(f"**[ {a} {b} {c} ]\n{ctx.author.name}**, {results}")
 
     @commands.command()
-    async def dice(self, ctx: Context[BotT]):
+    async def dice(self, ctx: Context):
         """ Dice game. Good luck """
         bot_dice, player_dice = [random.randint(1, 6) for g in range(2)]
 
@@ -236,7 +235,7 @@ class Fun_Commands(commands.Cog):
         await ctx.send(f"{results}\n> {final_message}")
 
     @commands.command(aliases=['colors'])
-    async def roulette(self, ctx: Context[BotT], picked_colour: str = None):
+    async def roulette(self, ctx: Context, picked_colour: str = None):
         """ Colours roulette """
         colour_table = ["blue", "red", "green", "yellow"]
         if not picked_colour:

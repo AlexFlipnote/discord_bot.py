@@ -4,7 +4,6 @@ import discord
 import traceback
 
 from discord.ext.commands.context import Context
-from discord.ext.commands._types import BotT
 from datetime import datetime
 from io import BytesIO
 
@@ -66,7 +65,7 @@ def actionmessage(case: str, mass: bool = False) -> str:
 
 
 async def pretty_results(
-    ctx: Context[BotT], filename: str = "Results",
+    ctx: Context, filename: str = "Results",
     resultmsg: str = "Here's the results:", loop: list = None
 ) -> None:
     """ A prettier way to show loop results """

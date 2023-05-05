@@ -4,7 +4,6 @@ import os
 
 from datetime import datetime
 from discord.ext.commands.context import Context
-from discord.ext.commands._types import BotT
 from discord.ext import commands
 from discord.ext.commands import errors
 from utils import default
@@ -17,7 +16,7 @@ class Events(commands.Cog):
         self.process = psutil.Process(os.getpid())
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: Context[BotT], err: Exception):
+    async def on_command_error(self, ctx: Context, err: Exception):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
             helper = str(ctx.invoked_subcommand) if ctx.invoked_subcommand else str(ctx.command)
             await ctx.send_help(helper)
@@ -56,7 +55,7 @@ class Events(commands.Cog):
             await to_send.send(self.config["join_message"])
 
     @commands.Cog.listener()
-    async def on_command(self, ctx: Context[BotT]):
+    async def on_command(self, ctx: Context):
         location_name = ctx.guild.name if ctx.guild else "Private message"
         print(f"{location_name} > {ctx.author} > {ctx.message.clean_content}")
 
