@@ -3,20 +3,20 @@ import psutil
 import os
 
 from datetime import datetime
-from discord.ext.commands.context import Context
+from utils.default import CustomContext
 from discord.ext import commands
 from discord.ext.commands import errors
 from utils import default
+from utils.data import DiscordBot
 
 
 class Events(commands.Cog):
     def __init__(self, bot):
-        self.bot: commands.AutoShardedBot = bot
-        self.config = default.load_json()
+        self.bot: DiscordBot = bot
         self.process = psutil.Process(os.getpid())
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: Context, err: Exception):
+    async def on_command_error(self, ctx: CustomContext, err: Exception):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
             helper = str(ctx.invoked_subcommand) if ctx.invoked_subcommand else str(ctx.command)
             await ctx.send_help(helper)
@@ -52,10 +52,10 @@ class Events(commands.Cog):
         ), None)
 
         if to_send:
-            await to_send.send(self.config["join_message"])
+            await to_send.send(self.bot.config.discord_join_message)
 
     @commands.Cog.listener()
-    async def on_command(self, ctx: Context):
+    async def on_command(self, ctx: CustomContext):
         location_name = ctx.guild.name if ctx.guild else "Private message"
         print(f"{location_name} > {ctx.author} > {ctx.message.clean_content}")
 
@@ -66,17 +66,17 @@ class Events(commands.Cog):
             self.bot.uptime = datetime.now()
 
         # Check if user desires to have something other than online
-        status = self.config["status_type"].lower()
+        status = self.bot.config.discord_status_type.lower()
         status_type = {"idle": discord.Status.idle, "dnd": discord.Status.dnd}
 
         # Check if user desires to have a different type of activity
-        activity = self.config["activity_type"].lower()
+        activity = self.bot.config.discord_activity_type.lower()
         activity_type = {"listening": 2, "watching": 3, "competing": 5}
 
         await self.bot.change_presence(
             activity=discord.Game(
                 type=activity_type.get(activity, 0),
-                name=self.config["activity"]
+                name=self.bot.config.discord_activity_name
             ),
             status=status_type.get(status, discord.Status.online)
         )

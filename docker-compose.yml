@@ -5,4 +5,4 @@ services:
     container_name: "discord_bot.py"
     build: .
     volumes:
-      - ./config.json:/discord_bot/config.json
+      - ./.env:/discord_bot/.env

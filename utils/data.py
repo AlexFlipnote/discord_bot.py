@@ -1,14 +1,16 @@
 import discord
 import os
 
-from utils import permissions
+from utils import permissions, default
+from utils.config import Config
 from discord.ext.commands import AutoShardedBot, DefaultHelpCommand
 
 
-class Bot(AutoShardedBot):
-    def __init__(self, *args, prefix: list[str] = None, **kwargs):
+class DiscordBot(AutoShardedBot):
+    def __init__(self, config: Config, prefix: list[str] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prefix = prefix
+        self.config = config
 
     async def setup_hook(self):
         for file in os.listdir("cogs"):
@@ -19,10 +21,15 @@ class Bot(AutoShardedBot):
             await self.load_extension(f"cogs.{name}")
 
     async def on_message(self, msg: discord.Message):
-        if not self.is_ready() or msg.author.bot or not permissions.can_handle(msg, "send_messages"):
+        if not self.is_ready() or msg.author.bot or \
+           not permissions.can_handle(msg, "send_messages"):
             return
 
         await self.process_commands(msg)
+
+    async def process_commands(self, msg):
+        ctx = await self.get_context(msg, cls=default.CustomContext)
+        await self.invoke(ctx)
 
 
 class HelpFormat(DefaultHelpCommand):

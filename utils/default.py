@@ -3,9 +3,33 @@ import json
 import discord
 import traceback
 
-from discord.ext.commands.context import Context
+from discord.ext import commands
+from typing import TYPE_CHECKING
 from datetime import datetime
 from io import BytesIO
+
+if TYPE_CHECKING:
+    from utils.data import DiscordBot
+
+
+class CustomContext(commands.Context):
+    """
+    This class is used to overwrite discord.py's Context class.
+    You can add your own methods here.
+    Any functions you add will automatically become usable in ALL commands.
+
+    Example:
+    --------
+    def ping(self) -> str:
+        return "Hello world!"
+
+    @commands.command()
+    async def ping(self, ctx: CustomContext):
+        await ctx.send(f"Pong! {ctx.ping()}")
+    """
+    def __init__(self, **kwargs):
+        self.bot: "DiscordBot"
+        super().__init__(**kwargs)
 
 
 def load_json(filename: str = "config.json") -> dict:
@@ -65,7 +89,7 @@ def actionmessage(case: str, mass: bool = False) -> str:
 
 
 async def pretty_results(
-    ctx: Context, filename: str = "Results",
+    ctx: CustomContext, filename: str = "Results",
     resultmsg: str = "Here's the results:", loop: list = None
 ) -> None:
     """ A prettier way to show loop results """

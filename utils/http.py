@@ -1,29 +1,50 @@
 import aiohttp
+import json
 
-from utils import cache
-
-
-# Removes the aiohttp ClientSession instance warning.
-class HTTPSession(aiohttp.ClientSession):
-    """ Abstract class for aiohttp. """
-
-    def __del__(self):
-        if not self.closed:
-            self.close()
+from aiohttp.client_exceptions import ContentTypeError
 
 
-session = HTTPSession()
+class HTTPResponse:
+    def __init__(
+        self, status: int, response: str,
+        res_method: str, headers: dict[str, str]
+    ):
+        self.status = status
+        self.response = response
+        self.res_method = res_method
+        self.headers = headers
+
+    def __repr__(self) -> str:
+        return f"<HTTPResponse status={self.status} res_method='{self.res_method}'>"
 
 
-@cache.async_cache()
-async def query(url: str, method: str = "get", res_method: str = "text", *args, **kwargs):
+async def query(url, method="get", res_method="text", *args, **kwargs) -> HTTPResponse:
+    """ Make a HTTP request using aiohttp """
+    session = aiohttp.ClientSession()
+
     async with getattr(session, method.lower())(url, *args, **kwargs) as res:
-        return await getattr(res, res_method)()
+        try:
+            r = await getattr(res, res_method)()
+        except ContentTypeError:
+            if res_method == "json":
+                r = json.loads(await res.text())
+
+        output = HTTPResponse(
+            status=res.status,
+            response=r,
+            res_method=res_method,
+            headers=res.headers
+        )
+
+    await session.close()
+    return output
 
 
-async def get(url: str, *args, **kwargs):
+async def get(url, *args, **kwargs) -> HTTPResponse:
+    """ Shortcut for query(url, "get", *args, **kwargs) """
     return await query(url, "get", *args, **kwargs)
 
 
-async def post(url: str, *args, **kwargs):
+async def post(url, *args, **kwargs) -> HTTPResponse:
+    """ Shortcut for query(url, "post", *args, **kwargs) """
     return await query(url, "post", *args, **kwargs)

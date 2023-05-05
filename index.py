@@ -1,21 +1,25 @@
 import discord
 
-from utils import default
-from utils.data import Bot, HelpFormat
+from utils import config, data
 
-config = default.load_json()
+config = config.Config.from_env(".env")
 print("Logging in...")
 
-bot = Bot(
-    command_prefix=config["prefix"], prefix=config["prefix"],
-    owner_ids=config["owners"], command_attrs=dict(hidden=True), help_command=HelpFormat(),
-    allowed_mentions=discord.AllowedMentions(roles=False, users=True, everyone=False),
-    intents=discord.Intents(  # kwargs found at https://docs.pycord.dev/en/master/api.html?highlight=discord%20intents#discord.Intents
-        guilds=True, members=True, messages=True, reactions=True, presences=True, message_content=True,
+bot = data.DiscordBot(
+    config=config, command_prefix=config.discord_prefix,
+    prefix=config.discord_prefix, command_attrs=dict(hidden=True),
+    help_command=data.HelpFormat(),
+    allowed_mentions=discord.AllowedMentions(
+        everyone=False, roles=False, users=True
+    ),
+    intents=discord.Intents(
+        # kwargs found at https://docs.pycord.dev/en/master/api.html?highlight=discord%20intents#discord.Intents
+        guilds=True, members=True, messages=True, reactions=True,
+        presences=True, message_content=True,
     )
 )
 
 try:
-    bot.run(config["token"])
+    bot.run(config.discord_token)
 except Exception as e:
     print(f"Error when logging in: {e}")

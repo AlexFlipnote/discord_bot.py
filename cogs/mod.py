@@ -3,43 +3,47 @@ import re
 import asyncio
 
 from discord.ext import commands
-from discord.ext.commands.context import Context
+from utils.default import CustomContext
+from utils.data import DiscordBot
 from utils import permissions, default
 
 
 # Source: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/mod.py
 class MemberID(commands.Converter):
-    async def convert(self, ctx: Context, argument):
+    async def convert(self, ctx: CustomContext, argument):
         try:
             m = await commands.MemberConverter().convert(ctx, argument)
         except commands.BadArgument:
             try:
                 return int(argument, base=10)
             except ValueError:
-                raise commands.BadArgument(f"{argument} is not a valid member or member ID.") from None
+                raise commands.BadArgument(
+                    f"{argument} is not a valid member or member ID."
+                ) from None
         else:
             return m.id
 
 
 class ActionReason(commands.Converter):
-    async def convert(self, ctx: Context, argument):
+    async def convert(self, ctx: CustomContext, argument):
         ret = argument
 
         if len(ret) > 512:
             reason_max = 512 - len(ret) - len(argument)
-            raise commands.BadArgument(f"reason is too long ({len(argument)}/{reason_max})")
+            raise commands.BadArgument(
+                f"reason is too long ({len(argument)}/{reason_max})"
+            )
         return ret
 
 
 class Moderator(commands.Cog):
     def __init__(self, bot):
-        self.bot: commands.AutoShardedBot = bot
-        self.config = default.load_json()
+        self.bot: DiscordBot = bot
 
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(kick_members=True)
-    async def kick(self, ctx: Context, member: discord.Member, *, reason: str = None):
+    async def kick(self, ctx: CustomContext, member: discord.Member, *, reason: str = None):
         """ Kicks a user from the current server. """
         if await permissions.check_priv(ctx, member):
             return
@@ -53,7 +57,7 @@ class Moderator(commands.Cog):
     @commands.command(aliases=["nick"])
     @commands.guild_only()
     @permissions.has_permissions(manage_nicknames=True)
-    async def nickname(self, ctx: Context, member: discord.Member, *, name: str = None):
+    async def nickname(self, ctx: CustomContext, member: discord.Member, *, name: str = None):
         """ Nicknames a user from the current server. """
         if await permissions.check_priv(ctx, member):
             return
@@ -70,7 +74,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def ban(self, ctx: Context, member: MemberID, *, reason: str = None):
+    async def ban(self, ctx: CustomContext, member: MemberID, *, reason: str = None):
         """ Bans a user from the current server. """
         m = ctx.guild.get_member(member)
         if m is not None and await permissions.check_priv(ctx, m):
@@ -86,7 +90,7 @@ class Moderator(commands.Cog):
     @commands.guild_only()
     @commands.max_concurrency(1, per=commands.BucketType.user)
     @permissions.has_permissions(ban_members=True)
-    async def massban(self, ctx: Context, reason: ActionReason, *members: MemberID):
+    async def massban(self, ctx: CustomContext, reason: ActionReason, *members: MemberID):
         """ Mass bans multiple members from the server. """
         try:
             for member_id in members:
@@ -98,7 +102,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def unban(self, ctx: Context, member: MemberID, *, reason: str = None):
+    async def unban(self, ctx: CustomContext, member: MemberID, *, reason: str = None):
         """ Unbans a user from the current server. """
         try:
             await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
@@ -109,7 +113,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(manage_roles=True)
-    async def mute(self, ctx: Context, member: discord.Member, *, reason: str = None):
+    async def mute(self, ctx: CustomContext, member: discord.Member, *, reason: str = None):
         """ Mutes a user from the current server. """
         if await permissions.check_priv(ctx, member):
             return
@@ -128,7 +132,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(manage_roles=True)
-    async def unmute(self, ctx: Context, member: discord.Member, *, reason: str = None):
+    async def unmute(self, ctx: CustomContext, member: discord.Member, *, reason: str = None):
         """ Unmutes a user from the current server. """
         if await permissions.check_priv(ctx, member):
             return
@@ -147,7 +151,7 @@ class Moderator(commands.Cog):
     @commands.command(aliases=["ar"])
     @commands.guild_only()
     @permissions.has_permissions(manage_roles=True)
-    async def announcerole(self, ctx: Context, *, role: discord.Role):
+    async def announcerole(self, ctx: CustomContext, *, role: discord.Role):
         """ Makes a role mentionable and removes it whenever you mention the role """
         if role == ctx.guild.default_role:
             return await ctx.send("To prevent abuse, I won't allow mentionable role for everyone/here role.")
@@ -181,13 +185,13 @@ class Moderator(commands.Cog):
     @commands.group()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
-    async def find(self, ctx: Context):
+    async def find(self, ctx: CustomContext):
         """ Finds a user within your search term """
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     @find.command(name="playing")
-    async def find_playing(self, ctx: Context, *, search: str):
+    async def find_playing(self, ctx: CustomContext, *, search: str):
         loop = []
         for i in ctx.guild.members:
             if i.activities and (not i.bot):
@@ -200,28 +204,28 @@ class Moderator(commands.Cog):
         )
 
     @find.command(name="username", aliases=["name"])
-    async def find_name(self, ctx: Context, *, search: str):
+    async def find_name(self, ctx: CustomContext, *, search: str):
         loop = [f"{i} ({i.id})" for i in ctx.guild.members if search.lower() in i.name.lower() and not i.bot]
         await default.pretty_results(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="nickname", aliases=["nick"])
-    async def find_nickname(self, ctx: Context, *, search: str):
+    async def find_nickname(self, ctx: CustomContext, *, search: str):
         loop = [f"{i.nick} | {i} ({i.id})" for i in ctx.guild.members if i.nick if (search.lower() in i.nick.lower()) and not i.bot]
         await default.pretty_results(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="id")
-    async def find_id(self, ctx: Context, *, search: int):
+    async def find_id(self, ctx: CustomContext, *, search: int):
         loop = [f"{i} | {i} ({i.id})" for i in ctx.guild.members if (str(search) in str(i.id)) and not i.bot]
         await default.pretty_results(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="discriminator", aliases=["discrim"])
-    async def find_discriminator(self, ctx: Context, *, search: str):
+    async def find_discriminator(self, ctx: CustomContext, *, search: str):
         if not len(search) == 4 or not re.compile("^[0-9]*$").search(search):
             return await ctx.send("You must provide exactly 4 digits")
 
@@ -234,13 +238,13 @@ class Moderator(commands.Cog):
     @commands.guild_only()
     @commands.max_concurrency(1, per=commands.BucketType.guild)
     @permissions.has_permissions(manage_messages=True)
-    async def prune(self, ctx: Context):
+    async def prune(self, ctx: CustomContext):
         """ Removes messages from the current server. """
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
     async def do_removal(
-        self, ctx: Context, limit: int, predicate, *,
+        self, ctx: CustomContext, limit: int, predicate, *,
         before: int = None, after: int = None, message: bool = True
     ) -> discord.Message:
         if limit > 2000:
@@ -266,37 +270,37 @@ class Moderator(commands.Cog):
             return await ctx.send(f"🚮 Successfully removed {deleted} message{'' if deleted == 1 else 's'}.")
 
     @prune.command()
-    async def embeds(self, ctx: Context, search: int = 100):
+    async def embeds(self, ctx: CustomContext, search: int = 100):
         """Removes messages that have embeds in them."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds))
 
     @prune.command()
-    async def files(self, ctx: Context, search: int = 100):
+    async def files(self, ctx: CustomContext, search: int = 100):
         """Removes messages that have attachments in them."""
         await self.do_removal(ctx, search, lambda e: len(e.attachments))
 
     @prune.command()
-    async def mentions(self, ctx: Context, search: int = 100):
+    async def mentions(self, ctx: CustomContext, search: int = 100):
         """Removes messages that have mentions in them."""
         await self.do_removal(ctx, search, lambda e: len(e.mentions) or len(e.role_mentions))
 
     @prune.command()
-    async def images(self, ctx: Context, search: int = 100):
+    async def images(self, ctx: CustomContext, search: int = 100):
         """Removes messages that have embeds or attachments."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds) or len(e.attachments))
 
     @prune.command(name="all")
-    async def _remove_all(self, ctx: Context, search: int = 100):
+    async def _remove_all(self, ctx: CustomContext, search: int = 100):
         """Removes all messages."""
         await self.do_removal(ctx, search, lambda e: True)
 
     @prune.command()
-    async def user(self, ctx: Context, member: discord.Member, search: int = 100):
+    async def user(self, ctx: CustomContext, member: discord.Member, search: int = 100):
         """Removes all messages by the member."""
         await self.do_removal(ctx, search, lambda e: e.author == member)
 
     @prune.command()
-    async def contains(self, ctx: Context, *, substr: str):
+    async def contains(self, ctx: CustomContext, *, substr: str):
         """Removes all messages containing a substring.
         The substring must be at least 3 characters long.
         """
@@ -306,10 +310,10 @@ class Moderator(commands.Cog):
             await self.do_removal(ctx, 100, lambda e: substr in e.content)
 
     @prune.command(name="bots")
-    async def _bots(self, ctx: Context, search: int = 100, prefix: str = None):
+    async def _bots(self, ctx: CustomContext, search: int = 100, prefix: str = None):
         """Removes a bot user's messages and messages with their optional prefix."""
 
-        getprefix = prefix if prefix else self.config["prefix"]
+        getprefix = prefix if prefix else self.bot.config.discord_prefix
 
         def predicate(m):
             return (m.webhook_id is None and m.author.bot) or m.content.startswith(tuple(getprefix))
@@ -317,7 +321,7 @@ class Moderator(commands.Cog):
         await self.do_removal(ctx, search, predicate)
 
     @prune.command(name="users")
-    async def _users(self, ctx: Context, search: int = 100):
+    async def _users(self, ctx: CustomContext, search: int = 100):
         """Removes only user messages. """
 
         def predicate(m):
@@ -326,7 +330,7 @@ class Moderator(commands.Cog):
         await self.do_removal(ctx, search, predicate)
 
     @prune.command(name="emojis")
-    async def _emojis(self, ctx: Context, search: int = 100):
+    async def _emojis(self, ctx: CustomContext, search: int = 100):
         """Removes all messages containing custom emoji."""
         custom_emoji = re.compile(r"<a?:(.*?):(\d{17,21})>|[\u263a-\U0001f645]")
 
@@ -336,7 +340,7 @@ class Moderator(commands.Cog):
         await self.do_removal(ctx, search, predicate)
 
     @prune.command(name="reactions")
-    async def _reactions(self, ctx: Context, search: int = 100):
+    async def _reactions(self, ctx: CustomContext, search: int = 100):
         """Removes all reactions from messages that have them."""
         if search > 2000:
             return await ctx.send(f"Too many messages to search for ({search}/2000)")

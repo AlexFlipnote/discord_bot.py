@@ -2,18 +2,18 @@ import discord
 
 from io import BytesIO
 from utils import default
-from discord.ext.commands.context import Context
+from utils.default import CustomContext
 from discord.ext import commands
+from utils.data import DiscordBot
 
 
 class Discord_Info(commands.Cog):
     def __init__(self, bot):
-        self.bot: commands.AutoShardedBot = bot
-        self.config = default.load_json()
+        self.bot: DiscordBot = bot
 
     @commands.command(aliases=["av", "pfp"])
     @commands.guild_only()
-    async def avatar(self, ctx: Context, *, user: discord.Member = None):
+    async def avatar(self, ctx: CustomContext, *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
         user = user or ctx.author
 
@@ -50,7 +50,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def roles(self, ctx: Context):
+    async def roles(self, ctx: CustomContext):
         """ Get all roles in current server """
         allroles = ""
 
@@ -62,7 +62,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command(aliases=["joindate", "joined"])
     @commands.guild_only()
-    async def joinedat(self, ctx: Context, *, user: discord.Member = None):
+    async def joinedat(self, ctx: CustomContext, *, user: discord.Member = None):
         """ Check when a user joined the current server """
         user = user or ctx.author
         await ctx.send("\n".join([
@@ -72,7 +72,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def mods(self, ctx: Context):
+    async def mods(self, ctx: CustomContext):
         """ Check which mods are online on current guild """
         message = ""
         all_status = {
@@ -96,7 +96,7 @@ class Discord_Info(commands.Cog):
 
     @commands.group()
     @commands.guild_only()
-    async def server(self, ctx: Context):
+    async def server(self, ctx: CustomContext):
         """ Check info about current server """
         if ctx.invoked_subcommand is None:
             find_bots = sum(1 for member in ctx.guild.members if member.bot)
@@ -118,7 +118,7 @@ class Discord_Info(commands.Cog):
 
     @server.command(name="avatar", aliases=["icon"])
     @commands.guild_only()
-    async def server_avatar(self, ctx: Context):
+    async def server_avatar(self, ctx: CustomContext):
         """ Get the current server icon """
         if not ctx.guild.icon:
             return await ctx.send("This server does not have an icon...")
@@ -139,7 +139,7 @@ class Discord_Info(commands.Cog):
         await ctx.send(f"🖼 Icon to **{ctx.guild.name}**", embed=embed)
 
     @server.command(name="banner")
-    async def server_banner(self, ctx: Context):
+    async def server_banner(self, ctx: CustomContext):
         """ Get the current banner image """
         if not ctx.guild.banner:
             return await ctx.send("This server does not have a banner...")
@@ -151,7 +151,7 @@ class Discord_Info(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def user(self, ctx: Context, *, user: discord.Member = None):
+    async def user(self, ctx: CustomContext, *, user: discord.Member = None):
         """ Get user information """
         user = user or ctx.author
 
