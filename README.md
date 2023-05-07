@@ -21,11 +21,11 @@ I recommend having Visual Studio Code with the Python extension installed to hel
 
 1. Rename the file **.env.example** to **.env**, then fill in the required spots, such as token, prefix and game
 
-2. To install what you need, do **pip install -r requirements.txt**<br>
-(If that doesn't work, do **python -m pip install -r requirements.txt**)<br>
+2. To install what you need click on **Install.bat**<br>
+(if that doesn't work for some reason, do manually **python -m pip install -r requirements.txt**)<br>
 `NOTE: Use pip install with Administrator/sudo`
 
-1. Start the bot by having the cmd/terminal inside the bot folder and type **python index.py**
+1. Then to start the bot click on **START.bat**
 
 2. You're done, enjoy your bot!
 
