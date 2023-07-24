@@ -23,9 +23,9 @@ class CustomContext(commands.Context):
     def ping(self) -> str:
         return "Hello world!"
 
-    @commands.command()
-    async def ping(self, ctx: CustomContext):
-        await ctx.send(f"Pong! {ctx.ping()}")
+    @app_commands.command()
+    async def ping(self, ctx: discord.Interaction):
+        await ctx.response.send_message(f"Pong! {ctx.ping()}")
     """
     def __init__(self, **kwargs):
         self.bot: "DiscordBot"
@@ -89,20 +89,20 @@ def actionmessage(case: str, mass: bool = False) -> str:
 
 
 async def pretty_results(
-    ctx: CustomContext, filename: str = "Results",
+    ctx: discord.Interaction, filename: str = "Results",
     resultmsg: str = "Here's the results:", loop: list = None
 ) -> None:
     """ A prettier way to show loop results """
     if not loop:
-        return await ctx.send("The result was empty...")
+        return await ctx.response.send_message("The result was empty...")
 
     pretty = "\r\n".join([f"[{str(num).zfill(2)}] {data}" for num, data in enumerate(loop, start=1)])
 
     if len(loop) < 15:
-        return await ctx.send(f"{resultmsg}```ini\n{pretty}```")
+        return await ctx.response.send_message(f"{resultmsg}```ini\n{pretty}```")
 
     data = BytesIO(pretty.encode('utf-8'))
-    await ctx.send(
+    await ctx.response.send_message(
         content=resultmsg,
         file=discord.File(
             data,

@@ -42,7 +42,7 @@ class HelpFormat(DefaultHelpCommand):
     async def send_error_message(self, error: str) -> None:
         """ Sends an error message to the destination. """
         destination = self.get_destination(no_pm=True)
-        await destination.send(error)
+        await destination.response.send_message(error)
 
     async def send_command_help(self, command) -> None:
         """ Sends the help for a single command. """
@@ -61,7 +61,7 @@ class HelpFormat(DefaultHelpCommand):
         try:
             destination = self.get_destination(no_pm=no_pm)
             for page in self.paginator.pages:
-                await destination.send(page)
+                await destination.response.send_message(page)
         except discord.Forbidden:
             destination = self.get_destination(no_pm=True)
-            await destination.send("Couldn't send help to you due to blocked DMs...")
+            await destination.response.send_message("Couldn't send help to you due to blocked DMs...")

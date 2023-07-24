@@ -5,17 +5,22 @@ from utils import default
 from utils.default import CustomContext
 from discord.ext import commands
 from utils.data import DiscordBot
+from discord import app_commands
+
 
 
 class Discord_Info(commands.Cog):
     def __init__(self, bot):
         self.bot: DiscordBot = bot
+    
+    group = app_commands.Group(name="server", description="Check info about current server")
 
-    @commands.command(aliases=["av", "pfp"])
-    @commands.guild_only()
-    async def avatar(self, ctx: CustomContext, *, user: discord.Member = None):
+
+    @app_commands.command(name='avatar')
+    @app_commands.guild_only()
+    async def avatar(self, ctx: discord.Interaction, *, user: discord.Member = None):
         """ Get the avatar of you or someone else """
-        user = user or ctx.author
+        user = user or ctx.user
 
         avatars_list = []
 
@@ -26,7 +31,7 @@ class Discord_Info(commands.Cog):
             return formats
 
         if not user.avatar and not user.guild_avatar:
-            return await ctx.send(f"**{user}** has no avatar set, at all...")
+            return await ctx.response.send_message(f"**{user}** has no avatar set, at all...")
 
         if user.avatar:
             avatars_list.append("**Account avatar:** " + " **-** ".join(
@@ -46,11 +51,11 @@ class Discord_Info(commands.Cog):
         embed.set_image(url=f"{user.display_avatar.with_size(256).with_static_format('png')}")
         embed.description = "\n".join(avatars_list)
 
-        await ctx.send(f"🖼 Avatar to **{user}**", embed=embed)
+        await ctx.response.send_message(f"🖼 Avatar to **{user}**", embed=embed)
 
-    @commands.command()
-    @commands.guild_only()
-    async def roles(self, ctx: CustomContext):
+    @app_commands.command(name="roles")
+    @app_commands.guild_only()
+    async def roles(self, ctx: discord.Interaction) -> None:
         """ Get all roles in current server """
         allroles = ""
 
@@ -58,21 +63,21 @@ class Discord_Info(commands.Cog):
             allroles += f"[{str(num).zfill(2)}] {role.id}\t{role.name}\t[ Users: {len(role.members)} ]\r\n"
 
         data = BytesIO(allroles.encode("utf-8"))
-        await ctx.send(content=f"Roles in **{ctx.guild.name}**", file=discord.File(data, filename=f"{default.timetext('Roles')}"))
+        await ctx.response.send_message(content=f"Roles in **{ctx.guild.name}**", file=discord.File(data, filename=f"{default.timetext('Roles')}"))
 
-    @commands.command(aliases=["joindate", "joined"])
-    @commands.guild_only()
-    async def joinedat(self, ctx: CustomContext, *, user: discord.Member = None):
+    @app_commands.command(name="joindat")
+    @app_commands.guild_only()
+    async def joinedat(self, ctx: discord.Interaction, *, user: discord.Member = None):
         """ Check when a user joined the current server """
-        user = user or ctx.author
-        await ctx.send("\n".join([
+        user = user or ctx.user
+        await ctx.response.send_message("\n".join([
             f"**{user}** joined **{ctx.guild.name}**",
             f"{default.date(user.joined_at, ago=True)}"
         ]))
 
-    @commands.command()
-    @commands.guild_only()
-    async def mods(self, ctx: CustomContext):
+    @app_commands.command(name="mods")
+    @app_commands.guild_only()
+    async def mods(self, ctx: discord.Interaction):
         """ Check which mods are online on current guild """
         message = ""
         all_status = {
@@ -92,36 +97,33 @@ class Discord_Info(commands.Cog):
             if all_status[g]["users"]:
                 message += f"{all_status[g]['emoji']} {', '.join(all_status[g]['users'])}\n"
 
-        await ctx.send(f"Mods in **{ctx.guild.name}**\n{message}")
-
-    @commands.group()
-    @commands.guild_only()
-    async def server(self, ctx: CustomContext):
+        await ctx.response.send_message(f"Mods in **{ctx.guild.name}**\n{message}")
+    
+    @group.command()
+    @app_commands.guild_only()
+    async def server_info(self, ctx: discord.Interaction):
         """ Check info about current server """
-        if ctx.invoked_subcommand is None:
-            find_bots = sum(1 for member in ctx.guild.members if member.bot)
+        find_bots = sum(1 for member in ctx.guild.members if member.bot)
 
-            embed = discord.Embed()
+        embed = discord.Embed()
 
-            if ctx.guild.icon:
-                embed.set_thumbnail(url=ctx.guild.icon)
+        if ctx.guild.icon:
+            embed.set_thumbnail(url=ctx.guild.icon)
             if ctx.guild.banner:
                 embed.set_image(url=ctx.guild.banner.with_format("png").with_size(1024))
+                embed.add_field(name="Server Name", value=ctx.guild.name)
+                embed.add_field(name="Server ID", value=ctx.guild.id)
+                embed.add_field(name="Members", value=ctx.guild.member_count)
+                embed.add_field(name="Bots", value=find_bots)
+                embed.add_field(name="Owner", value=ctx.guild.owner)
+                embed.add_field(name="Created", value=default.date(ctx.guild.created_at, ago=True))
+            return await ctx.response.send_message(content=f"ℹ information about **{ctx.guild.name}**", embed=embed)
 
-            embed.add_field(name="Server Name", value=ctx.guild.name)
-            embed.add_field(name="Server ID", value=ctx.guild.id)
-            embed.add_field(name="Members", value=ctx.guild.member_count)
-            embed.add_field(name="Bots", value=find_bots)
-            embed.add_field(name="Owner", value=ctx.guild.owner)
-            embed.add_field(name="Created", value=default.date(ctx.guild.created_at, ago=True))
-            await ctx.send(content=f"ℹ information about **{ctx.guild.name}**", embed=embed)
-
-    @server.command(name="avatar", aliases=["icon"])
-    @commands.guild_only()
-    async def server_avatar(self, ctx: CustomContext):
+    @group.command()
+    async def server_avatar(self, ctx: discord.Interaction):
         """ Get the current server icon """
         if not ctx.guild.icon:
-            return await ctx.send("This server does not have an icon...")
+            return await ctx.response.send_message("This server does not have an icon...")
 
         format_list = []
         formats = ["JPEG", "PNG", "WebP"]
@@ -136,24 +138,24 @@ class Discord_Info(commands.Cog):
         embed.title = "Icon formats"
         embed.description = " **-** ".join(format_list)
 
-        await ctx.send(f"🖼 Icon to **{ctx.guild.name}**", embed=embed)
+        return await ctx.response.send_message(f"🖼 Icon to **{ctx.guild.name}**", embed=embed)
 
-    @server.command(name="banner")
-    async def server_banner(self, ctx: CustomContext):
+    @group.command()
+    async def server_banner(self, ctx: discord.Interaction):
         """ Get the current banner image """
         if not ctx.guild.banner:
-            return await ctx.send("This server does not have a banner...")
+            return await ctx.response.send_message("This server does not have a banner...")
 
-        await ctx.send("\n".join([
+        await ctx.response.send_message("\n".join([
             f"Banner of **{ctx.guild.name}**",
             f"{ctx.guild.banner.with_format('png')}"
         ]))
 
-    @commands.command()
-    @commands.guild_only()
-    async def user(self, ctx: CustomContext, *, user: discord.Member = None):
+    @app_commands.command(name="user")
+    @app_commands.guild_only()
+    async def user(self, ctx: discord.Interaction, *, user: discord.Member = None):
         """ Get user information """
-        user = user or ctx.author
+        user = user or ctx.user
 
         show_roles = "None"
         if len(user.roles) > 1:
@@ -174,7 +176,7 @@ class Discord_Info(commands.Cog):
         embed.add_field(name="Joined this server", value=default.date(user.joined_at, ago=True))
         embed.add_field(name="Roles", value=show_roles, inline=False)
 
-        await ctx.send(content=f"ℹ About **{user.id}**", embed=embed)
+        await ctx.response.send_message(content=f"ℹ About **{user.id}**", embed=embed)
 
 
 async def setup(bot):
