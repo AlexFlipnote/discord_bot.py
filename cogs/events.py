@@ -74,11 +74,12 @@ class Events(commands.Cog):
         # Check if user desires to have a different type of activity
         activity = self.bot.config.discord_activity_type.lower()
         activity_type = {"listening": discord.ActivityType.listening, "watching": discord.ActivityType.watching, "streaming": discord.ActivityType.streaming, "competing": discord.ActivityType.competing}
-
+        
         await self.bot.change_presence(
             activity=discord.Activity(
-                type=activity_type.get(activity, 0),
-                name=self.bot.config.discord_activity_name
+                type=activity_type.get(activity, discord.ActivityType.listening),
+                name=self.bot.config.discord_activity_name,
+                url=f"https://twitch.tv/{str(self.bot.config.discord_activity_url or str(self.bot.user).split('#')[0]) }",
             ),
             status=status_type.get(status, discord.Status.online)
         )
