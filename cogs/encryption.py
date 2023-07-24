@@ -5,7 +5,6 @@ import discord
 
 from io import BytesIO
 from discord.ext import commands
-from utils.default import CustomContext
 from discord.ext.commands.errors import BadArgument
 from utils import default, http
 from utils.data import DiscordBot
@@ -15,9 +14,9 @@ from discord import app_commands
 class Encryption(commands.Cog):
     def __init__(self, bot):
         self.bot: DiscordBot = bot
-        
-    group = app_commands.Group(name="encode", description="All encode methods")
-    groupTwo = app_commands.Group(name="decode", description="All encode methods")
+
+    encode = app_commands.Group(name="encode", description="All encode methods")
+    decode = app_commands.Group(name="decode", description="All decode methods")
 
     async def detect_file(self, ctx: discord.Interaction):
         """ Detect if user uploaded a file to convert longer text """
@@ -61,7 +60,7 @@ class Encryption(commands.Cog):
             except AttributeError:
                 await ctx.response.send_message(f"📑 **{convert}**```fix\n{input}```")
 
-    @group.command(name="base32")
+    @encode.command(name="base32")
     async def encode_base32(self, ctx: discord.Interaction, *, input: str = None):
         """ Encode in base32 """
         if not input:
@@ -71,7 +70,7 @@ class Encryption(commands.Cog):
             ctx, "Text -> base32", base64.b32encode(input.encode("utf-8"))
         )
 
-    @groupTwo.command(name="base32")
+    @decode.command(name="base32")
     async def decode_base32(self, ctx: discord.Interaction, *, input: str = None):
         """ Decode in base32 """
         if not input:
@@ -82,7 +81,7 @@ class Encryption(commands.Cog):
         except Exception:
             await ctx.response.send_message("Invalid base32...")
 
-    @group.command(name="base64")
+    @encode.command(name="base64")
     async def encode_base64(self, ctx: discord.Interaction, *, input: str = None):
         """ Encode in base64 """
         if not input:
@@ -92,7 +91,7 @@ class Encryption(commands.Cog):
             ctx, "Text -> base64", base64.urlsafe_b64encode(input.encode("utf-8"))
         )
 
-    @groupTwo.command(name="base64")
+    @decode.command(name="base64")
     async def decode_base64(self, ctx: discord.Interaction, *, input: str = None):
         """ Decode in base64 """
         if not input:
@@ -103,7 +102,7 @@ class Encryption(commands.Cog):
         except Exception:
             await ctx.response.send_message("Invalid base64...")
 
-    @group.command(name="rot13")
+    @encode.command(name="rot13")
     async def encode_rot13(self, ctx: discord.Interaction, *, input: str = None):
         """ Encode in rot13 """
         if not input:
@@ -113,7 +112,7 @@ class Encryption(commands.Cog):
             ctx, "Text -> rot13", codecs.decode(input, "rot_13")
         )
 
-    @groupTwo.command(name="rot13")
+    @decode.command(name="rot13")
     async def decode_rot13(self, ctx: discord.Interaction, *, input: str = None):
         """ Decode in rot13 """
         if not input:
@@ -124,7 +123,7 @@ class Encryption(commands.Cog):
         except Exception:
             await ctx.response.send_message("Invalid rot13...")
 
-    @group.command(name="hex")
+    @encode.command(name="hex")
     async def encode_hex(self, ctx: discord.Interaction, *, input: str = None):
         """ Encode in hex """
         if not input:
@@ -134,7 +133,7 @@ class Encryption(commands.Cog):
             ctx, "Text -> hex", binascii.hexlify(input.encode("utf-8"))
         )
 
-    @groupTwo.command(name="hex")
+    @decode.command(name="hex")
     async def decode_hex(self, ctx: discord.Interaction, *, input: str = None):
         """ Decode in hex """
         if not input:
@@ -145,7 +144,7 @@ class Encryption(commands.Cog):
         except Exception:
             await ctx.response.send_message("Invalid hex...")
 
-    @group.command(name="base85")
+    @encode.command(name="base85")
     async def encode_base85(self, ctx: discord.Interaction, *, input: str = None):
         """ Encode in base85 """
         if not input:
@@ -155,7 +154,7 @@ class Encryption(commands.Cog):
             ctx, "Text -> base85", base64.b85encode(input.encode("utf-8"))
         )
 
-    @groupTwo.command(name="base85")
+    @decode.command(name="base85")
     async def decode_base85(self, ctx: discord.Interaction, *, input: str = None):
         """ Decode in base85 """
         if not input:
@@ -166,7 +165,7 @@ class Encryption(commands.Cog):
         except Exception:
             await ctx.response.send_message("Invalid base85...")
 
-    @group.command(name="ascii85")
+    @encode.command(name="ascii85")
     async def encode_ascii85(self, ctx: discord.Interaction, *, input: str = None):
         """ Encode in ASCII85 """
         if not input:
@@ -176,7 +175,7 @@ class Encryption(commands.Cog):
             ctx, "Text -> ASCII85", base64.a85encode(input.encode("utf-8"))
         )
 
-    @groupTwo.command(name="ascii85")
+    @decode.command(name="ascii85")
     async def decode_ascii85(self, ctx: discord.Interaction, *, input: str = None):
         """ Decode in ASCII85 """
         if not input:

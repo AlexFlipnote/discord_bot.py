@@ -3,10 +3,8 @@ import discord
 import importlib
 import os
 
-
 from discord import app_commands
 from discord.ext import commands
-from utils.default import CustomContext
 from utils import permissions, default, http
 from utils.data import DiscordBot
 
@@ -20,15 +18,20 @@ class Admin(commands.Cog):
     @app_commands.command()
     async def amiadmin(self, ctx: discord.Interaction):
         """ Are you an admin? """
-        owners = self.bot.config.discord_owner_id
+        owners = self.bot.config.discord_owner_ids
         if str(ctx.user.id) in owners:
-            return await ctx.response.send_message(f"Yes **{ctx.user.name}** you are an admin! ✅")
+            return await ctx.response.send_message(
+                f"Yes **{ctx.user.name}** you are an admin! ✅"
+            )
 
         # Please do not remove this part.
         # I would love to be credited as the original creator of the source code.
         #   -- AlexFlipnote
         if ctx.user.id == 86477779717066752:
-            return await ctx.response.send_message(f"Well kinda **{ctx.user.name}**.. you still own the source code")
+            return await ctx.response.send_message(
+                f"Well kinda **{ctx.user.name}**.. "
+                "you still own the source code"
+            )
 
         await ctx.response.send_message(f"no, heck off {ctx.user.name}")
 

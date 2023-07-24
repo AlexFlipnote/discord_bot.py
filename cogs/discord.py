@@ -2,19 +2,16 @@ import discord
 
 from io import BytesIO
 from utils import default
-from utils.default import CustomContext
 from discord.ext import commands
 from utils.data import DiscordBot
 from discord import app_commands
 
 
-
 class Discord_Info(commands.Cog):
     def __init__(self, bot):
         self.bot: DiscordBot = bot
-    
-    group = app_commands.Group(name="server", description="Check info about current server")
 
+    server = app_commands.Group(name="server", description="Check info about current server")
 
     @app_commands.command(name='avatar')
     @app_commands.guild_only()
@@ -63,17 +60,20 @@ class Discord_Info(commands.Cog):
             allroles += f"[{str(num).zfill(2)}] {role.id}\t{role.name}\t[ Users: {len(role.members)} ]\r\n"
 
         data = BytesIO(allroles.encode("utf-8"))
-        await ctx.response.send_message(content=f"Roles in **{ctx.guild.name}**", file=discord.File(data, filename=f"{default.timetext('Roles')}"))
+        await ctx.response.send_message(
+            content=f"Roles in **{ctx.guild.name}**",
+            file=discord.File(data, filename=f"{default.timetext('Roles')}")
+        )
 
     @app_commands.command(name="joindat")
     @app_commands.guild_only()
     async def joinedat(self, ctx: discord.Interaction, *, user: discord.Member = None):
         """ Check when a user joined the current server """
         user = user or ctx.user
-        await ctx.response.send_message("\n".join([
-            f"**{user}** joined **{ctx.guild.name}**",
+        await ctx.response.send_message(
+            f"**{user}** joined **{ctx.guild.name}**\n"
             f"{default.date(user.joined_at, ago=True)}"
-        ]))
+        )
 
     @app_commands.command(name="mods")
     @app_commands.guild_only()
@@ -98,8 +98,8 @@ class Discord_Info(commands.Cog):
                 message += f"{all_status[g]['emoji']} {', '.join(all_status[g]['users'])}\n"
 
         await ctx.response.send_message(f"Mods in **{ctx.guild.name}**\n{message}")
-    
-    @group.command()
+
+    @server.command(name="info")
     @app_commands.guild_only()
     async def server_info(self, ctx: discord.Interaction):
         """ Check info about current server """
@@ -119,7 +119,7 @@ class Discord_Info(commands.Cog):
                 embed.add_field(name="Created", value=default.date(ctx.guild.created_at, ago=True))
             return await ctx.response.send_message(content=f"ℹ information about **{ctx.guild.name}**", embed=embed)
 
-    @group.command()
+    @server.command(name="avatar")
     async def server_avatar(self, ctx: discord.Interaction):
         """ Get the current server icon """
         if not ctx.guild.icon:
@@ -140,16 +140,16 @@ class Discord_Info(commands.Cog):
 
         return await ctx.response.send_message(f"🖼 Icon to **{ctx.guild.name}**", embed=embed)
 
-    @group.command()
+    @server.command(name="banner")
     async def server_banner(self, ctx: discord.Interaction):
         """ Get the current banner image """
         if not ctx.guild.banner:
             return await ctx.response.send_message("This server does not have a banner...")
 
-        await ctx.response.send_message("\n".join([
-            f"Banner of **{ctx.guild.name}**",
+        await ctx.response.send_message(
+            f"Banner of **{ctx.guild.name}**\n"
             f"{ctx.guild.banner.with_format('png')}"
-        ]))
+        )
 
     @app_commands.command(name="user")
     @app_commands.guild_only()

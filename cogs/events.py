@@ -3,13 +3,10 @@ import psutil
 import os
 
 from datetime import datetime
-from utils.default import CustomContext
 from discord.ext import commands
 from discord.ext.commands import errors
 from utils import default
 from utils.data import DiscordBot
-from discord import app_commands
-
 
 
 class Events(commands.Cog):
@@ -19,29 +16,49 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.Interaction, err: Exception):
-        if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
-            helper = str(ctx.invoked_subcommand) if ctx.invoked_subcommand else str(ctx.command)
+        print((err, type(err)))
+        if (
+            isinstance(err, errors.MissingRequiredArgument) or
+            isinstance(err, errors.BadArgument)
+        ):
+            helper = (
+                str(ctx.invoked_subcommand)
+                if ctx.invoked_subcommand
+                else str(ctx.command)
+            )
             await ctx.send_help(helper)
 
         elif isinstance(err, errors.CommandInvokeError):
             error = default.traceback_maker(err.original)
 
-            if "2000 or fewer" in str(err) and len(ctx.message.clean_content) > 1900:
-                return await ctx.response.send_message("\n".join([
-                    "You attempted to make the command display more than 2,000 characters...",
+            if (
+                "2000 or fewer" in str(err) and
+                len(ctx.message.clean_content) > 1900
+            ):
+                return await ctx.response.send_message(
+                    "You attempted to make the command "
+                    "display more than 2,000 characters...\n"
                     "Both error and command will be ignored."
-                ]))
+                )
 
-            await ctx.response.send_message(f"There was an error processing the command ;-;\n{error}")
+            await ctx.response.send_message(
+                f"There was an error processing the command ;-;\n{error}"
+            )
 
         elif isinstance(err, errors.CheckFailure):
             pass
 
         elif isinstance(err, errors.MaxConcurrencyReached):
-            await ctx.response.send_message("You've reached max capacity of command usage at once, please finish the previous one...")
+            await ctx.response.send_message(
+                "You've reached max capacity of command usage at once, "
+                "please finish the previous one..."
+            )
 
         elif isinstance(err, errors.CommandOnCooldown):
-            await ctx.response.send_message(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
+            await ctx.response.send_message(
+                "This command is on cooldown... "
+                f"try again in {err.retry_after:.2f} seconds."
+            )
 
         elif isinstance(err, errors.CommandNotFound):
             pass
@@ -54,7 +71,9 @@ class Events(commands.Cog):
         ), None)
 
         if to_send:
-            await to_send.response.send_message(self.bot.config.discord_join_message)
+            await to_send.response.send_message(
+                self.bot.config.discord_join_message
+            )
 
     @commands.Cog.listener()
     async def on_command(self, ctx: discord.Interaction):
@@ -68,23 +87,47 @@ class Events(commands.Cog):
             self.bot.uptime = datetime.now()
 
         # Check if user desires to have something other than online
-        status = self.bot.config.discord_status_type.lower()
-        status_type = {"idle": discord.Status.idle, "dnd": discord.Status.dnd}
+        status_type = {
+            "idle": discord.Status.idle,
+            "dnd": discord.Status.dnd
+        }
 
         # Check if user desires to have a different type of activity
-        activity = self.bot.config.discord_activity_type.lower()
-        activity_type = {"listening": discord.ActivityType.listening, "watching": discord.ActivityType.watching, "streaming": discord.ActivityType.streaming, "competing": discord.ActivityType.competing}
-        
+        activity_type = {
+            "listening": discord.ActivityType.listening,
+            "watching": discord.ActivityType.watching,
+            "streaming": discord.ActivityType.streaming,
+            "competing": discord.ActivityType.competing
+        }
+
+        activity_url = self.bot.config.discord_activity_url
+        guild_id = self.bot.config.discord_guild_id
+
         await self.bot.change_presence(
             activity=discord.Activity(
-                type=activity_type.get(activity, discord.ActivityType.listening),
+                type=activity_type.get(
+                    self.bot.config.discord_activity_type.lower(),
+                    discord.ActivityType.playing
+                ),
                 name=self.bot.config.discord_activity_name,
-                url=f"https://twitch.tv/{str(self.bot.config.discord_activity_url or str(self.bot.user).split('#')[0]) }",
+                url=(
+                    f"https://twitch.tv/{activity_url}"
+                    if activity_url else None
+                ),
             ),
-            status=status_type.get(status, discord.Status.online)
+            status=status_type.get(
+                self.bot.config.discord_status_type.lower(),
+                discord.Status.online
+            )
         )
-        
-        await self.bot.tree.sync()
+
+        await self.bot.tree.sync(
+            guild=(
+                discord.Object(id=guild_id)
+                if guild_id else None
+            )
+        )
+
         # Indicate that the bot has successfully booted up
         print(f"Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}")
 

@@ -5,7 +5,6 @@ import asyncio
 import aiohttp
 
 from io import BytesIO
-from utils.default import CustomContext
 from discord.ext import commands
 from utils import permissions, http
 from utils.data import DiscordBot
@@ -16,7 +15,7 @@ class Fun_Commands(commands.Cog):
     def __init__(self, bot):
         self.bot: DiscordBot = bot
 
-    @app_commands.command()
+    @app_commands.command(name="8ball")
     async def eightball(self, ctx: discord.Interaction, *, question: str):
         """ Consult 8ball to receive an answer """
         ballresponse = [
@@ -216,8 +215,12 @@ class Fun_Commands(commands.Cog):
             return await ctx.response.send_message("I cannot send images here ;-;")
 
         r = await http.get("https://i.alexflipnote.dev/500ce4.gif", res_method="read")
-        bio = BytesIO(r.response)
-        await ctx.response.send_message(file=discord.File(bio, filename="noticeme.gif"))
+        await ctx.response.send_message(
+            file=discord.File(
+                BytesIO(r.response),
+                filename="noticeme.gif"
+            )
+        )
 
     @app_commands.command()
     async def slot(self, ctx: discord.Interaction):

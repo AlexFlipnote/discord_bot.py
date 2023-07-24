@@ -3,7 +3,6 @@ import discord
 import psutil
 import os
 
-from utils.default import CustomContext
 from discord.ext import commands
 from utils import default, http
 from utils.data import DiscordBot
@@ -38,10 +37,10 @@ class Information(commands.Cog):
         # Do not remove this command, this has to stay due to the GitHub LICENSE.
         # TL:DR, you have to disclose source according to MIT, don't change output either.
         # Reference: https://github.com/AlexFlipnote/discord_bot.py/blob/master/LICENSE
-        await ctx.response.send_message("\n".join([
-            f"**{ctx.bot.user}** is powered by this source code:",
+        await ctx.response.send_message(
+            f"📜 **{ctx.bot.user}** is powered by this source code:\n"
             "https://github.com/AlexFlipnote/discord_bot.py"
-        ]))
+        )
 
     @app_commands.command()
     async def botserver(self, ctx: discord.Interaction):
@@ -53,39 +52,40 @@ class Information(commands.Cog):
     @app_commands.command()
     async def covid(self, ctx: discord.Interaction, *, country: str):
         """Covid-19 Statistics for any countries"""
-        async with ctx.channel.typing():
-            r = await http.get(f"https://disease.sh/v3/covid-19/countries/{country.lower()}", res_method="json")
+        await ctx.response.defer(thinking=True)
 
-            if "message" in r.response:
-                return await ctx.response.send_message(f"The API returned an error:\n{r['message']}")
+        r = await http.get(f"https://disease.sh/v3/covid-19/countries/{country.lower()}", res_method="json")
 
-            r = r.response
+        if "message" in r.response:
+            return await ctx.response.send_message(f"The API returned an error:\n{r['message']}")
 
-            json_data = [
-                ("Total Cases", r["cases"]), ("Total Deaths", r["deaths"]),
-                ("Total Recover", r["recovered"]), ("Total Active Cases", r["active"]),
-                ("Total Critical Condition", r["critical"]), ("New Cases Today", r["todayCases"]),
-                ("New Deaths Today", r["todayDeaths"]), ("New Recovery Today", r["todayRecovered"])
-            ]
+        r = r.response
 
-            embed = discord.Embed(
-                description=(
-                    "The information provided was last "
-                    f"updated <t:{int(r['updated'] / 1000)}:R>"
-                )
+        json_data = [
+            ("Total Cases", r["cases"]), ("Total Deaths", r["deaths"]),
+            ("Total Recover", r["recovered"]), ("Total Active Cases", r["active"]),
+            ("Total Critical Condition", r["critical"]), ("New Cases Today", r["todayCases"]),
+            ("New Deaths Today", r["todayDeaths"]), ("New Recovery Today", r["todayRecovered"])
+        ]
+
+        embed = discord.Embed(
+            description=(
+                "The information provided was last "
+                f"updated <t:{int(r['updated'] / 1000)}:R>"
+            )
+        )
+
+        for name, value in json_data:
+            embed.add_field(
+                name=name,
+                value=f"{value:,}" if isinstance(value, int) else value
             )
 
-            for name, value in json_data:
-                embed.add_field(
-                    name=name,
-                    value=f"{value:,}" if isinstance(value, int) else value
-                )
-
-            await ctx.response.send_message(
-                f"**COVID-19** statistics in :flag_{r['countryInfo']['iso2'].lower()}: "
-                f"**{country.capitalize()}** *({r['countryInfo']['iso3']})*",
-                embed=embed
-            )
+        await ctx.followup.send(
+            f"**COVID-19** statistics in :flag_{r['countryInfo']['iso2'].lower()}: "
+            f"**{country.capitalize()}** *({r['countryInfo']['iso3']})*",
+            embed=embed
+        )
 
     @app_commands.command()
     async def about(self, ctx: discord.Interaction):
@@ -106,7 +106,7 @@ class Information(commands.Cog):
         embed.add_field(
             name="Developer",
             value=str(ctx.client.get_user(
-                [self.bot.config.discord_owner_id][0]
+                [self.bot.config.discord_owner_ids][0]
             ))
         )
         embed.add_field(name="Library", value="discord.py")

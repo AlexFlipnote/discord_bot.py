@@ -3,7 +3,6 @@ import re
 import asyncio
 
 from discord.ext import commands
-from utils.default import CustomContext
 from utils.data import DiscordBot
 from utils import permissions, default
 from discord import app_commands
@@ -43,7 +42,6 @@ class Moderator(commands.Cog):
 
     find = app_commands.Group(name="find", description="Finds a user within your search term.")
     prune = app_commands.Group(name="prune", description="Removes messages from the current server.")
-
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -298,13 +296,10 @@ class Moderator(commands.Cog):
 
     @prune.command(name="bots")
     @permissions.has_permissions(manage_messages=True)
-    async def _bots(self, ctx: discord.Interaction, search: int = 100, prefix: str = None):
+    async def _bots(self, ctx: discord.Interaction, search: int = 100):
         """Removes a bot user's messages and messages with their optional prefix."""
-
-        getprefix = prefix if prefix else self.bot.config.discord_prefix
-
         def predicate(m):
-            return (m.webhook_id is None and m.author.bot) or m.content.startswith(tuple(getprefix))
+            return (m.webhook_id is None and m.author.bot)
 
         await self.do_removal(ctx, search, predicate)
 

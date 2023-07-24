@@ -3,33 +3,9 @@ import json
 import discord
 import traceback
 
-from discord.ext import commands
-from typing import TYPE_CHECKING
+from typing import Union
 from datetime import datetime
 from io import BytesIO
-
-if TYPE_CHECKING:
-    from utils.data import DiscordBot
-
-
-class CustomContext(commands.Context):
-    """
-    This class is used to overwrite discord.py's Context class.
-    You can add your own methods here.
-    Any functions you add will automatically become usable in ALL commands.
-
-    Example:
-    --------
-    def ping(self) -> str:
-        return "Hello world!"
-
-    @app_commands.command()
-    async def ping(self, ctx: discord.Interaction):
-        await ctx.response.send_message(f"Pong! {ctx.ping()}")
-    """
-    def __init__(self, **kwargs):
-        self.bot: "DiscordBot"
-        super().__init__(**kwargs)
 
 
 def load_json(filename: str = "config.json") -> dict:
@@ -54,8 +30,10 @@ def timetext(name) -> str:
 
 
 def date(
-    target, clock: bool = True,
-    ago: bool = False, only_ago: bool = False
+    target: Union[datetime, float, int],
+    clock: bool = True,
+    ago: bool = False,
+    only_ago: bool = False
 ) -> str:
     """ Converts a timestamp to a Discord timestamp format """
     if isinstance(target, int) or isinstance(target, float):
@@ -81,7 +59,6 @@ def responsible(target: discord.Member, reason: str) -> str:
 def actionmessage(case: str, mass: bool = False) -> str:
     """ Default way to present action confirmation in chat """
     output = f"**{case}** the user"
-
     if mass:
         output = f"**{case}** the IDs/Users"
 
@@ -89,8 +66,10 @@ def actionmessage(case: str, mass: bool = False) -> str:
 
 
 async def pretty_results(
-    ctx: discord.Interaction, filename: str = "Results",
-    resultmsg: str = "Here's the results:", loop: list = None
+    ctx: discord.Interaction,
+    filename: str = "Results",
+    resultmsg: str = "Here's the results:",
+    loop: list = None
 ) -> None:
     """ A prettier way to show loop results """
     if not loop:
