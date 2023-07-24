@@ -11,12 +11,13 @@ class Config:
     """
     discord_token: str
     discord_prefix: str
-    discord_owner_id: int
+    discord_owner_id: list
     discord_join_message: str
 
     discord_activity_name: str
     discord_activity_type: str
     discord_status_type: str
+    discord_activity_url: str
 
     @classmethod
     def from_dict(self, **kwargs) -> "Config":

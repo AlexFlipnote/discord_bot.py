@@ -8,6 +8,8 @@ from discord.ext import commands
 from discord.ext.commands import errors
 from utils import default
 from utils.data import DiscordBot
+from discord import app_commands
+
 
 
 class Events(commands.Cog):
@@ -16,7 +18,7 @@ class Events(commands.Cog):
         self.process = psutil.Process(os.getpid())
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: CustomContext, err: Exception):
+    async def on_command_error(self, ctx: discord.Interaction, err: Exception):
         if isinstance(err, errors.MissingRequiredArgument) or isinstance(err, errors.BadArgument):
             helper = str(ctx.invoked_subcommand) if ctx.invoked_subcommand else str(ctx.command)
             await ctx.send_help(helper)
@@ -25,21 +27,21 @@ class Events(commands.Cog):
             error = default.traceback_maker(err.original)
 
             if "2000 or fewer" in str(err) and len(ctx.message.clean_content) > 1900:
-                return await ctx.send("\n".join([
+                return await ctx.response.send_message("\n".join([
                     "You attempted to make the command display more than 2,000 characters...",
                     "Both error and command will be ignored."
                 ]))
 
-            await ctx.send(f"There was an error processing the command ;-;\n{error}")
+            await ctx.response.send_message(f"There was an error processing the command ;-;\n{error}")
 
         elif isinstance(err, errors.CheckFailure):
             pass
 
         elif isinstance(err, errors.MaxConcurrencyReached):
-            await ctx.send("You've reached max capacity of command usage at once, please finish the previous one...")
+            await ctx.response.send_message("You've reached max capacity of command usage at once, please finish the previous one...")
 
         elif isinstance(err, errors.CommandOnCooldown):
-            await ctx.send(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
+            await ctx.response.send_message(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
 
         elif isinstance(err, errors.CommandNotFound):
             pass
@@ -52,12 +54,12 @@ class Events(commands.Cog):
         ), None)
 
         if to_send:
-            await to_send.send(self.bot.config.discord_join_message)
+            await to_send.response.send_message(self.bot.config.discord_join_message)
 
     @commands.Cog.listener()
-    async def on_command(self, ctx: CustomContext):
+    async def on_command(self, ctx: discord.Interaction):
         location_name = ctx.guild.name if ctx.guild else "Private message"
-        print(f"{location_name} > {ctx.author} > {ctx.message.clean_content}")
+        print(f"{location_name} > {ctx.user} > {ctx.message.clean_content}")
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -71,16 +73,18 @@ class Events(commands.Cog):
 
         # Check if user desires to have a different type of activity
         activity = self.bot.config.discord_activity_type.lower()
-        activity_type = {"listening": 2, "watching": 3, "competing": 5}
-
+        activity_type = {"listening": discord.ActivityType.listening, "watching": discord.ActivityType.watching, "streaming": discord.ActivityType.streaming, "competing": discord.ActivityType.competing}
+        
         await self.bot.change_presence(
-            activity=discord.Game(
-                type=activity_type.get(activity, 0),
-                name=self.bot.config.discord_activity_name
+            activity=discord.Activity(
+                type=activity_type.get(activity, discord.ActivityType.listening),
+                name=self.bot.config.discord_activity_name,
+                url=f"https://twitch.tv/{str(self.bot.config.discord_activity_url or str(self.bot.user).split('#')[0]) }",
             ),
             status=status_type.get(status, discord.Status.online)
         )
-
+        
+        await self.bot.tree.sync()
         # Indicate that the bot has successfully booted up
         print(f"Ready: {self.bot.user} | Servers: {len(self.bot.guilds)}")
 

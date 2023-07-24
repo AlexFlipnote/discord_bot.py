@@ -7,6 +7,7 @@ from utils.default import CustomContext
 from discord.ext import commands
 from utils import default, http
 from utils.data import DiscordBot
+from discord import app_commands
 
 
 class Information(commands.Cog):
@@ -14,49 +15,49 @@ class Information(commands.Cog):
         self.bot: DiscordBot = bot
         self.process = psutil.Process(os.getpid())
 
-    @commands.command()
-    async def ping(self, ctx: CustomContext):
+    @app_commands.command()
+    async def ping(self, ctx: discord.Interaction):
         """ Pong! """
         before = time.monotonic()
         before_ws = int(round(self.bot.latency * 1000, 1))
-        msg = await ctx.send("🏓 Pong")
+        msg = await ctx.response.send_message("🏓 Pong")
         ping = (time.monotonic() - before) * 1000
         await msg.edit(content=f"🏓 WS: {before_ws}ms  |  REST: {int(ping)}ms")
 
-    @commands.command(aliases=["joinme", "join", "botinvite"])
-    async def invite(self, ctx: CustomContext):
+    @app_commands.command()
+    async def invite(self, ctx: discord.Interaction):
         """ Invite me to your server """
-        await ctx.send("\n".join([
-            f"**{ctx.author.name}**, use this URL to invite me",
+        await ctx.response.send_message("\n".join([
+            f"**{ctx.user.name}**, use this URL to invite me",
             f"<{discord.utils.oauth_url(self.bot.user.id)}>"
         ]))
 
-    @commands.command()
-    async def source(self, ctx: CustomContext):
+    @app_commands.command()
+    async def source(self, ctx: discord.Interaction):
         """ Check out my source code <3 """
         # Do not remove this command, this has to stay due to the GitHub LICENSE.
         # TL:DR, you have to disclose source according to MIT, don't change output either.
         # Reference: https://github.com/AlexFlipnote/discord_bot.py/blob/master/LICENSE
-        await ctx.send("\n".join([
+        await ctx.response.send_message("\n".join([
             f"**{ctx.bot.user}** is powered by this source code:",
             "https://github.com/AlexFlipnote/discord_bot.py"
         ]))
 
-    @commands.command(aliases=["supportserver", "feedbackserver"])
-    async def botserver(self, ctx: CustomContext):
+    @app_commands.command()
+    async def botserver(self, ctx: discord.Interaction):
         """ Get an invite to our support server! """
         if isinstance(ctx.channel, discord.DMChannel) or ctx.guild.id != 86484642730885120:
-            return await ctx.send(f"**Here you go {ctx.author.name} 🍻**\nhttps://discord.gg/DpxkY3x")
-        await ctx.send(f"**{ctx.author.name}** this is my home you know :3")
+            return await ctx.response.send_message(f"**Here you go {ctx.user.name} 🍻**\nhttps://discord.gg/DpxkY3x")
+        await ctx.response.send_message(f"**{ctx.user.name}** this is my home you know :3")
 
-    @commands.command()
-    async def covid(self, ctx: CustomContext, *, country: str):
+    @app_commands.command()
+    async def covid(self, ctx: discord.Interaction, *, country: str):
         """Covid-19 Statistics for any countries"""
         async with ctx.channel.typing():
             r = await http.get(f"https://disease.sh/v3/covid-19/countries/{country.lower()}", res_method="json")
 
             if "message" in r.response:
-                return await ctx.send(f"The API returned an error:\n{r['message']}")
+                return await ctx.response.send_message(f"The API returned an error:\n{r['message']}")
 
             r = r.response
 
@@ -80,40 +81,40 @@ class Information(commands.Cog):
                     value=f"{value:,}" if isinstance(value, int) else value
                 )
 
-            await ctx.send(
+            await ctx.response.send_message(
                 f"**COVID-19** statistics in :flag_{r['countryInfo']['iso2'].lower()}: "
                 f"**{country.capitalize()}** *({r['countryInfo']['iso3']})*",
                 embed=embed
             )
 
-    @commands.command(aliases=["info", "stats", "status"])
-    async def about(self, ctx: CustomContext):
+    @app_commands.command()
+    async def about(self, ctx: discord.Interaction):
         """ About the bot """
         ramUsage = self.process.memory_full_info().rss / 1024**2
         avgmembers = sum(g.member_count for g in self.bot.guilds) / len(self.bot.guilds)
 
         embedColour = None
         if hasattr(ctx, "guild") and ctx.guild is not None:
-            embedColour = ctx.me.top_role.colour
+            embedColour = ctx.guild.me.top_role.colour
 
         embed = discord.Embed(colour=embedColour)
-        embed.set_thumbnail(url=ctx.bot.user.avatar)
+        embed.set_thumbnail(url=ctx.client.user.avatar)
         embed.add_field(
             name="Last boot",
             value=default.date(self.bot.uptime, ago=True)
         )
         embed.add_field(
             name="Developer",
-            value=str(self.bot.get_user(
-                self.bot.config.discord_owner_id
+            value=str(ctx.client.get_user(
+                [self.bot.config.discord_owner_id][0]
             ))
         )
         embed.add_field(name="Library", value="discord.py")
-        embed.add_field(name="Servers", value=f"{len(ctx.bot.guilds)} ( avg: {avgmembers:,.2f} users/server )")
-        embed.add_field(name="Commands loaded", value=len([x.name for x in self.bot.commands]))
+        embed.add_field(name="User ID", value=f"{ctx.client.user.id}")
+        embed.add_field(name="Servers", value=f"{len(ctx.client.guilds)} ( avg: {avgmembers:,.2f} users/server )")
         embed.add_field(name="RAM", value=f"{ramUsage:.2f} MB")
 
-        await ctx.send(content=f"ℹ About **{ctx.bot.user}**", embed=embed)
+        await ctx.response.send_message(content=f"ℹ About **{ctx.client.user}**", embed=embed)
 
 
 async def setup(bot):
