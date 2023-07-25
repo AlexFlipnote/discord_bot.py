@@ -39,17 +39,6 @@ class ActionReason(commands.Converter):
 class Moderator(commands.Cog):
     def __init__(self, bot):
         self.bot: DiscordBot = bot
-        
-        @bot.tree.error
-        async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
-            if isinstance(error, app_commands.CommandOnCooldown):
-                return await interaction.response.send_message(error, ephemeral = True)
-            elif isinstance(error, app_commands.BotMissingPermissions):
-                return await interaction.response.send_message(error, ephemeral = True)
-            elif isinstance(error, app_commands.MissingPermissions):
-                return await interaction.response.send_message(error, ephemeral = True)
-            else:
-                return True
 
     find = app_commands.Group(name="find", description="Finds a user within your search term.")
     prune = app_commands.Group(name="prune", description="Removes messages from the current server.")
