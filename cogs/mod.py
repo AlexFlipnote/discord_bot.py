@@ -49,15 +49,15 @@ class Moderator(commands.Cog):
             elif isinstance(error, app_commands.MissingPermissions):
                 return await interaction.response.send_message(error, ephemeral = True)
             else:
-                return await interaction.response.send_message("An error occurred!", ephemeral = True)
+                return True
 
     find = app_commands.Group(name="find", description="Finds a user within your search term.")
     prune = app_commands.Group(name="prune", description="Removes messages from the current server.")
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.check.has_permissions(kick_members=True)
-    @app_commands.check.bot_has_permissions(kick_members=True)
+    @app_commands.checks.has_permissions(kick_members=True)
+    @app_commands.checks.bot_has_permissions(kick_members=True)
     async def kick(self, ctx: discord.Interaction, member: discord.Member, *, reason: str = None):
         """ Kicks a user from the current server. """
         if await permissions.check_priv(ctx, member):
@@ -71,8 +71,8 @@ class Moderator(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.check.has_permissions(manage_nicknames=True)
-    @app_commands.check.bot_has_permissions(manage_nicknames=True)
+    @app_commands.checks.has_permissions(manage_nicknames=True)
+    @app_commands.checks.bot_has_permissions(manage_nicknames=True)
     async def nickname(self, ctx: discord.Interaction, member: discord.Member, *, name: str = None):
         """ Nicknames a user from the current server. """
         if await permissions.check_priv(ctx, member):
@@ -89,12 +89,11 @@ class Moderator(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.check.has_permissions(ban_members=True)
-    @app_commands.check.bot_has_permissions(ban_members=True)
+    @app_commands.checks.has_permissions(ban_members=True)
+    @app_commands.checks.bot_has_permissions(ban_members=True)
     async def ban(self, ctx: discord.Interaction, member: discord.Member, *, reason: str = None):
         """ Bans a user from the current server. """
-        m = ctx.guild.get_member(member.id)
-        if m is not None and await permissions.check_priv(ctx, m):
+        if await permissions.check_priv(ctx, member):
             return
 
         try:
@@ -105,8 +104,8 @@ class Moderator(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.check.has_permissions(ban_members=True)
-    @app_commands.check.bot_has_permissions(ban_members=True)
+    @app_commands.checks.has_permissions(ban_members=True)
+    @app_commands.checks.bot_has_permissions(ban_members=True)
     async def unban(self, ctx: discord.Interaction, member: discord.User, *, reason: str = None):
         """ Unbans a user from the current server. """
         try:
@@ -117,8 +116,8 @@ class Moderator(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.check.has_permissions(manage_roles=True)
-    @app_commands.check.bot_has_permissions(manage_roles=True)
+    @app_commands.checks.has_permissions(manage_roles=True)
+    @app_commands.checks.bot_has_permissions(manage_roles=True)
     async def mute(self, ctx: discord.Interaction, member: discord.Member, *, reason: str = None):
         """ Mutes a user from the current server. """
         if await permissions.check_priv(ctx, member):
@@ -137,8 +136,8 @@ class Moderator(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.check.has_permissions(manage_roles=True)
-    @app_commands.check.bot_has_permissions(manage_roles=True)
+    @app_commands.checks.has_permissions(manage_roles=True)
+    @app_commands.checks.bot_has_permissions(manage_roles=True)
     async def unmute(self, ctx: discord.Interaction, member: discord.Member, *, reason: str = None):
         """ Unmutes a user from the current server. """
         if await permissions.check_priv(ctx, member):
@@ -157,8 +156,8 @@ class Moderator(commands.Cog):
 
     @app_commands.command()
     @app_commands.guild_only()
-    @app_commands.check.has_permissions(manage_roles=True)
-    @app_commands.check.bot_has_permissions(manage_roles=True)
+    @app_commands.checks.has_permissions(manage_roles=True)
+    @app_commands.checks.bot_has_permissions(manage_roles=True)
     async def announcerole(self, ctx: discord.Interaction, *, role: discord.Role):
         """ Makes a role mentionable and removes it whenever you mention the role """
         if role == ctx.guild.default_role:
@@ -266,50 +265,50 @@ class Moderator(commands.Cog):
             return await ctx.response.send_message(f"🚮 Successfully removed {deleted} message{'' if deleted == 1 else 's'}.")
 
     @prune.command()
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def embeds(self, ctx: discord.Interaction, search: int = 100):
         """Removes messages that have embeds in them."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds))
 
     @prune.command()
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def files(self, ctx: discord.Interaction, search: int = 100):
         """Removes messages that have attachments in them."""
         await self.do_removal(ctx, search, lambda e: len(e.attachments))
 
     @prune.command()
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def mentions(self, ctx: discord.Interaction, search: int = 100):
         """Removes messages that have mentions in them."""
         await self.do_removal(ctx, search, lambda e: len(e.mentions) or len(e.role_mentions))
 
     @prune.command()
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def images(self, ctx: discord.Interaction, search: int = 100):
         """Removes messages that have embeds or attachments."""
         await self.do_removal(ctx, search, lambda e: len(e.embeds) or len(e.attachments))
 
     @prune.command(name="all")
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def _remove_all(self, ctx: discord.Interaction, search: int = 100):
         """Removes all messages."""
         await self.do_removal(ctx, search, lambda e: True)
 
     @prune.command()
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def user(self, ctx: discord.Interaction, member: discord.Member, search: int = 100):
         """Removes all messages by the member."""
         await self.do_removal(ctx, search, lambda e: e.author == member)
 
     @prune.command()
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def contains(self, ctx: discord.Interaction, *, substr: str):
         """Removes all messages containing a substring.
         The substring must be at least 3 characters long.
@@ -320,8 +319,8 @@ class Moderator(commands.Cog):
             await self.do_removal(ctx, 100, lambda e: substr in e.content)
 
     @prune.command(name="bots")
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def _bots(self, ctx: discord.Interaction, search: int = 100):
         """Removes a bot user's messages and messages with their optional prefix."""
         def predicate(m):
@@ -330,8 +329,8 @@ class Moderator(commands.Cog):
         await self.do_removal(ctx, search, predicate)
 
     @prune.command(name="users")
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def _users(self, ctx: discord.Interaction, search: int = 100):
         """Removes only user messages. """
 
@@ -341,8 +340,8 @@ class Moderator(commands.Cog):
         await self.do_removal(ctx, search, predicate)
 
     @prune.command(name="emojis")
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def _emojis(self, ctx: discord.Interaction, search: int = 100):
         """Removes all messages containing custom emoji."""
         custom_emoji = re.compile(r"<a?:(.*?):(\d{17,21})>|[\u263a-\U0001f645]")
@@ -353,8 +352,8 @@ class Moderator(commands.Cog):
         await self.do_removal(ctx, search, predicate)
 
     @prune.command(name="reactions")
-    @app_commands.check.has_permissions(manage_messages=True)
-    @app_commands.check.bot_has_permissions(manage_messages=True)
+    @app_commands.checks.has_permissions(manage_messages=True)
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def _reactions(self, ctx: discord.Interaction, search: int = 100):
         """Removes all reactions from messages that have them."""
         if search > 2000:

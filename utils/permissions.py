@@ -4,7 +4,7 @@ from typing import Union
 from discord.ext import commands
 
 
-def is_owner(ctx: discord.Interaction, user: discord.User = None) -> bool:
+async def is_owner(ctx: discord.Interaction, user: discord.User = None) -> bool:
     """ Checks if the author is one of the owners """
     owners = ctx.client.config.discord_owner_ids
     if ctx.user is not None and (str(ctx.user.id) in owners):
@@ -13,6 +13,7 @@ def is_owner(ctx: discord.Interaction, user: discord.User = None) -> bool:
     if user is not None and (str(user.id) in owners):
         return True
 
+    await ctx.response.send_message("You are not allowed to run this command!")
     return False
 
 
@@ -68,33 +69,40 @@ async def check_priv(
 
         # Self checks
         if member.id == ctx.user.id:
-            return await ctx.response.send_message(
+            await ctx.response.send_message(
                 f"You can't {ctx.command.name} yourself"
             )
+            return True
+
         if member.id == ctx.client.user.id:
-            return await ctx.response.send_message(
+            await ctx.response.send_message(
                 "So that's what you think of me huh..? sad ;-;"
             )
+            return True
         if str(member.id) in owners:
-            return await ctx.response.send_message(
+            await ctx.response.send_message(
                 f"You can't {ctx.command.name} my developer, lol"
             )
+            return True
         if int(ctx.guild.me.top_role.position - member.top_role.position) <= 0:
-            return await ctx.response.send_message(
+            await ctx.response.send_message(
                 f"Nope, I can't {ctx.command.name} someone of "
                 "the same rank or higher than myself."
             )
+            return True
         if member.id == ctx.guild.owner.id:
-            return await ctx.response.send_message(
+            await ctx.response.send_message(
                 f"You can't {ctx.command.name} the server owner, lol"
             )
+            return True
         if ctx.user.id == ctx.guild.owner.id:
             return False
         if int(ctx.user.top_role.position - member.top_role.position) <= 0:
-            return await ctx.response.send_message(
+            await ctx.response.send_message(
                 f"Nope, you can't {ctx.command.name} someone "
                 "of the same rank or higher than yourself."
             )
+            return True
         # Check if user bypasses
     except Exception:
         pass

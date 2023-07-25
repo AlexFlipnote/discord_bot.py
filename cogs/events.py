@@ -4,6 +4,7 @@ import os
 
 from datetime import datetime
 from discord.ext import commands
+from discord import app_commands
 from discord.ext.commands import errors
 from utils import default
 from utils.data import DiscordBot
@@ -13,6 +14,17 @@ class Events(commands.Cog):
     def __init__(self, bot):
         self.bot: DiscordBot = bot
         self.process = psutil.Process(os.getpid())
+        # Slash Command Errors (Cooldowns / Missing Permissions)
+        @bot.tree.error
+        async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+            if isinstance(error, app_commands.CommandOnCooldown):
+                return await interaction.response.send_message(error, ephemeral=True)
+            elif isinstance(error, app_commands.BotMissingPermissions):
+                return await interaction.response.send_message(error, ephemeral=True)
+            elif isinstance(error, app_commands.MissingPermissions):
+                return await interaction.response.send_message(error, ephemeral=True)
+            else:
+                return True
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.Interaction, err: Exception):
@@ -100,7 +112,7 @@ class Events(commands.Cog):
             "competing": discord.ActivityType.competing
         }
 
-        activity_url = self.bot.config.discord_activity_url
+        activity_url = self.bot.config.discord_status_url
         guild_id = self.bot.config.discord_guild_id
 
         await self.bot.change_presence(
