@@ -168,8 +168,8 @@ class Fun_Commands(commands.Cog):
 
         beer_offer = f"**{user.name}**, you got a 🍺 offer from **{ctx.user.name}**"
         beer_offer = f"{beer_offer}\n\n**Reason:** {reason}" if reason else beer_offer
-        msg = await ctx.response.send_message(beer_offer)
-
+        await ctx.response.send_message(content="Sent your beer request 🍻", silent=True, ephemeral=True)
+        msg = await ctx.channel.send(beer_offer)
         def reaction_check(m):
             if m.message_id == msg.id and m.user_id == user.id and str(m.emoji) == "🍻":
                 return True
@@ -179,9 +179,11 @@ class Fun_Commands(commands.Cog):
             await msg.add_reaction("🍻")
             await self.bot.wait_for("raw_reaction_add", timeout=30.0, check=reaction_check)
             await msg.edit(content=f"**{user.name}** and **{ctx.user.name}** are enjoying a lovely beer together 🍻")
+            return True
+        
         except asyncio.TimeoutError:
             await msg.delete()
-            await ctx.response.send_message(f"well, doesn't seem like **{user.name}** wanted a beer with you **{ctx.user.name}** ;-;")
+            await ctx.channel.send(f"well, doesn't seem like **{user.name}** wanted a beer with you **{ctx.user.name}** ;-;")
         except discord.Forbidden:
             # Yeah so, bot doesn't have reaction permission, drop the "offer" word
             beer_offer = f"**{user.name}**, you got a 🍺 from **{ctx.user.name}**"

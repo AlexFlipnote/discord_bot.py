@@ -6,15 +6,15 @@ config = config.Config.from_env(".env")
 print("Logging in...")
 
 bot = data.DiscordBot(
-    config=config,
+    config=config,command_prefix="",
     command_attrs=dict(hidden=True), help_command=None,
     allowed_mentions=discord.AllowedMentions(
         everyone=False, roles=False, users=True
     ),
     intents=discord.Intents(
         # kwargs found at https://docs.pycord.dev/en/master/api.html?highlight=discord%20intents#discord.Intents
-        guilds=True, members=True, messages=True, reactions=True,
-        presences=True, message_content=True,
+        guilds=True, members=True, messages=False, reactions=True,
+        presences=True, message_content=False,
     )
 )
 
