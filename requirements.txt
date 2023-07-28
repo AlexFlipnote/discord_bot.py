@@ -1,3 +1,4 @@
 discord.py
 psutil
 python-dotenv
+aiohttp
