@@ -116,7 +116,8 @@ class Fun_Commands(commands.Cog):
             if not len(r.response["list"]):
                 return await ctx.response.send_message("Couldn't find your search in the dictionary...")
 
-            result = sorted(r.response["list"], reverse=True, key=lambda g: int(g["thumbs_up"]))[0]
+            result = sorted(
+                r.response["list"], reverse=True, key=lambda g: int(g["thumbs_up"]))[0]
 
             definition = result["definition"]
             if len(definition) >= 1000:
@@ -168,8 +169,9 @@ class Fun_Commands(commands.Cog):
 
         beer_offer = f"**{user.name}**, you got a 🍺 offer from **{ctx.user.name}**"
         beer_offer = f"{beer_offer}\n\n**Reason:** {reason}" if reason else beer_offer
-        await ctx.response.send_message(content="Sent your beer request 🍻", silent=True, ephemeral=True)
-        msg = await ctx.channel.send(beer_offer)
+        await ctx.response.defer()
+        msg = await ctx.followup.send(beer_offer)
+
         def reaction_check(m):
             if m.message_id == msg.id and m.user_id == user.id and str(m.emoji) == "🍻":
                 return True
@@ -178,17 +180,17 @@ class Fun_Commands(commands.Cog):
         try:
             await msg.add_reaction("🍻")
             await self.bot.wait_for("raw_reaction_add", timeout=30.0, check=reaction_check)
-            await msg.edit(content=f"**{user.name}** and **{ctx.user.name}** are enjoying a lovely beer together 🍻")
+            await ctx.followup.edit_message(message_id=msg.id,content=f"**{user.name}** and **{ctx.user.name}** are enjoying a lovely beer together 🍻")
             return True
-        
+
         except asyncio.TimeoutError:
-            await msg.delete()
-            await ctx.channel.send(f"well, doesn't seem like **{user.name}** wanted a beer with you **{ctx.user.name}** ;-;")
+            await ctx.followup.delete_message(message_id=msg.id)
+            await ctx.followup.send(message_id=msg.id,content=f"well, doesn't seem like **{user.name}** wanted a beer with you **{ctx.user.name}** ;-;")
         except discord.Forbidden:
             # Yeah so, bot doesn't have reaction permission, drop the "offer" word
             beer_offer = f"**{user.name}**, you got a 🍺 from **{ctx.user.name}**"
             beer_offer = f"{beer_offer}\n\n**Reason:** {reason}" if reason else beer_offer
-            await msg.edit(content=beer_offer)
+            await ctx.followup.send(message_id=msg.id,content=beer_offer)
 
     @app_commands.command()
     async def hotcalc(self, ctx: discord.Interaction, *, user: discord.Member = None):
@@ -271,13 +273,14 @@ class Fun_Commands(commands.Cog):
             return await ctx.response.send_message("Please give correct color")
 
         chosen_color = random.choice(colour_table)
-        msg = await ctx.response.send_message("Spinning 🔵🔴🟢🟡")
+        await ctx.response.defer()
+        msg = await ctx.followup.send("Spinning 🔵🔴🟢🟡")
         await asyncio.sleep(2)
         result = f"Result: {chosen_color.upper()}"
 
         if chosen_color == picked_colour:
-            return await msg.edit(content=f"> {result}\nCongrats, you won 🎉!")
-        await msg.edit(content=f"> {result}\nBetter luck next time")
+            return await ctx.followup.edit_message(msg.id,content=f"> {result}\nCongrats, you won 🎉!")
+        await ctx.followup.edit_message(msg.id,content=f"> {result}\nBetter luck next time")
 
 
 async def setup(bot):
