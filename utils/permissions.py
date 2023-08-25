@@ -57,7 +57,8 @@ def has_permissions(*, check=all, **perms) -> bool:
 
 async def check_priv(
     ctx: discord.Interaction,
-    member: discord.Member
+    member: discord.Member,
+    bool: bool=False, # Option To Return just a Boolean
 ) -> Union[discord.Message, bool, None]:
     """
     Custom (weird) way to check permissions
@@ -69,41 +70,40 @@ async def check_priv(
 
         # Self checks
         if member.id == ctx.user.id:
-            await ctx.response.send_message(
-                f"You can't {ctx.command.name} yourself"
+            if not bool: await ctx.response.send_message(
+                f"You can't do that to yourself"
             )
             return True
 
         if member.id == ctx.client.user.id:
-            await ctx.response.send_message(
+            if not bool: await ctx.response.send_message(
                 "So that's what you think of me huh..? sad ;-;"
             )
             return True
         if str(member.id) in owners:
-            await ctx.response.send_message(
-                f"You can't {ctx.command.name} my developer, lol"
+            if not bool: await ctx.response.send_message(
+                f"You can't do that to my developer, lol"
             )
             return True
         if int(ctx.guild.me.top_role.position - member.top_role.position) <= 0:
-            await ctx.response.send_message(
-                f"Nope, I can't {ctx.command.name} someone of "
+            if not bool: await ctx.response.send_message(
+                f"Nope, I can't do that to someone of "
                 "the same rank or higher than myself."
             )
             return True
         if member.id == ctx.guild.owner.id:
-            await ctx.response.send_message(
-                f"You can't {ctx.command.name} the server owner, lol"
+            if not bool: await ctx.response.send_message(
+                f"You can't do that to the server owner, lol"
             )
             return True
         if ctx.user.id == ctx.guild.owner.id:
             return False
         if int(ctx.user.top_role.position - member.top_role.position) <= 0:
-            await ctx.response.send_message(
-                f"Nope, you can't {ctx.command.name} someone "
+            if not bool: await ctx.response.send_message(
+                f"Nope, you can't do that to someone "
                 "of the same rank or higher than yourself."
             )
             return True
-        # Check if user bypasses
     except Exception:
         pass
 
