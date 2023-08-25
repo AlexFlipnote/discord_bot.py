@@ -23,8 +23,14 @@ class Events(commands.Cog):
                 return await interaction.response.send_message(error, ephemeral=True)
             elif isinstance(error, app_commands.MissingPermissions):
                 return await interaction.response.send_message(error, ephemeral=True)
+            elif isinstance(error, app_commands.CommandNotFound):
+                return await interaction.response.send_message("That command is currently globally [Disabled]", ephemeral=True)
+            elif isinstance(error, app_commands.NoPrivateMessage):
+                return await interaction.response.send_message(error, ephemeral=True)
+            elif isinstance(error, app_commands.CheckFailure):
+                pass
             else:
-                return True
+                return print(error)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.Interaction, err: Exception):
