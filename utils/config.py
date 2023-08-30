@@ -1,7 +1,13 @@
+from __future__ import annotations
+from typing import Any, TYPE_CHECKING, Optional
+
 import re
 
 from dataclasses import dataclass
 from dotenv import dotenv_values
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 re_list: re.Pattern = re.compile(r"\s*,\s*")
 
@@ -17,6 +23,7 @@ class Config:
             Does not work as of right now,
             `re_list` is planned for that usage.
     """
+
     discord_token: str
     discord_owner_ids: list[int]
     discord_join_message: str
@@ -25,12 +32,12 @@ class Config:
     discord_activity_type: str
     discord_status_type: str
 
-    discord_guild_id: int = None
-    discord_status_url: str = None
+    owner_guild_id: Optional[int]
+    streaming_status_url: Optional[str]
 
     @classmethod
-    def from_dict(self, **kwargs) -> "Config":
-        """ Create a Config object from a dictionary. """
+    def from_dict(cls, **kwargs: Any) -> Self:
+        """Create a Config object from a dictionary."""
         kwargs_overwrite = {}
 
         for k, v in kwargs.items():
@@ -41,9 +48,9 @@ class Config:
             else:
                 kwargs_overwrite[new_key] = v
 
-        return Config(**kwargs_overwrite)
+        return cls(**kwargs_overwrite)
 
     @classmethod
-    def from_env(self, filename: str = ".env") -> "Config":
-        """ Create a Config object from a .env file. """
-        return Config.from_dict(**dotenv_values(filename))
+    def from_env(cls, filename: str = ".env") -> Self:
+        """Create a Config object from a .env file."""
+        return cls.from_dict(**dotenv_values(filename))
