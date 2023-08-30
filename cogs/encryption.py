@@ -74,6 +74,10 @@ class Encryption(commands.Cog):
             await interaction.followup.send(f"📑 **{convert}**```fix\n{_input}```")
 
     @encode.command(name="base32")
+    @app_commands.describe(
+        text="Text to encode.",
+        text_file="Text file to encode.",
+    )
     async def encode_base32(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -85,6 +89,10 @@ class Encryption(commands.Cog):
         await self.encryptout(interaction, "Text -> base32", base64.b32encode(_input.encode("utf-8")))
 
     @decode.command(name="base32")
+    @app_commands.describe(
+        text="Text to decode.",
+        text_file="Text file to decode.",
+    )
     async def decode_base32(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -99,6 +107,10 @@ class Encryption(commands.Cog):
             await interaction.response.send_message("Invalid base32...")
 
     @encode.command(name="base64")
+    @app_commands.describe(
+        text="Text to encode.",
+        text_file="Text file to encode.",
+    )
     async def encode_base64(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -110,6 +122,10 @@ class Encryption(commands.Cog):
         await self.encryptout(interaction, "Text -> base64", base64.urlsafe_b64encode(_input.encode("utf-8")))
 
     @decode.command(name="base64")
+    @app_commands.describe(
+        text="Text to decode.",
+        text_file="Text file to decode.",
+    )
     async def decode_base64(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -124,6 +140,10 @@ class Encryption(commands.Cog):
             await interaction.response.send_message("Invalid base64...")
 
     @encode.command(name="rot13")
+    @app_commands.describe(
+        text="Text to encode.",
+        text_file="Text file to encode.",
+    )
     async def encode_rot13(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -135,6 +155,10 @@ class Encryption(commands.Cog):
         await self.encryptout(interaction, "Text -> rot13", codecs.decode(_input, "rot_13"))
 
     @decode.command(name="rot13")
+    @app_commands.describe(
+        text="Text to decode.",
+        text_file="Text file to decode.",
+    )
     async def decode_rot13(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -149,6 +173,10 @@ class Encryption(commands.Cog):
             await interaction.response.send_message("Invalid rot13...")
 
     @encode.command(name="hex")
+    @app_commands.describe(
+        text="Text to encode.",
+        text_file="Text file to encode.",
+    )
     async def encode_hex(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -160,6 +188,10 @@ class Encryption(commands.Cog):
         await self.encryptout(interaction, "Text -> hex", binascii.hexlify(_input.encode("utf-8")))
 
     @decode.command(name="hex")
+    @app_commands.describe(
+        text="Text to decode.",
+        text_file="Text file to decode.",
+    )
     async def decode_hex(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -174,6 +206,10 @@ class Encryption(commands.Cog):
             await interaction.response.send_message("Invalid hex...")
 
     @encode.command(name="base85")
+    @app_commands.describe(
+        text="Text to encode.",
+        text_file="Text file to encode.",
+    )
     async def encode_base85(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -185,6 +221,10 @@ class Encryption(commands.Cog):
         await self.encryptout(interaction, "Text -> base85", base64.b85encode(_input.encode("utf-8")))
 
     @decode.command(name="base85")
+    @app_commands.describe(
+        text="Text to decode.",
+        text_file="Text file to decode.",
+    )
     async def decode_base85(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -199,6 +239,10 @@ class Encryption(commands.Cog):
             await interaction.response.send_message("Invalid base85...")
 
     @encode.command(name="ascii85")
+    @app_commands.describe(
+        text="Text to encode.",
+        text_file="Text file to encode.",
+    )
     async def encode_ascii85(
         self,
         interaction: discord.Interaction[DiscordBot],
@@ -210,6 +254,10 @@ class Encryption(commands.Cog):
         await self.encryptout(interaction, "Text -> ASCII85", base64.a85encode(_input.encode("utf-8")))
 
     @decode.command(name="ascii85")
+    @app_commands.describe(
+        text="Text to encode.",
+        text_file="Text file to encode.",
+    )
     async def decode_ascii85(
         self,
         interaction: discord.Interaction[DiscordBot],
