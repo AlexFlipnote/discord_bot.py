@@ -3,7 +3,7 @@ import json
 import discord
 import traceback
 
-from typing import Union
+from typing import Optional, Union
 from datetime import datetime
 from io import BytesIO
 
@@ -48,7 +48,7 @@ def date(
     return timestamp
 
 
-def responsible(target: discord.Member, reason: str) -> str:
+def responsible(target: Union[discord.Member, discord.User], reason: Optional[str]) -> str:
     """ Default responsible maker targeted to find user in AuditLogs """
     responsible = f"[ {target} ]"
     if not reason:

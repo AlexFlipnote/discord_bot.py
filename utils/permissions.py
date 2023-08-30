@@ -1,114 +1,74 @@
-import discord
+from __future__ import annotations
+from typing import TYPE_CHECKING, Any, Callable, Union, Optional
 
-from typing import Union
+import discord
+from discord import app_commands
 from discord.ext import commands
 
+from utils.errors import NotOwner, NoPrivilege
 
-async def is_owner(ctx: discord.Interaction, user: discord.User = None) -> bool:
+if TYPE_CHECKING:
+    from utils.data import DiscordBot
+
+
+async def is_owner(interaction: discord.Interaction[DiscordBot], user: Optional[discord.User] = None) -> bool:
     """ Checks if the author is one of the owners """
-    owners = ctx.client.config.discord_owner_ids
-    if ctx.user is not None and (str(ctx.user.id) in owners):
+    owners = interaction.client.config.discord_owner_ids
+    if (str(interaction.user.id) in owners):
         return True
 
     if user is not None and (str(user.id) in owners):
         return True
 
-    await ctx.response.send_message("You are not allowed to run this command!")
-    return False
+    raise NotOwner(interaction.user.id, "You are not the owner of this bot.")
 
 
 async def check_permissions(
-    ctx: discord.Interaction,
-    perms,
-    *,
-    check=all
+    interaction: discord.Interaction[DiscordBot],
+    check: Callable[..., bool] = all,
+    **perms: bool,
 ) -> bool:
     """ Checks if author has permissions to a permission """
-    owners = ctx.client.config.discord_owner_ids
-    if str(ctx.user.id) in owners:
+    owners = interaction.client.config.discord_owner_ids
+    if str(interaction.user.id) in owners:
         return True
-
-    resolved = ctx.channel.permissions_for(ctx.author)
+    
+    if not interaction.channel or not isinstance(interaction.user, discord.Member):
+        return False
+    
+    resolved = interaction.channel.permissions_for(interaction.user)
     return check(
         getattr(resolved, name, None) == value
         for name, value in perms.items()
     )
 
 
-async def check_perms(ctx: discord.Interaction, perms, *, check=all) -> bool:
-    """ Checks if author has permissions to a permission """
-    owners = ctx.client.config.discord_owner_ids
-    if str(ctx.user.id) in owners:
-        return True
-
-    resolved = ctx.guild.permissions_for(ctx.member)
-    return check(
-        getattr(resolved, name, None) == value
-        for name, value in perms.items()
-    )
-
-
-def has_permissions(*, check=all, **perms) -> bool:
-    """ discord.Commands method to check if author has permissions """
-    async def pred(ctx: discord.Interaction):
-        return await check_permissions(ctx, perms, check=check)
-    return commands.check(pred)
-
-
-async def check_priv(
-    ctx: discord.Interaction,
+def check_priv(
+    interaction: discord.Interaction[DiscordBot],
     member: discord.Member
-) -> Union[discord.Message, bool, None]:
+) -> None:
     """
     Custom (weird) way to check permissions
     when handling moderation commands
     """
+    owners = interaction.client.config.discord_owner_ids
+    
+    author_id = interaction.user.id
+    command_name = interaction.command.name  # type: ignore 
+    if member.id == author_id:
+        raise NoPrivilege(f"You can't {command_name} yourself.")
 
-    try:
-        owners = ctx.client.config.discord_owner_ids
+    if member.id == interaction.client.user.id:  # type: ignore
+        raise NoPrivilege("So that's what you think of me huh..? sad ;-;")
 
-        # Self checks
-        if member.id == ctx.user.id:
-            await ctx.response.send_message(
-                f"You can't {ctx.command.name} yourself"
-            )
-            return True
+    if str(member.id) in owners:
+        raise NoPrivilege(f"You can't {command_name} my developer, lol")
+    
+    if member.top_role.position >= interaction.guild.me.top_role.position:  # type: ignore
+        raise NoPrivilege(f"Nope, I can't {command_name} someone of the same rank or higher than myself.")
+    
+    if member.top_role.position >= interaction.author.top_role.position:  # type: ignore
+        raise NoPrivilege(f"Nope, you can't {command_name} someone of the same rank or higher than yourself.")
 
-        if member.id == ctx.client.user.id:
-            await ctx.response.send_message(
-                "So that's what you think of me huh..? sad ;-;"
-            )
-            return True
-        if str(member.id) in owners:
-            await ctx.response.send_message(
-                f"You can't {ctx.command.name} my developer, lol"
-            )
-            return True
-        if int(ctx.guild.me.top_role.position - member.top_role.position) <= 0:
-            await ctx.response.send_message(
-                f"Nope, I can't {ctx.command.name} someone of "
-                "the same rank or higher than myself."
-            )
-            return True
-        if member.id == ctx.guild.owner.id:
-            await ctx.response.send_message(
-                f"You can't {ctx.command.name} the server owner, lol"
-            )
-            return True
-        if ctx.user.id == ctx.guild.owner.id:
-            return False
-        if int(ctx.user.top_role.position - member.top_role.position) <= 0:
-            await ctx.response.send_message(
-                f"Nope, you can't {ctx.command.name} someone "
-                "of the same rank or higher than yourself."
-            )
-            return True
-        # Check if user bypasses
-    except Exception:
-        pass
-
-
-def can_handle(ctx: discord.Interaction, permission: str) -> bool:
-    """ Checks if bot has permissions or is in DMs right now """
-    return isinstance(ctx.channel, discord.DMChannel) or \
-        getattr(ctx.channel.permissions_for(ctx.guild.me), permission)
+    if member.id == interaction.guild.owner.id:  # type: ignore
+        raise NoPrivilege(f"You can't {command_name} the server owner, lol")

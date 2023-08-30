@@ -1,3 +1,6 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING, Literal, Optional, Union
+
 import aiohttp
 import discord
 import importlib
@@ -5,70 +8,17 @@ import os
 
 from discord import app_commands
 from discord.ext import commands
-from utils import permissions, default, http
-from utils.data import DiscordBot
 
+from utils import default, http
+
+if TYPE_CHECKING:
+    from utils.data import DiscordBot
 
 class Admin(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: DiscordBot) -> None:
         self.bot: DiscordBot = bot
 
-    group = app_commands.Group(name="change", description="Change the bot's appearances.")
-
-    @app_commands.command()
-    async def amiadmin(self, ctx: discord.Interaction):
-        """ Are you an admin? """
-        owners = self.bot.config.discord_owner_ids
-        if str(ctx.user.id) in owners:
-            return await ctx.response.send_message(
-                f"Yes **{ctx.user.name}** you are an admin! ✅"
-            )
-
-        # Please do not remove this part.
-        # I would love to be credited as the original creator of the source code.
-        #   -- AlexFlipnote
-        if ctx.user.id == 86477779717066752:
-            return await ctx.response.send_message(
-                f"Well kinda **{ctx.user.name}**.. "
-                "you still own the source code"
-            )
-
-        await ctx.response.send_message(f"no, heck off {ctx.user.name}")
-
-    @app_commands.command()
-    @app_commands.check(permissions.is_owner)
-    async def load(self, ctx: discord.Interaction, name: str):
-        """ Loads an extension. """
-        try:
-            await self.bot.load_extension(f"cogs.{name}")
-        except Exception as e:
-            return await ctx.response.send_message(default.traceback_maker(e))
-        await ctx.response.send_message(f"Loaded extension **{name}.py**")
-
-    @app_commands.command()
-    @app_commands.check(permissions.is_owner)
-    async def unload(self, ctx: discord.Interaction, name: str):
-        """ Unloads an extension. """
-        try:
-            await self.bot.unload_extension(f"cogs.{name}")
-        except Exception as e:
-            return await ctx.response.send_message(default.traceback_maker(e))
-        await ctx.response.send_message(f"Unloaded extension **{name}.py**")
-
-    @app_commands.command()
-    @app_commands.check(permissions.is_owner)
-    async def reload(self, ctx: discord.Interaction, name: str):
-        """ Reloads an extension. """
-        try:
-            await self.bot.reload_extension(f"cogs.{name}")
-        except Exception as e:
-            return await ctx.response.send_message(default.traceback_maker(e))
-        await ctx.response.send_message(f"Reloaded extension **{name}.py**")
-
-    @app_commands.command()
-    @app_commands.check(permissions.is_owner)
-    async def reloadall(self, ctx: discord.Interaction):
-        """ Reloads all extensions. """
+    async def reload_all_extensions(self, interaction: discord.Interaction[DiscordBot]) -> None:
         error_collection = []
         for file in os.listdir("cogs"):
             if not file.endswith(".py"):
@@ -88,82 +38,124 @@ class Admin(commands.Cog):
                 for g in error_collection
             ])
 
-            return await ctx.response.send_message(
+            return await interaction.response.send_message(
                 f"Attempted to reload all extensions, was able to reload, "
-                f"however the following failed...\n\n{output}"
+                f"however the following failed...\n\n{output}",
+                ephemeral=True
             )
 
-        await ctx.response.send_message("Successfully reloaded all extensions")
+        await interaction.response.send_message("Successfully reloaded all extensions")
+
+    change = app_commands.Group(name="change", description="Change the bot's appearances.")
+
+
 
     @app_commands.command()
-    @app_commands.check(permissions.is_owner)
-    async def reloadutils(self, ctx: discord.Interaction, name: str):
+    @app_commands.describe(action="The action to perform.", name="The extension to perform the action on. If any.")
+    async def extensions(
+        self,
+        interaction: discord.Interaction[DiscordBot],
+        action: Literal["list", "load", "unload", "reload", "reloadall",],
+        name: Optional[str] = None,
+    ):
+        if action == "list":
+            exts = "\n".join(e for e in self.bot.extensions.keys())
+            embed = discord.Embed(
+                title="Extensions",
+                description=f"fHere are all the extensions:\n\n{exts}",
+                color=discord.Color.blurple(),
+            )
+            await interaction.response.send_message(embed=embed)
+        elif action in ("load", "unload", "reload"):
+            if not name:
+                return await interaction.response.send_message("You need to specify an extension name.", ephemeral=True)
+
+            to_call = getattr(self.bot, action)
+            try:
+                await to_call(f"cogs.{name}")
+            except Exception as e:
+                return await interaction.response.send_message(default.traceback_maker(e))
+            else:
+                await interaction.response.send_message(f"Successfully {action}ed **{name}.py**", )
+        elif action == "reloadall":
+            return await self.reload_all_extensions(interaction)
+
+    @app_commands.command()
+    @app_commands.describe(name="The utils module to reload.")
+    async def reloadutils(self, interaction: discord.Interaction[DiscordBot], name: str):
         """ Reloads a utils module. """
         name_maker = f"utils/{name}.py"
         try:
             module_name = importlib.import_module(f"utils.{name}")
             importlib.reload(module_name)
         except ModuleNotFoundError:
-            return await ctx.response.send_message(f"Couldn't find module named **{name_maker}**")
+            return await interaction.response.send_message(f"Couldn't find module named **{name_maker}**", ephemeral=True)
         except Exception as e:
             error = default.traceback_maker(e)
-            return await ctx.response.send_message(f"Module **{name_maker}** returned error and was not reloaded...\n{error}")
-        await ctx.response.send_message(f"Reloaded module **{name_maker}**")
+            return await interaction.response.send_message(f"Module **{name_maker}** returned error and was not reloaded...\n{error}", ephemeral=True)
+
+        await interaction.response.send_message(f"Reloaded module **{name_maker}**")
 
     @app_commands.command()
-    @app_commands.check(permissions.is_owner)
-    async def dm(self, ctx: discord.Interaction, user: discord.User, *, message: str):
+    async def dm(self, interaction: discord.Interaction[DiscordBot], user: Union[discord.Member, discord.User], message: str):
         """ DM the user of your choice """
+        if user.bot:
+            return await interaction.response.send_message(f"Bot users can't be DMed!", ephemeral=True)
+
         try:
             await user.send(message)
-            await ctx.response.send_message(f"✉️ Sent a DM to **{user}**")
+            await interaction.response.send_message(f"✉️ Sent a DM to **{user}**")
         except discord.Forbidden:
-            await ctx.response.send_message("This user might be having DMs blocked or it's a bot account...")
+            await interaction.response.send_message("This user might have blocked our bot.", ephemeral=True)
+        except discord.HTTPException:
+            await interaction.response.send_message("Looks like this user's DMs are not open.", ephemeral=True)
 
-    @group.command(name="username")
-    @app_commands.check(permissions.is_owner)
-    async def change_username(self, ctx: discord.Interaction, *, name: str):
+    @change.command(name="username")
+    async def change_username(self, interaction: discord.Interaction[DiscordBot], name: Optional[str] = None):
         """ Change username. """
         try:
-            await self.bot.user.edit(username=name)
-            await ctx.response.send_message(f"Successfully changed username to **{name}**")
+            await self.bot.user.edit(username=name)  # type: ignore # can't be None here
         except discord.HTTPException as err:
-            await ctx.response.send_message(err)
+            await interaction.response.send_message(f"Failed to change username: {err}", ephemeral=True)
+        else:
+            await interaction.response.send_message(f"Successfully changed username to **{name}**.\nYou may have to wait a few minutes for the change to be visible.")
 
-    @group.command(name="nickname")
-    @app_commands.check(permissions.is_owner)
-    async def change_nickname(self, ctx: discord.Interaction, *, name: str = None):
+    @change.command(name="nickname")
+    async def change_nickname(self, interaction: discord.Interaction[DiscordBot], name: Optional[str] = None):
         """ Change nickname. """
         try:
-            await ctx.guild.me.edit(nick=name)
+            await interaction.guild.me.edit(nick=name)  # type: ignore # can't be None here
             if name:
-                return await ctx.response.send_message(f"Successfully changed nickname to **{name}**")
-            await ctx.response.send_message("Successfully removed nickname")
+                return await interaction.response.send_message(f"Successfully changed nickname to **{name}**")
+            await interaction.response.send_message("Successfully removed nickname")
         except Exception as err:
-            await ctx.response.send_message(err)
+            await interaction.response.send_message(f"Failed to change nickname: {err}", ephemeral=True)
 
-    @group.command(name="avatar")
-    @app_commands.check(permissions.is_owner)
-    async def change_avatar(self, ctx: discord.Interaction, url: str = None):
+    @change.command(name="avatar")
+    async def change_avatar(self, interaction: discord.Interaction[DiscordBot], url: Optional[str] = None, attachment: Optional[discord.Attachment] = None):
         """ Change avatar. """
-        if url is None and len(ctx.message.attachments) == 1:
-            url = ctx.message.attachments[0].url
+        url = attachment.url if attachment else url
+        if url:
+            url = url.strip("<>")
         else:
-            url = url.strip("<>") if url else None
+            return await interaction.response.send_message("You need to provide an image URL or upload one with the command", ephemeral=True)
 
         try:
             bio = await http.get(url, res_method="read")
-            await self.bot.user.edit(avatar=bio.response)
-            await ctx.response.send_message(f"Successfully changed the avatar. Currently using:\n{url}")
+            await self.bot.user.edit(avatar=bio.response)  # type: ignore # can't be None here
+            await interaction.response.send_message(f"Successfully changed the avatar. Currently using:\n{url}")
         except aiohttp.InvalidURL:
-            await ctx.response.send_message("The URL is invalid...")
-        except discord.InvalidArgument:
-            await ctx.response.send_message("This URL does not contain a useable image")
+            await interaction.response.send_message("The URL is invalid...")
+        except ValueError:
+            await interaction.response.send_message("This URL does not contain a useable image")
         except discord.HTTPException as err:
-            await ctx.response.send_message(err)
+            await interaction.response.send_message(err)
         except TypeError:
-            await ctx.response.send_message("You need to either provide an image URL or upload one with the command")
+            await interaction.response.send_message("You need to either provide an image URL or upload one with the command")
 
 
-async def setup(bot):
-    await bot.add_cog(Admin(bot))
+async def setup(bot: DiscordBot) -> None:
+    await bot.add_cog(
+        Admin(bot),
+        guild=discord.Object(gid) if (gid := bot.config.owner_guild_id) else None
+    )
