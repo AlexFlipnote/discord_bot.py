@@ -1,4 +1,4 @@
-from  __future__ import annotations
+from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from io import BytesIO
@@ -12,17 +12,18 @@ from utils import default
 if TYPE_CHECKING:
     from utils.data import DiscordBot
 
+
 class DiscordInfo(commands.Cog):
     def __init__(self, bot: DiscordBot) -> None:
         self.bot: DiscordBot = bot
 
     server = app_commands.Group(name="server", description="Check info about current server")
 
-    @app_commands.command(name='avatar')
+    @app_commands.command(name="avatar")
     @app_commands.describe(member="The user you want to get info about.")
     @app_commands.guild_only()
     async def avatar(self, interaction: discord.Interaction[DiscordBot], member: Optional[discord.Member] = None):
-        """ Get the avatar of you or someone else """
+        """Get the avatar of you or someone else"""
         user: discord.Memebr = member or interaction.user  # type: ignore # it's a Member dwai
 
         avatars_list = []
@@ -37,18 +38,24 @@ class DiscordInfo(commands.Cog):
             return await interaction.response.send_message(f"**{user}** has no avatar set, at all...", ephemeral=True)
 
         if user.avatar:
-            avatars_list.append("**Account avatar:** " + " **-** ".join(
-                f"[{img_format}]({user.avatar.replace(format=img_format.lower(), size=1024)})"
-                for img_format in target_avatar_formats(user.avatar)
-            ))
+            avatars_list.append(
+                "**Account avatar:** "
+                + " **-** ".join(
+                    f"[{img_format}]({user.avatar.replace(format=img_format.lower(), size=1024)})"
+                    for img_format in target_avatar_formats(user.avatar)
+                )
+            )
 
         embed = discord.Embed(colour=user.top_role.colour.value)
 
         if user.guild_avatar:
-            avatars_list.append("**Server avatar:** " + " **-** ".join(
-                f"[{img_format}]({user.guild_avatar.replace(format=img_format.lower(), size=1024)})"
-                for img_format in target_avatar_formats(user.guild_avatar)
-            ))
+            avatars_list.append(
+                "**Server avatar:** "
+                + " **-** ".join(
+                    f"[{img_format}]({user.guild_avatar.replace(format=img_format.lower(), size=1024)})"
+                    for img_format in target_avatar_formats(user.guild_avatar)
+                )
+            )
             embed.set_thumbnail(url=user.avatar.replace(format="png"))
 
         embed.set_image(url=f"{user.display_avatar.with_size(256).with_static_format('png')}")
@@ -59,7 +66,7 @@ class DiscordInfo(commands.Cog):
     @app_commands.command(name="roles")
     @app_commands.guild_only()
     async def roles(self, interaction: discord.Interaction[DiscordBot]) -> None:
-        """ Get all roles in current server """
+        """Get all roles in current server"""
         # won't happen, just to shut the linter
         if not interaction.guild:
             return await interaction.response.send_message("This command only works in servers.")
@@ -72,34 +79,33 @@ class DiscordInfo(commands.Cog):
         data = BytesIO("\n".join(roles).encode("utf-8"))
         await interaction.response.send_message(
             content=f"Roles in **{interaction.guild.name}**",
-            file=discord.File(data, filename=f"{default.timetext('Roles')}")
+            file=discord.File(data, filename=f"{default.timetext('Roles')}"),
         )
 
     @app_commands.command(name="joindat")
     @app_commands.describe(member="The user you want to get info about.")
     @app_commands.guild_only()
     async def joinedat(self, interaction: discord.Interaction[DiscordBot], member: Optional[discord.Member] = None):
-        """ Check when a user joined the current server """
+        """Check when a user joined the current server"""
         user: discord.Memebr = member or interaction.user  # type: ignore # it's a Member dwai
         await interaction.response.send_message(
-            f"**{user}** joined **{interaction.guild.name}**\n"
-            f"{default.date(user.joined_at, ago=True)}"
+            f"**{user}** joined **{interaction.guild.name}**\n" f"{default.date(user.joined_at, ago=True)}"
         )
 
     @app_commands.command(name="mods")
     @app_commands.guild_only()
     async def mods(self, interaction: discord.Interaction[DiscordBot]):
-        """ Check which mods are online on current guild """
+        """Check which mods are online on current guild"""
         # won't happen, just to shut the linter
         if not interaction.guild:
             return await interaction.response.send_message("This command only works in servers.")
-        
+
         message = ""
         all_status = {
             "online": {"users": [], "emoji": "🟢"},
             "idle": {"users": [], "emoji": "🟡"},
             "dnd": {"users": [], "emoji": "🔴"},
-            "offline": {"users": [], "emoji": "⚫"}
+            "offline": {"users": [], "emoji": "⚫"},
         }
 
         for user in interaction.guild.members:
@@ -117,7 +123,7 @@ class DiscordInfo(commands.Cog):
     @server.command(name="info")
     @app_commands.guild_only()
     async def server_info(self, interaction: discord.Interaction[DiscordBot]):
-        """ Check info about current server """
+        """Check info about current server"""
         # won't happen, just to shut the linter
         if not interaction.guild:
             return await interaction.response.send_message("This command only works in servers.")
@@ -125,7 +131,7 @@ class DiscordInfo(commands.Cog):
         find_bots = sum(1 for member in interaction.guild.members if member.bot)
 
         embed = discord.Embed()
-        
+
         embed.add_field(name="Server Name", value=interaction.guild.name)
         embed.add_field(name="Server ID", value=interaction.guild.id)
         embed.add_field(name="Members", value=interaction.guild.member_count)
@@ -141,7 +147,7 @@ class DiscordInfo(commands.Cog):
 
     @server.command(name="avatar")
     async def server_avatar(self, interaction: discord.Interaction[DiscordBot]):
-        """ Get the current server icon """
+        """Get the current server icon"""
         # won't happen, just to shut the linter
         if not interaction.guild:
             return await interaction.response.send_message("This command only works in servers.")
@@ -166,7 +172,7 @@ class DiscordInfo(commands.Cog):
 
     @server.command(name="banner")
     async def server_banner(self, interaction: discord.Interaction[DiscordBot]):
-        """ Get the current banner image """
+        """Get the current banner image"""
         # won't happen, just to shut the linter
         if not interaction.guild:
             return await interaction.response.send_message("This command only works in servers.")
@@ -175,24 +181,24 @@ class DiscordInfo(commands.Cog):
             return await interaction.response.send_message("This server does not have a banner...")
 
         await interaction.response.send_message(
-            f"Banner of **{interaction.guild.name}**\n"
-            f"{interaction.guild.banner}"
+            f"Banner of **{interaction.guild.name}**\n" f"{interaction.guild.banner}"
         )
 
     @app_commands.command(name="user")
     @app_commands.describe(member="The user you want to get info about.")
     @app_commands.guild_only()
     async def user(self, interaction: discord.Interaction[DiscordBot], member: Optional[discord.Member] = None):
-        """ Get user information """
+        """Get user information"""
         # won't happen, just to shut the linter
         if not interaction.guild:
             return await interaction.response.send_message("This command only works in servers.")
 
         user: discord.Memebr = member or interaction.user  # type: ignore # it's a Member dwai
-        roles = ", ".join(
-            r.mention 
-            for r in sorted(user.roles[1:], key=lambda x: x.position, reverse=True)
-         ) if len(user.roles) > 1 else f"{len(user.roles[1:])}"
+        roles = (
+            ", ".join(r.mention for r in sorted(user.roles[1:], key=lambda x: x.position, reverse=True))
+            if len(user.roles) > 1
+            else f"{len(user.roles[1:])}"
+        )
 
         embed = discord.Embed(colour=user.top_role.colour.value)
         embed.set_thumbnail(url=user.avatar)

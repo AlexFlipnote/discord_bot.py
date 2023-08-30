@@ -9,33 +9,28 @@ from io import BytesIO
 
 
 def load_json(filename: str = "config.json") -> dict:
-    """ Fetch default config file """
+    """Fetch default config file"""
     try:
-        with open(filename, encoding='utf8') as data:
+        with open(filename, encoding="utf8") as data:
             return json.load(data)
     except FileNotFoundError:
         raise FileNotFoundError("JSON file wasn't found")
 
 
 def traceback_maker(err, advance: bool = True) -> str:
-    """ A way to debug your code anywhere """
+    """A way to debug your code anywhere"""
     _traceback = "".join(traceback.format_tb(err.__traceback__))
     error = f"```py\n{_traceback}{type(err).__name__}: {err}\n```"
     return error if advance else f"{type(err).__name__}: {err}"
 
 
 def timetext(name) -> str:
-    """ Timestamp, but in text form """
+    """Timestamp, but in text form"""
     return f"{name}_{int(time.time())}.txt"
 
 
-def date(
-    target: Union[datetime, float, int],
-    clock: bool = True,
-    ago: bool = False,
-    only_ago: bool = False
-) -> str:
-    """ Converts a timestamp to a Discord timestamp format """
+def date(target: Union[datetime, float, int], clock: bool = True, ago: bool = False, only_ago: bool = False) -> str:
+    """Converts a timestamp to a Discord timestamp format"""
     if isinstance(target, int) or isinstance(target, float):
         target = datetime.utcfromtimestamp(target)
 
@@ -49,7 +44,7 @@ def date(
 
 
 def responsible(target: Union[discord.Member, discord.User], reason: Optional[str]) -> str:
-    """ Default responsible maker targeted to find user in AuditLogs """
+    """Default responsible maker targeted to find user in AuditLogs"""
     responsible = f"[ {target} ]"
     if not reason:
         return f"{responsible} no reason given..."
@@ -57,7 +52,7 @@ def responsible(target: Union[discord.Member, discord.User], reason: Optional[st
 
 
 def actionmessage(case: str, mass: bool = False) -> str:
-    """ Default way to present action confirmation in chat """
+    """Default way to present action confirmation in chat"""
     output = f"**{case}** the user"
     if mass:
         output = f"**{case}** the IDs/Users"
@@ -66,12 +61,9 @@ def actionmessage(case: str, mass: bool = False) -> str:
 
 
 async def pretty_results(
-    ctx: discord.Interaction,
-    filename: str = "Results",
-    resultmsg: str = "Here's the results:",
-    loop: list = None
+    ctx: discord.Interaction, filename: str = "Results", resultmsg: str = "Here's the results:", loop: list = None
 ) -> None:
-    """ A prettier way to show loop results """
+    """A prettier way to show loop results"""
     if not loop:
         return await ctx.response.send_message("The result was empty...")
 
@@ -80,11 +72,5 @@ async def pretty_results(
     if len(loop) < 15:
         return await ctx.response.send_message(f"{resultmsg}```ini\n{pretty}```")
 
-    data = BytesIO(pretty.encode('utf-8'))
-    await ctx.response.send_message(
-        content=resultmsg,
-        file=discord.File(
-            data,
-            filename=timetext(filename.title())
-        )
-    )
+    data = BytesIO(pretty.encode("utf-8"))
+    await ctx.response.send_message(content=resultmsg, file=discord.File(data, filename=timetext(filename.title())))

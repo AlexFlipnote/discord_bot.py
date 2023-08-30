@@ -10,6 +10,5 @@ class NotOwner(app_commands.CheckFailure):
         super().__init__(message)
 
 
-
 class NoPrivilege(app_commands.AppCommandError):
     pass

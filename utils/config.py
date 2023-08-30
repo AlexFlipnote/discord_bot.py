@@ -23,6 +23,7 @@ class Config:
             Does not work as of right now,
             `re_list` is planned for that usage.
     """
+
     discord_token: str
     discord_owner_ids: list[int]
     discord_join_message: str
@@ -36,7 +37,7 @@ class Config:
 
     @classmethod
     def from_dict(cls, **kwargs: Any) -> Self:
-        """ Create a Config object from a dictionary. """
+        """Create a Config object from a dictionary."""
         kwargs_overwrite = {}
 
         for k, v in kwargs.items():
@@ -51,5 +52,5 @@ class Config:
 
     @classmethod
     def from_env(cls, filename: str = ".env") -> Self:
-        """ Create a Config object from a .env file. """
+        """Create a Config object from a .env file."""
         return cls.from_dict(**dotenv_values(filename))

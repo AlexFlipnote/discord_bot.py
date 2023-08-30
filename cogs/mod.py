@@ -19,19 +19,25 @@ class Moderator(commands.Cog):
     def __init__(self, bot: DiscordBot) -> None:
         self.bot: DiscordBot = bot
 
-    find = app_commands.Group(name="find", description="Finds a user within your search term.",)
-    prune = app_commands.Group(name="prune", description="Removes messages from the current server.", default_permissions=discord.Permissions(manage_messages=True))
+    find = app_commands.Group(
+        name="find",
+        description="Finds a user within your search term.",
+    )
+    prune = app_commands.Group(
+        name="prune",
+        description="Removes messages from the current server.",
+        default_permissions=discord.Permissions(manage_messages=True),
+    )
 
     @app_commands.command()
-    @app_commands.describe(
-        member="The member to kick.",
-        reason="The reason for kicking. Optional"
-    )
+    @app_commands.describe(member="The member to kick.", reason="The reason for kicking. Optional")
     @app_commands.guild_only()
     @app_commands.default_permissions(kick_members=True)
     @app_commands.checks.bot_has_permissions(kick_members=True)
-    async def kick(self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None):
-        """ Kicks a user from the current server. """
+    async def kick(
+        self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None
+    ):
+        """Kicks a user from the current server."""
         permissions.check_priv(interaction, member)
 
         try:
@@ -42,13 +48,14 @@ class Moderator(commands.Cog):
 
     @app_commands.command()
     @app_commands.describe(
-        member="The member to change the nickname of.",
-        name="The name to change the nickname to. Leave blank to reset."
+        member="The member to change the nickname of.", name="The name to change the nickname to. Leave blank to reset."
     )
     @app_commands.guild_only()
     @app_commands.default_permissions(manage_nicknames=True)
     @app_commands.checks.bot_has_permissions(manage_nicknames=True)
-    async def nickname(self, interaction: discord.Interaction[DiscordBot], member: discord.Member, *, name: Optional[str] = None):
+    async def nickname(
+        self, interaction: discord.Interaction[DiscordBot], member: discord.Member, *, name: Optional[str] = None
+    ):
         """Change the nickname of a member in the current server."""
         try:
             await member.edit(nick=name, reason=default.responsible(interaction.user, "Changed by command"))
@@ -60,15 +67,14 @@ class Moderator(commands.Cog):
             await interaction.response.send_message(f"Something went wrong: {e}", ephemeral=True)
 
     @app_commands.command()
-    @app_commands.describe(
-        member="The member to ban.",
-        reason="The reason for the ban. Optional"
-    )
+    @app_commands.describe(member="The member to ban.", reason="The reason for the ban. Optional")
     @app_commands.guild_only()
     @app_commands.default_permissions(ban_members=True)
     @app_commands.checks.bot_has_permissions(ban_members=True)
-    async def ban(self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None):
-        """ Bans a user from the current server. """
+    async def ban(
+        self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None
+    ):
+        """Bans a user from the current server."""
         permissions.check_priv(interaction, member)
 
         try:
@@ -78,17 +84,18 @@ class Moderator(commands.Cog):
             await interaction.response.send_message(f"Something went wrong: {e}", ephemeral=True)
 
     @app_commands.command()
-    @app_commands.describe(
-        member="The member to unban.",
-        reason="The reason for unbanning. Optional"
-    )
+    @app_commands.describe(member="The member to unban.", reason="The reason for unbanning. Optional")
     @app_commands.guild_only()
     @app_commands.default_permissions(ban_members=True)
     @app_commands.checks.bot_has_permissions(ban_members=True)
-    async def unban(self, interaction: discord.Interaction[DiscordBot], member: discord.User, reason: Optional[str] = None):
-        """ Unbans a user from the current server. """
+    async def unban(
+        self, interaction: discord.Interaction[DiscordBot], member: discord.User, reason: Optional[str] = None
+    ):
+        """Unbans a user from the current server."""
         try:
-            await interaction.guild.unban(discord.Object(id=member.id), reason=default.responsible(interaction.user, reason))
+            await interaction.guild.unban(
+                discord.Object(id=member.id), reason=default.responsible(interaction.user, reason)
+            )
             await interaction.response.send_message(default.actionmessage("unbanned"))
         except Exception as e:
             await interaction.response.send_message(f"Something went wrong: {e}", ephemeral=True)
@@ -97,14 +104,18 @@ class Moderator(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.checks.bot_has_permissions(manage_roles=True)
-    async def mute(self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None):
-        """ Mutes a user from the current server. """
+    async def mute(
+        self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None
+    ):
+        """Mutes a user from the current server."""
         permissions.check_priv(interaction, member)
 
         muted_role = next((g for g in interaction.guild.roles if g.name == "Muted"), None)
 
         if not muted_role:
-            return await interaction.response.send_message("Are you sure you've made a role called **Muted**? Remember that it's case sensitive too...")
+            return await interaction.response.send_message(
+                "Are you sure you've made a role called **Muted**? Remember that it's case sensitive too..."
+            )
 
         try:
             await member.add_roles(muted_role, reason=default.responsible(interaction.user, reason))
@@ -116,14 +127,18 @@ class Moderator(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.checks.bot_has_permissions(manage_roles=True)
-    async def unmute(self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None):
-        """ Unmutes a user from the current server. """
+    async def unmute(
+        self, interaction: discord.Interaction[DiscordBot], member: discord.Member, reason: Optional[str] = None
+    ):
+        """Unmutes a user from the current server."""
         permissions.check_priv(interaction, member)
 
         muted_role = next((g for g in interaction.guild.roles if g.name == "Muted"), None)
 
         if not muted_role:
-            return await interaction.response.send_message("Are you sure you've made a role called **Muted**? Remember that it's case sensitive too...")
+            return await interaction.response.send_message(
+                "Are you sure you've made a role called **Muted**? Remember that it's case sensitive too..."
+            )
 
         try:
             await member.remove_roles(muted_role, reason=default.responsible(interaction.user, reason))
@@ -136,22 +151,31 @@ class Moderator(commands.Cog):
     @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.checks.bot_has_permissions(manage_roles=True)
     async def announcerole(self, interaction: discord.Interaction[DiscordBot], *, role: discord.Role):
-        """ Makes a role mentionable and removes it whenever you mention the role """
+        """Makes a role mentionable and removes it whenever you mention the role"""
         if role == interaction.guild.default_role:
-            return await interaction.response.send_message("To prevent abuse, I won't allow mentionable role for everyone/here role.")
+            return await interaction.response.send_message(
+                "To prevent abuse, I won't allow mentionable role for everyone/here role."
+            )
 
         if interaction.user.top_role.position <= role.position:
-            return await interaction.response.send_message("It seems like the role you attempt to mention is over your permissions, therefore I won't allow you.")
+            return await interaction.response.send_message(
+                "It seems like the role you attempt to mention is over your permissions, therefore I won't allow you."
+            )
 
         if interaction.me.top_role.position <= role.position:
-            return await interaction.response.send_message("This role is above my permissions, I can't make it mentionable ;-;")
+            return await interaction.response.send_message(
+                "This role is above my permissions, I can't make it mentionable ;-;"
+            )
 
         await role.edit(mentionable=True, reason=f"[ {interaction.user} ] announcerole command")
-        msg = await interaction.response.send_message(f"**{role.name}** is now mentionable, if you don't mention it within 30 seconds, I will revert the changes.")
+        msg = await interaction.response.send_message(
+            f"**{role.name}** is now mentionable, if you don't mention it within 30 seconds, I will revert the changes."
+        )
 
         while True:
+
             def role_checker(m):
-                if (role.mention in m.content):
+                if role.mention in m.content:
                     return True
                 return False
 
@@ -159,12 +183,16 @@ class Moderator(commands.Cog):
                 checker = await self.bot.wait_for("message", timeout=30.0, check=role_checker)
                 if checker.author.id == interaction.user.id:
                     await role.edit(mentionable=False, reason=f"[ {interaction.user} ] announcerole command")
-                    return await interaction.edit_original_response(content=f"**{role.name}** mentioned by **{interaction.user}** in {checker.channel.mention}")
+                    return await interaction.edit_original_response(
+                        content=f"**{role.name}** mentioned by **{interaction.user}** in {checker.channel.mention}"
+                    )
                 else:
                     await checker.delete()
             except asyncio.TimeoutError:
                 await role.edit(mentionable=False, reason=f"[ {interaction.user} ] announcerole command")
-                return await interaction.edit_original_response(content=f"**{role.name}** was never mentioned by **{interaction.user}**...")
+                return await interaction.edit_original_response(
+                    content=f"**{role.name}** was never mentioned by **{interaction.user}**..."
+                )
 
     @find.command(name="playing")
     async def find_playing(self, interaction: discord.Interaction[DiscordBot], *, search: str):
@@ -190,15 +218,20 @@ class Moderator(commands.Cog):
 
     @find.command(name="nickname")
     async def find_nickname(self, interaction: discord.Interaction[DiscordBot], *, search: str):
-        """ Find By: Nickname """
-        loop = [f"{i.nick} | {i} ({i.id})" for i in interaction.guild.members if i.nick if (search.lower() in i.nick.lower()) and not i.bot]
+        """Find By: Nickname"""
+        loop = [
+            f"{i.nick} | {i} ({i.id})"
+            for i in interaction.guild.members
+            if i.nick
+            if (search.lower() in i.nick.lower()) and not i.bot
+        ]
         await default.pretty_results(
             interaction, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="id")
     async def find_id(self, interaction: discord.Interaction[DiscordBot], *, search: int):
-        """ Find By: ID"""
+        """Find By: ID"""
         loop = [f"{i} | {i} ({i.id})" for i in interaction.guild.members if (str(search) in str(i.id)) and not i.bot]
         await default.pretty_results(
             interaction, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
@@ -206,7 +239,7 @@ class Moderator(commands.Cog):
 
     @find.command(name="discriminator")
     async def find_discriminator(self, interaction: discord.Interaction[DiscordBot], *, search: str):
-        """ Find By: discriminator """
+        """Find By: discriminator"""
         if not len(search) == 4 or not re.compile("^[0-9]*$").search(search):
             return await interaction.response.send_message("You must provide exactly 4 digits")
 
@@ -216,8 +249,14 @@ class Moderator(commands.Cog):
         )
 
     async def do_removal(
-        self, interaction: discord.Interaction[DiscordBot], limit: int, predicate: Callable[...,Any], *,
-        before: Optional[Union[datetime, int, discord.Object]] = None, after: Optional[Union[datetime, int, discord.Object]] = None, message: bool = True
+        self,
+        interaction: discord.Interaction[DiscordBot],
+        limit: int,
+        predicate: Callable[..., Any],
+        *,
+        before: Optional[Union[datetime, int, discord.Object]] = None,
+        after: Optional[Union[datetime, int, discord.Object]] = None,
+        message: bool = True,
     ) -> None:
         await interaction.response.defer()
         if limit > 2000:
@@ -240,7 +279,9 @@ class Moderator(commands.Cog):
 
         deleted = len(deleted)
         if message is True:
-            return await interaction.followup.send(f"🚮 Successfully removed {deleted} message{'' if deleted == 1 else 's'}.")
+            return await interaction.followup.send(
+                f"🚮 Successfully removed {deleted} message{'' if deleted == 1 else 's'}."
+            )
 
     @prune.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -301,8 +342,9 @@ class Moderator(commands.Cog):
     @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def _bots(self, interaction: discord.Interaction[DiscordBot], search: int = 100):
         """Removes a bot user's messages and messages with their optional prefix."""
+
         def predicate(m):
-            return (m.webhook_id is None and m.author.bot)
+            return m.webhook_id is None and m.author.bot
 
         await self.do_removal(interaction, search, predicate)
 
@@ -310,7 +352,7 @@ class Moderator(commands.Cog):
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.bot_has_permissions(manage_messages=True)
     async def _users(self, interaction: discord.Interaction[DiscordBot], search: int = 100):
-        """Removes only user messages. """
+        """Removes only user messages."""
 
         def predicate(m):
             return m.author.bot is False
@@ -332,7 +374,9 @@ class Moderator(commands.Cog):
     @prune.command(name="reactions")
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.bot_has_permissions(manage_messages=True)
-    async def _reactions(self, interaction: discord.Interaction[DiscordBot], search: app_commands.Range[int, 1, 2000] = 100):
+    async def _reactions(
+        self, interaction: discord.Interaction[DiscordBot], search: app_commands.Range[int, 1, 2000] = 100
+    ):
         """Removes all reactions from messages that have them."""
         if search > 2000:
             return await interaction.response.send_message(f"Too many messages to search for ({search}/2000)")
