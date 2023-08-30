@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Annotated, Union, Optional
+from typing import TYPE_CHECKING, Union, Optional
 
 import base64
 import binascii

@@ -1,9 +1,7 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, Callable, Union, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 import discord
-from discord import app_commands
-from discord.ext import commands
 
 from utils.errors import NotOwner, NoPrivilege
 

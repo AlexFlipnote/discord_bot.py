@@ -11,7 +11,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils import permissions, http
+from utils import http
 
 if TYPE_CHECKING:
     from utils.data import DiscordBot
