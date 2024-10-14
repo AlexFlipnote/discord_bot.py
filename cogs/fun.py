@@ -281,5 +281,60 @@ class Fun_Commands(commands.Cog):
         await msg.edit(content=f"> {result}\nBetter luck next time")
 
 
+    @commands.command(aliases=['8ball'])
+    async def eightball(self, ctx, *, question: str):
+        """Answers a yes/no question."""
+        responses = [
+            "It is certain.",
+            "Without a doubt.",
+            "You may rely on it.",
+            "Ask again later.",
+            "Better not tell you now.",
+            "Don't count on it.",
+            "My sources say no.",
+            "Outlook not so good."
+        ]
+        response = random.choice(responses)
+        await ctx.send(f"🎱 Question: {question}\nAnswer: {response}")
+
+
+    @commands.command()
+    async def randomfact(self, ctx):
+        """Sends a random fun fact."""
+        facts = [
+            "Honey never spoils.",
+            "A day on Venus is longer than a year on Venus.",
+            "Octopuses have three hearts.",
+            "Bananas are berries, but strawberries aren't.",
+            "A group of flamingos is called a 'flamboyance'."
+        ]
+        fact = random.choice(facts)
+        await ctx.send(f"🧠 Fun Fact: {fact}")
+
+    @commands.command()
+    async def poll(self, ctx, question: str, *options: str):
+        """Creates a poll with up to 10 options."""
+        if len(options) > 10:
+            await ctx.send("You can only provide up to 10 options.")
+            return
+        if len(options) < 2:
+            await ctx.send("You need at least 2 options to create a poll.")
+            return
+
+        description = ""
+        emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+        for i, option in enumerate(options):
+            description += f"{emojis[i]} {option}\n"
+
+        embed = discord.Embed(title=question, description=description)
+        message = await ctx.send(embed=embed)
+
+        for i in range(len(options)):
+            await message.add_reaction(emojis[i])
+
+
+
+
+
 async def setup(bot):
     await bot.add_cog(Fun_Commands(bot))
