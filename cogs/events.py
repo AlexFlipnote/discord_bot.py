@@ -74,7 +74,7 @@ class Events(commands.Cog):
         activity_type = {"listening": 2, "watching": 3, "competing": 5}
 
         await self.bot.change_presence(
-            activity=discord.Game(
+            activity=discord.Activity(
                 type=activity_type.get(activity, 0),
                 name=self.bot.config.discord_activity_name
             ),
