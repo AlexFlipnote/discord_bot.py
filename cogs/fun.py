@@ -311,28 +311,6 @@ class Fun_Commands(commands.Cog):
         fact = random.choice(facts)
         await ctx.send(f"🧠 Fun Fact: {fact}")
 
-    @commands.command()
-    async def poll(self, ctx, question: str, *options: str):
-        """Creates a poll with up to 10 options."""
-        if len(options) > 10:
-            await ctx.send("You can only provide up to 10 options.")
-            return
-        if len(options) < 2:
-            await ctx.send("You need at least 2 options to create a poll.")
-            return
-
-        description = ""
-        emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
-        for i, option in enumerate(options):
-            description += f"{emojis[i]} {option}\n"
-
-        embed = discord.Embed(title=question, description=description)
-        message = await ctx.send(embed=embed)
-
-        for i in range(len(options)):
-            await message.add_reaction(emojis[i])
-
-
 
 
 
