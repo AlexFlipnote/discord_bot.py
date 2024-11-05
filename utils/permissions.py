@@ -1,5 +1,4 @@
 import discord
-
 from typing import Union, TYPE_CHECKING
 from discord.ext import commands
 
@@ -21,7 +20,7 @@ async def check_permissions(ctx: "CustomContext", perms, *, check=all) -> bool:
     return check(getattr(resolved, name, None) == value for name, value in perms.items())
 
 
-def has_permissions(*, check=all, **perms) -> bool:
+def has_permissions(*, check=all, **perms) -> commands.check:
     """ discord.Commands method to check if author has permissions """
     async def pred(ctx: "CustomContext"):
         return await check_permissions(ctx, perms, check=check)
@@ -31,22 +30,16 @@ def has_permissions(*, check=all, **perms) -> bool:
 async def check_priv(ctx: "CustomContext", member: discord.Member) -> Union[discord.Message, bool, None]:
     """ Custom (weird) way to check permissions when handling moderation commands """
     try:
-        # Self checks
         if member.id == ctx.author.id:
             return await ctx.send(f"You can't {ctx.command.name} yourself")
         if member.id == ctx.bot.user.id:
             return await ctx.send("So that's what you think of me huh..? sad ;-;")
 
-        # Check if user bypasses
         if ctx.author.id == ctx.guild.owner.id:
             return False
-
-        # Now permission check
         if member.id == ctx.bot.config.discord_owner_id:
             if ctx.author.id != ctx.bot.config.discord_owner_id:
                 return await ctx.send(f"I can't {ctx.command.name} my creator ;-;")
-            else:
-                pass
         if member.id == ctx.guild.owner.id:
             return await ctx.send(f"You can't {ctx.command.name} the owner, lol")
         if ctx.author.top_role == member.top_role:
@@ -59,5 +52,7 @@ async def check_priv(ctx: "CustomContext", member: discord.Member) -> Union[disc
 
 def can_handle(ctx: "CustomContext", permission: str) -> bool:
     """ Checks if bot has permissions or is in DMs right now """
-    return isinstance(ctx.channel, discord.DMChannel) or \
+    return (
+        isinstance(ctx.channel, discord.DMChannel) or
         getattr(ctx.channel.permissions_for(ctx.guild.me), permission)
+    )
