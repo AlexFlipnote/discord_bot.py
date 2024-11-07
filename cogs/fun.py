@@ -281,5 +281,38 @@ class Fun_Commands(commands.Cog):
         await msg.edit(content=f"> {result}\nBetter luck next time")
 
 
+    @commands.command(aliases=['8ball'])
+    async def eightball(self, ctx, *, question: str):
+        """Answers a yes/no question."""
+        responses = [
+            "It is certain.",
+            "Without a doubt.",
+            "You may rely on it.",
+            "Ask again later.",
+            "Better not tell you now.",
+            "Don't count on it.",
+            "My sources say no.",
+            "Outlook not so good."
+        ]
+        response = random.choice(responses)
+        await ctx.send(f"🎱 Question: {question}\nAnswer: {response}")
+
+
+    @commands.command()
+    async def randomfact(self, ctx):
+        """Sends a random fun fact."""
+        facts = [
+            "Honey never spoils.",
+            "A day on Venus is longer than a year on Venus.",
+            "Octopuses have three hearts.",
+            "Bananas are berries, but strawberries aren't.",
+            "A group of flamingos is called a 'flamboyance'."
+        ]
+        fact = random.choice(facts)
+        await ctx.send(f"🧠 Fun Fact: {fact}")
+
+
+
+
 async def setup(bot):
     await bot.add_cog(Fun_Commands(bot))
