@@ -22,7 +22,9 @@ class Fun_Commands(commands.Cog):
             "Yes", "No", "Take a wild guess...", "Very doubtful",
             "Sure", "Without a doubt", "Most likely", "Might be possible",
             "You'll be the judge", "no... (╯°□°）╯︵ ┻━┻", "no... baka",
-            "senpai, pls no ;-;"
+            "senpai, pls no ;-;", "It is certain.", "Ask again later.",
+            "Better not tell you now.", "Don't count on it.", "My sources say no.",
+            "Outlook not so good."
         ]
 
         answer = random.choice(ballresponse)
@@ -280,26 +282,8 @@ class Fun_Commands(commands.Cog):
             return await msg.edit(content=f"> {result}\nCongrats, you won 🎉!")
         await msg.edit(content=f"> {result}\nBetter luck next time")
 
-
-    @commands.command(aliases=['8ball'])
-    async def eightball(self, ctx, *, question: str):
-        """Answers a yes/no question."""
-        responses = [
-            "It is certain.",
-            "Without a doubt.",
-            "You may rely on it.",
-            "Ask again later.",
-            "Better not tell you now.",
-            "Don't count on it.",
-            "My sources say no.",
-            "Outlook not so good."
-        ]
-        response = random.choice(responses)
-        await ctx.send(f"🎱 Question: {question}\nAnswer: {response}")
-
-
     @commands.command()
-    async def randomfact(self, ctx):
+    async def randomfact(self, ctx: CustomContext):
         """Sends a random fun fact."""
         facts = [
             "Honey never spoils.",
@@ -310,8 +294,6 @@ class Fun_Commands(commands.Cog):
         ]
         fact = random.choice(facts)
         await ctx.send(f"🧠 Fun Fact: {fact}")
-
-
 
 
 async def setup(bot):
