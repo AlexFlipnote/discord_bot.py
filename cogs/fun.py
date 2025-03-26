@@ -290,7 +290,9 @@ class Fun_Commands(commands.Cog):
             "A day on Venus is longer than a year on Venus.",
             "Octopuses have three hearts.",
             "Bananas are berries, but strawberries aren't.",
-            "A group of flamingos is called a 'flamboyance'."
+            "A group of flamingos is called a 'flamboyance'.",
+            "Sloths can hold their breath longer than dolphins by slowing their heart rate.",
+            "Some turtles can breathe through their butts."
         ]
         fact = random.choice(facts)
         await ctx.send(f"🧠 Fun Fact: {fact}")
