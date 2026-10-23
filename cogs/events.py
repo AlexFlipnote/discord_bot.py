@@ -15,8 +15,8 @@ class FunCommands(commands.Cog):
         self.bot: CustomClient = bot
 
     @commands.listener()
-    async def on_gateway_ready(self, bot: User):
-        _log.info(f"Ready: {bot} | Servers: {len(self.bot.guilds)}")
+    async def on_gateway_ready(self, bot: CustomClient):
+        _log.info(f"Ready: {bot.user.name} | Servers: {len(self.bot.guilds)}")
 
         await self.bot.gateway.change_presence(PlayingStatus(
             name=self.bot.config["playing"],
