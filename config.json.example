@@ -1,0 +1,10 @@
+{
+  "token": "BOT_TOKEN",
+  "owner_id": 1337,
+  "playing": "doing things",
+  "sync": true,
+  "debug_OFF": {
+    "guild_id": 1337,
+    "logging": false
+  }
+}

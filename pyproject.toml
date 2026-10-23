@@ -1,0 +1,146 @@
+[project]
+name = "discord_bot.py"
+version = "0.0.1"
+requires-python = ">=3.11"
+dependencies = [
+    "discord-http>=3.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pyright>=1.1.401",
+    "ruff>=0.11.13",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 256
+indent-width = 4
+output-format = "concise"
+include = [
+  "index.py",
+  "cogs/*.py",
+]
+exclude = [
+  "**/__pycache__",
+  "**/*.pyc",
+  "*.egg-info",
+  ".venv",
+  "build",
+  "docs",
+  "dist",
+]
+
+[tool.ruff.lint]
+select = [
+  # "DTZ", # flake8-datetimez
+  "A",   # flake8-builtins
+  "ANN", # Annotations
+  "ARG", # flake8-unused-arguments
+  "B",   # flake8-bugbear
+  "D",   # pydocstyle
+  "E",   # Error
+  "ERA", # eradicate
+  "F",   # Pyflakes
+  "FIX", # flake8-fixme
+  "FLY", # flynt
+  "FURB",  # refurb
+  "ICN", # flake8-import-conventions
+  "ISC", # flake8-implicit-str-concat
+  "N",   # pep8-naming
+  "PIE",  # flake8-pie
+  "PLE",  # Pylint Errors
+  "PLW",  # Pylint Warnings
+  "Q",   # flake8-quotes
+  "RET", # flake8-return
+  "RUF", # Ruff-specific rules
+  "SIM", # flake8-simplify
+  "T",   # flake8-print
+  "TC",  # type-checking
+  "UP",  # pyupgrade
+  "W",   # Warning
+]
+
+extend-select = ["W", "E"]
+preview = true
+
+ignore = [
+  # Docstring: function
+  "D100",  # docstring in public module
+  "D203",  # 1 blank line required before class docstring
+  "D210",  # No whitespaces surrounding docstring text
+  "D212",  # Multi-line docstring start at first line
+  "D400",  # Strictly must end with a period
+  "D401",  # First line should be in imperative mood
+  "D413",  # Missing blank line after last section
+
+  # Annotations
+  "ANN003",  # Missing type annotation for **kwargs
+  "ANN204",  # Missing for __init__ method
+
+  # Type-checking
+  "TC001", "TC002", "TC003", "TC004",  # Moving imports
+
+  # Docstring: Missing docs
+  "D101",  # class
+  "D105",  # magic method docstring required (__str__, __int__, etc)
+  "D107",  # __init__ docstring required
+
+  # Except cases
+  "B904",  # raise in except
+
+  # Simplify
+  "SIM105", # Use contextlib.suppress
+  "SIM114", # Merge if-else to one-liner
+
+  # Refurb
+  "FURB101",  # read-whole-file
+  "FURB103",  # write-whole-file
+
+  # Pylint Warnings
+  "PLW0717",  # Try clause contains too many statements
+  "PLW2901",  # Overwrite loop control variable
+
+  # Type hints
+  "UP037",  # type hints with quotes
+
+  # Variable shadowing
+  "A005",  # Files
+
+  # xelA Ignores
+  "ANN201",  # Missing return type annotation for public function
+  "ANN202",  # Missing return type annotation for private function
+  "D102",  # Docstring: public method
+  "RUF029",  # async func without await
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pyright]
+reportOptionalOperand = "none"
+reportOptionalSubscript = "none"
+reportOptionalMemberAccess = "none"
+reportUnnecessaryTypeIgnoreComment = "warning"
+typeCheckingMode = "basic"
+pythonVersion = "3.13"
+
+include = [
+  "index.py",
+  "./cogs",
+]
+
+exclude = [
+  "**/_*.py",
+  "**/*.pyc",
+  "**/.*",
+  "**/__pycache__",
+  "**/node_modules",
+  "*.egg-info",
+  ".venv",
+  "build",
+  "dist",
+  "docs",
+]

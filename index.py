@@ -1,25 +1,69 @@
-import discord
+import json
+import logging
+import os
 
-from utils import config, data
+from discord_http import Client, DiscordHTTP, Context
+from discord_http.gateway import Intents, GatewayCacheFlags
 
-config = config.Config.from_env(".env")
-print("Logging in...")
+with open("config.json", encoding="utf8") as f:
+    config = json.load(f)
+    config_debug = config.get("debug", {})
 
-bot = data.DiscordBot(
-    config=config, command_prefix=config.discord_prefix,
-    prefix=config.discord_prefix, command_attrs=dict(hidden=True),
-    help_command=data.HelpFormat(),
-    allowed_mentions=discord.AllowedMentions(
-        everyone=False, roles=False, users=True
+
+class CustomClient(Client):
+    def __init__(self, config: dict, **kwargs):
+        super().__init__(
+            **kwargs,
+            disable_http_server=True
+        )
+
+        # Types
+        self.config: dict = config
+
+        # Re-define to apply custom kwargs to the Context
+        self.backend = DiscordHTTP(client=self)
+
+        # Shortcuts
+        self.http = self.state.http
+
+    async def setup_hook(self):
+        for file in os.listdir("./cogs"):
+            if not file.endswith(".py"):
+                continue
+            await self.load_extension(f"cogs.{file[:-3]}")
+
+
+class CustomContext(Context):
+    """ Mostly used for types. """
+
+    def __init__(self, bot: CustomClient, data: dict):
+        super().__init__(bot, data)
+        self.bot: CustomClient
+
+
+client = CustomClient(
+    token=config["token"],
+    sync=config["sync"],
+    guild_id=config_debug.get("guild_id"),
+    config=config,
+    logging_level=(
+        logging.DEBUG
+        if config_debug.get("logging")
+        else logging.INFO
     ),
-    intents=discord.Intents(
-        # kwargs found at https://docs.pycord.dev/en/master/api.html?highlight=discord%20intents#discord.Intents
-        guilds=True, members=True, messages=True, reactions=True,
-        presences=True, message_content=True,
-    )
+    intents=(
+        # For now, we only need the guild intent
+        Intents.guilds
+    ),
+    gateway_cache=(
+        # You control what you want to store on the bot
+        GatewayCacheFlags.guilds |
+        GatewayCacheFlags.emojis |
+        GatewayCacheFlags.roles |
+        GatewayCacheFlags.channels |
+        GatewayCacheFlags.threads |
+        GatewayCacheFlags.stickers
+    ),
 )
 
-try:
-    bot.run(config.discord_token)
-except Exception as e:
-    print(f"Error when logging in: {e}")
+client.start()
