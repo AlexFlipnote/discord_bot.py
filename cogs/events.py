@@ -1,6 +1,6 @@
 import logging
 
-from discord_http import commands, User
+from discord_http import commands
 from discord_http.gateway import PlayingStatus, StatusType, ActivityType
 from typing import TYPE_CHECKING
 
